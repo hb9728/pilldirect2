@@ -22,8 +22,14 @@ import StepMedicalHistory from './components/StepMedicalHistory.vue'
 import StepFinalConsent from './components/StepFinalConsent.vue'
 
 const handleSubmit = (data) => {
+  // ⛔ Stop if required fields aren't met on final page
+  if (!validateStep()) {
+    alert("Please complete all required fields before submitting.")
+    return
+  }
+
   console.log('Final submission:', data)
-  // TODO: send to backend / Supabase / Zapier / etc.
+  // TODO: connect to backend etc
 }
 
 const formData = ref({
