@@ -34,17 +34,18 @@
 
     
       <button
-        :disabled="submitted || !formData.shareConsent || !formData.updateConsent"
+        :disabled="props.submitted || !formData.shareConsent || !formData.updateConsent"
         @click="submitForm"
         class="px-6 py-2 rounded text-white font-semibold transition duration-200"
         :class="[
-          (submitted || !formData.shareConsent || !formData.updateConsent)
+          (props.submitted || !formData.shareConsent || !formData.updateConsent)
             ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
             : 'bg-blue-600 hover:bg-blue-700'
         ]"
       >
         Submit
       </button>
+
 
 
 
@@ -62,7 +63,7 @@
 <script setup>
 import { ref, watch } from 'vue'
 
-const props = defineProps(['formData'])
+const props = defineProps(['formData', 'submitted'])
 const emit = defineEmits(['submit'])
 
 const submitted = ref(false)
@@ -76,9 +77,7 @@ const generateSubmissionId = () => {
 
 // Trigger submit event to parent
 const submitForm = () => {
-  if (submitted.value) return
-
-  submitted.value = true  // ❗ Lock immediately so Vue disables the button
+  if (props.submitted) return
 
   if (!props.formData.responseId) {
     const id = generateSubmissionId()
@@ -90,5 +89,6 @@ const submitForm = () => {
 
   emit('submit', props.formData)
 }
+
 </script>
 
