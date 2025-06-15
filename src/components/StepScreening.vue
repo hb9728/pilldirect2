@@ -7,7 +7,7 @@
     <select v-model="formData.sex" class="input">
       <option disabled value="">Select sex</option>
       <option>Female</option>
-      <option>Other</option>
+      <option>Male</option>
     </select>
     <input v-model="formData.dob" type="date" class="input" />
     <input v-model.number="formData.age" type="number" placeholder="Age" class="input" />
