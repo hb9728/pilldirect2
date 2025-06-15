@@ -59,17 +59,27 @@ const validateStep = () => {
 
   // Pill History
   if (stepIndex === 3) {
-  // Always required
-  if (!formData.value.currentContraceptive) return false
-
-  // If they have a treatment preference, ensure a pill choice is selected
-  if (formData.value.treatmentPreference === 'Yes' && !formData.value.pillChoice) return false
-
-  // If 'Other' pill is selected, a description must be provided
-  if (formData.value.pillChoice === 'Other' && !formData.value.otherPill) return false
-
-  return true
+    // Must select one of the contraception types
+    if (!formData.value.currentContraceptive) return false
+  
+    // Must answer whether they have a preference
+    if (!formData.value.treatmentPreference) return false
+  
+    // If preference is yes, must choose a pill
+    if (formData.value.treatmentPreference === 'Yes' && !formData.value.pillChoice) return false
+  
+    // If "Other" pill selected, must specify which one
+    if (formData.value.pillChoice === 'Other' && !formData.value.otherPill) return false
+  
+    // Must answer gap question
+    if (!formData.value.pillGap) return false
+  
+    // Must answer extra meds question (even if writing "none")
+    if (!formData.value.extraMeds) return false
+  
+    return true
   }
+
 
   if (stepIndex === 4) {
   if (!formData.value.imperialMetric) return false
