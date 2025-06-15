@@ -21,6 +21,8 @@ import StepVitals from './components/StepVitals.vue'
 import StepMedicalHistory from './components/StepMedicalHistory.vue'
 import StepFinalConsent from './components/StepFinalConsent.vue'
 
+const emptyToNull = (val) => val === '' ? null : val
+  
 const handleSubmit = async (data) => {
   if (!validateStep()) {
     alert("Please complete all required fields before submitting.")
