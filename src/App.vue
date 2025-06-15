@@ -37,6 +37,34 @@ const steps = [
 ]
 const currentStep = ref(0)
 
+const validateStep = () => {
+  const stepIndex = currentStep.value
+
+  if (stepIndex === 1) { // Screening
+    return !!formData.value.firstName &&
+           !!formData.value.lastName &&
+           !!formData.value.dob &&
+           formData.value.age >= 16
+  }
+
+  if (stepIndex === 2) { // Contact Info
+    return !!formData.value.address &&
+           !!formData.value.email &&
+           !!formData.value.phone
+  }
+
+  if (stepIndex === 3) { // Pill history
+    return !!formData.value.currentUse
+  }
+
+  if (stepIndex === 6) { // Final Consent
+    return !!formData.value.shareConsent &&
+           !!formData.value.updateConsent
+  }
+
+  return true
+}
+
 const formData = ref({
   firstName: '',
   lastName: '',
@@ -73,7 +101,13 @@ const formData = ref({
 })
 
 function nextStep() {
-  if (currentStep.value < steps.length - 1) currentStep.value++
+  if (!validateStep()) {
+    alert("Please complete all required fields before proceeding.")
+    return
+  }
+  if (currentStep.value < steps.length - 1) {
+    currentStep.value++
+  }
 }
 function prevStep() {
   if (currentStep.value > 0) currentStep.value--
