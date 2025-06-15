@@ -34,15 +34,16 @@
 
     
       <button
-        :disabled="!formData.shareConsent || !formData.updateConsent || submitting"
+        :disabled="!formData.shareConsent || !formData.updateConsent || submitted"
         @click="submitForm"
         class="px-6 py-2 rounded text-white font-semibold transition duration-200"
-        :class="(formData.shareConsent && formData.updateConsent && !submitting)
+        :class="(formData.shareConsent && formData.updateConsent && !submitted)
                  ? 'bg-blue-600 hover:bg-blue-700'
                  : 'bg-gray-400 cursor-not-allowed opacity-60'"
       >
         Submit
       </button>
+
 
     </div>
 
@@ -71,7 +72,7 @@ const generateSubmissionId = () => {
 }
 
 const submitForm = () => {
-  if (submitting.value) return // prevent double submit
+  if (submitted.value || submitting.value) return
 
   submitting.value = true
 
@@ -82,10 +83,10 @@ const submitForm = () => {
     responseId.value = props.formData.responseId
   }
 
-  emit('submit', props.formData)
-
   submitted.value = true
+  emit('submit', props.formData)
 }
+
 
 
 </script>
