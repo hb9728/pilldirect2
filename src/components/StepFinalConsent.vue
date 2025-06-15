@@ -34,15 +34,16 @@
 
     
       <button
-        :disabled="!formData.shareConsent || !formData.updateConsent"
+        :disabled="!formData.shareConsent || !formData.updateConsent || submitting"
         @click="submitForm"
         class="px-6 py-2 rounded text-white font-semibold transition duration-200"
-        :class="formData.shareConsent && formData.updateConsent 
-                 ? 'bg-blue-600 hover:bg-blue-700' 
+        :class="(formData.shareConsent && formData.updateConsent && !submitting)
+                 ? 'bg-blue-600 hover:bg-blue-700'
                  : 'bg-gray-400 cursor-not-allowed opacity-60'"
       >
         Submit
       </button>
+
     </div>
 
     <div v-if="submitted" class="mt-10 p-4 border border-green-300 bg-green-50 rounded">
@@ -60,6 +61,7 @@ const props = defineProps(['formData'])
 const emit = defineEmits(['submit'])
 
 const submitted = ref(false)
+const submitting = ref(false)
 const responseId = ref('')
 
 // Create a unique submission ID (e.g., timestamp-based or hash)
@@ -69,6 +71,10 @@ const generateSubmissionId = () => {
 }
 
 const submitForm = () => {
+  if (submitting.value) return // prevent double submit
+
+  submitting.value = true
+
   if (!props.formData.responseId) {
     responseId.value = generateSubmissionId()
     props.formData.responseId = responseId.value
@@ -76,8 +82,10 @@ const submitForm = () => {
     responseId.value = props.formData.responseId
   }
 
-  submitted.value = true
   emit('submit', props.formData)
+
+  submitted.value = true
 }
+
 
 </script>
