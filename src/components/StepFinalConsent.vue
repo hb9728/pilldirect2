@@ -1,4 +1,3 @@
-
 <template>
   <div>
     <h2 class="text-xl font-semibold mb-4">Final Consent Agreements</h2>
@@ -32,7 +31,6 @@
         Back
       </button>
 
-    
       <button
         :disabled="props.submitted || !formData.shareConsent || !formData.updateConsent"
         @click="submitForm"
@@ -45,18 +43,12 @@
       >
         Submit
       </button>
-
-
-
-
-
     </div>
-
   </div>
 </template>
 
 <script setup>
-import { ref, watch } from 'vue'
+import { ref } from 'vue'
 
 const props = defineProps(['formData', 'submitted'])
 const emit = defineEmits(['submit'])
@@ -64,13 +56,11 @@ const emit = defineEmits(['submit'])
 const submitted = ref(false)
 const responseId = ref('')
 
-// Generate a unique submission ID
 const generateSubmissionId = () => {
   const now = new Date()
   return 'PD-' + now.getTime().toString(36).toUpperCase()
 }
 
-// Trigger submit event to parent
 const submitForm = () => {
   if (props.submitted) return
 
@@ -82,8 +72,8 @@ const submitForm = () => {
     responseId.value = props.formData.responseId
   }
 
+  submitted.value = true
   emit('submit', props.formData)
+  emit('next') // THIS IS THE IMPORTANT LINE TO TRIGGER THE NEXT PAGE
 }
-
 </script>
-
