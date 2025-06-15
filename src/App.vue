@@ -75,6 +75,9 @@ const currentStep = ref(0)
 const validateStep = () => {
   const stepIndex = currentStep.value
 
+  // ✅ Step 0 is just informational — allow navigation
+  if (stepIndex === 0) return true
+
   // Screening
   if (stepIndex === 1) {
     return !!formData.value.firstName &&
