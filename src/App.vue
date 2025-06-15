@@ -30,7 +30,10 @@ const handleSubmit = async (data) => {
     return
   }
 
-  const clean = (val) => val === '' ? null : val
+  const clean = (val) => {
+    if (val === '' || val === null || isNaN(val)) return null
+    return val
+  }
 
   const submission = {
     firstName: data.firstName,
@@ -74,6 +77,19 @@ const handleSubmit = async (data) => {
     alert("There was a problem saving your data. Please try again.")
     return
   }
+
+  console.log('Payload:', payload)
+
+  console.log('Submitting to Supabase:', {
+    heightFt: clean(parseInt(data.heightFt)),
+    heightIn: clean(parseInt(data.heightIn)),
+    weightSt: clean(parseInt(data.weightSt)),
+    weightLbs: clean(parseInt(data.weightLbs)),
+    heightCm: clean(parseFloat(data.heightCm)),
+    weightKg: clean(parseFloat(data.weightKg)),
+    bpSystolic: clean(parseInt(data.bpSystolic)),
+    bpDiastolic: clean(parseInt(data.bpDiastolic)),
+  })
 
   console.log('✅ Submitted successfully to Supabase:', submission)
 }
