@@ -22,7 +22,18 @@
 
     <div class="mt-6 flex justify-between">
       <button @click="$emit('back')" class="btn-secondary">Back</button>
-      <button @click="submitForm" class="btn">Submit</button>
+      <button
+        :disabled="!formData.shareConsent || !formData.updateConsent"
+        :class="[
+          'mt-6 px-4 py-2 rounded text-white font-semibold',
+          formData.shareConsent && formData.updateConsent
+            ? 'bg-blue-600 hover:bg-blue-700'
+            : 'bg-gray-400 cursor-not-allowed opacity-60'
+        ]"
+        @click="$emit('submit', formData)"
+      >
+        Submit
+      </button>
     </div>
 
     <div v-if="submitted" class="mt-10 p-4 border border-green-300 bg-green-50 rounded">
