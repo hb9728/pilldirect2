@@ -13,7 +13,7 @@
 
     <div class="mt-6 flex justify-between">
       <button @click="$emit('back')" class="btn-secondary">Back</button>
-      <button @click="$emit('next')" class="btn">Submit</button>
+      <button @click="$emit('next')" class="btn">Next</button>
     </div>
   </div>
 </template>
