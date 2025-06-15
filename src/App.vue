@@ -1,11 +1,14 @@
 <template>
   <div class="min-h-screen bg-gray-50 text-gray-800 p-6">
     <div class="max-w-2xl mx-auto bg-white rounded-lg shadow-md p-4">
-      <component :is="steps[currentStep]" 
-                 :formData="formData" 
-                 @next="nextStep" 
-                 @back="prevStep" 
-                 @submit="handleSubmit" />
+      <component
+        :is="steps[currentStep]"
+        :formData="formData"
+        :submitted="submitted"
+        @next="nextStep"
+        @back="prevStep"
+        @submit="handleSubmit"
+      />
     </div>
   </div>
 </template>
@@ -101,6 +104,7 @@ const handleSubmit = async (data) => {
 
 
 
+const submitted = ref(false)
 
 
   
