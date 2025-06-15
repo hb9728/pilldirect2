@@ -29,26 +29,50 @@ const handleSubmit = async (data) => {
 
   const { error } = await supabase.from('submissions').insert([
     {
-      first_name: data.firstName,
-      last_name: data.lastName,
+      firstName: data.firstName,
+      lastName: data.lastName,
       dob: data.dob,
+      sex: data.sex,
       email: data.email,
       phone: data.phone,
+      address1: data.address1,
+      address2: data.address2,
+      city: data.city,
       postcode: data.postcode,
-      pill_choice: data.pillChoice,
-      extra_meds: data.extraMeds,
-      response_id: data.responseId
+      currentContraceptive: data.currentContraceptive,
+      treatmentPreference: data.treatmentPreference,
+      pillChoice: data.pillChoice,
+      otherPill: data.otherPill,
+      pillGap: data.pillGap,
+      extraMeds: data.extraMeds,
+      imperialMetric: data.imperialMetric,
+      heightFt: data.heightFt,
+      heightIn: data.heightIn,
+      weightSt: data.weightSt,
+      weightLbs: data.weightLbs,
+      heightCm: data.heightCm,
+      weightKg: data.weightKg,
+      bpChecked: data.bpChecked,
+      bpSystolic: data.bpSystolic,
+      bpDiastolic: data.bpDiastolic,
+      selectApplicable: data.selectApplicable,
+      extraInfo: data.extraInfo,
+      promoConsent: data.promoConsent,
+      shareConsent: data.shareConsent,
+      updateConsent: data.updateConsent,
+      responseId: data.responseId
     }
   ])
 
   if (error) {
-    console.error("Error submitting to Supabase:", error)
+    console.error("❌ Error submitting to Supabase:", error)
     alert("There was a problem saving your data. Please try again.")
     return
   }
 
   console.log('✅ Submitted successfully to Supabase:', data)
 }
+
 
 
 const formData = ref({
