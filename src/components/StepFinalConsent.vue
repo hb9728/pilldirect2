@@ -52,11 +52,6 @@
 
     </div>
 
-    <div v-if="submitted" class="mt-10 p-4 border border-green-300 bg-green-50 rounded">
-      <h3 class="text-lg font-semibold mb-2">Thank you for choosing PillDirect.co.uk!</h3>
-      <p class="mb-1">Your response ID is <strong>{{ responseId }}</strong>.</p>
-      <p>Please keep a record of this in case we need to follow up with you about your submission.</p>
-    </div>
   </div>
 </template>
 
