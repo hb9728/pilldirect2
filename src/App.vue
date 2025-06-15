@@ -1,4 +1,3 @@
-
 <template>
   <div class="min-h-screen bg-gray-50 text-gray-800 p-6">
     <div class="max-w-2xl mx-auto bg-white rounded-lg shadow-md p-4">
@@ -12,6 +11,7 @@
 </template>
 
 <script setup>
+import { supabase } from './supabase'
 import { ref } from 'vue'
 import StepIntro from './components/StepIntro.vue'
 import StepScreening from './components/StepScreening.vue'
@@ -21,16 +21,35 @@ import StepVitals from './components/StepVitals.vue'
 import StepMedicalHistory from './components/StepMedicalHistory.vue'
 import StepFinalConsent from './components/StepFinalConsent.vue'
 
-const handleSubmit = (data) => {
-  // ⛔ Stop if required fields aren't met on final page
+const handleSubmit = async (data) => {
   if (!validateStep()) {
     alert("Please complete all required fields before submitting.")
     return
   }
 
-  console.log('Final submission:', data)
-  // TODO: connect to backend etc
+  const { error } = await supabase.from('submissions').insert([
+    {
+      first_name: data.firstName,
+      last_name: data.lastName,
+      dob: data.dob,
+      email: data.email,
+      phone: data.phone,
+      postcode: data.postcode,
+      pill_choice: data.pillChoice,
+      extra_meds: data.extraMeds,
+      response_id: data.responseId
+    }
+  ])
+
+  if (error) {
+    console.error("Error submitting to Supabase:", error)
+    alert("There was a problem saving your data. Please try again.")
+    return
+  }
+
+  console.log('✅ Submitted successfully to Supabase:', data)
 }
+
 
 const formData = ref({
   firstName: '',
