@@ -96,6 +96,8 @@ const handleSubmit = async (data) => {
   }
 
   console.log('✅ Submitted to Supabase:', filtered)
+
+  submitted.value = true
 }
 
 
