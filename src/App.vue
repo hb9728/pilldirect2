@@ -11,7 +11,6 @@
 </template>
 
 <script setup>
-import { supabase } from './supabase'
 import { ref } from 'vue'
 import StepIntro from './components/StepIntro.vue'
 import StepScreening from './components/StepScreening.vue'
@@ -23,14 +22,17 @@ import StepFinalConsent from './components/StepFinalConsent.vue'
 
 const emptyToNull = (val) => val === '' || val === undefined ? null : val
   
+import { supabase } from './supabase'
+
 const handleSubmit = async (data) => {
   if (!validateStep()) {
     alert("Please complete all required fields before submitting.")
     return
   }
 
-  const { error } = await supabase.from('submissions').insert([
-  {
+  const clean = (val) => val === '' ? null : val
+
+  const submission = {
     firstName: data.firstName,
     lastName: data.lastName,
     dob: data.dob,
@@ -48,15 +50,15 @@ const handleSubmit = async (data) => {
     pillGap: data.pillGap,
     extraMeds: data.extraMeds,
     imperialMetric: data.imperialMetric,
-    heightFt: emptyToNull(data.heightFt),
-    heightIn: emptyToNull(data.heightIn),
-    weightSt: emptyToNull(data.weightSt),
-    weightLbs: emptyToNull(data.weightLbs),
-    heightCm: emptyToNull(data.heightCm),
-    weightKg: emptyToNull(data.weightKg),
+    heightFt: clean(parseInt(data.heightFt)),
+    heightIn: clean(parseInt(data.heightIn)),
+    weightSt: clean(parseInt(data.weightSt)),
+    weightLbs: clean(parseInt(data.weightLbs)),
+    heightCm: clean(parseFloat(data.heightCm)),
+    weightKg: clean(parseFloat(data.weightKg)),
     bpChecked: data.bpChecked,
-    bpSystolic: emptyToNull(data.bpSystolic),
-    bpDiastolic: emptyToNull(data.bpDiastolic),
+    bpSystolic: clean(parseInt(data.bpSystolic)),
+    bpDiastolic: clean(parseInt(data.bpDiastolic)),
     selectApplicable: data.selectApplicable,
     extraInfo: data.extraInfo,
     promoConsent: data.promoConsent,
@@ -64,7 +66,18 @@ const handleSubmit = async (data) => {
     updateConsent: data.updateConsent,
     responseId: data.responseId
   }
-])
+
+  const { error } = await supabase.from('submissions').insert([submission])
+
+  if (error) {
+    console.error("❌ Error submitting to Supabase:", error)
+    alert("There was a problem saving your data. Please try again.")
+    return
+  }
+
+  console.log('✅ Submitted successfully to Supabase:', submission)
+}
+
 
 
   if (error) {
