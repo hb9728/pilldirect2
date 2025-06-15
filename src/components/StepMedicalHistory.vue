@@ -123,7 +123,8 @@
 
     <!-- Extra Info -->
     <label class="block mt-6 mb-2 font-medium">Please enter any further information you would like to provide to our medical team:</label>
-    <textarea v-model="formData.extraInfo" class="input" rows="4"></textarea>
+    <textarea v-model="formData.extraInfo" class="input" rows="4" placeholder="If none, type 'none'"></textarea>
+        
 
     <div class="mt-6 flex justify-between">
       <button @click="$emit('back')" class="btn-secondary">Back</button>
