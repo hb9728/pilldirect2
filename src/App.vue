@@ -40,30 +40,38 @@ const currentStep = ref(0)
 const validateStep = () => {
   const stepIndex = currentStep.value
 
-  if (stepIndex === 1) { // Screening
+  // Screening
+  if (stepIndex === 1) {
     return !!formData.value.firstName &&
            !!formData.value.lastName &&
            !!formData.value.dob &&
            formData.value.age >= 16
   }
 
-  if (stepIndex === 2) { // Contact Info
-    return !!formData.value.address &&
-           !!formData.value.email &&
-           !!formData.value.phone
+  // Contact Info
+  if (stepIndex === 2) {
+    return !!formData.value.email &&
+           !!formData.value.phone &&
+           !!formData.value.addressLine1 &&
+           !!formData.value.city &&
+           !!formData.value.postcode
   }
 
-  if (stepIndex === 3) { // Pill history
+  // Pill History
+  if (stepIndex === 3) {
     return !!formData.value.currentUse
   }
 
-  if (stepIndex === 6) { // Final Consent
+  // Final Consent
+  if (stepIndex === 6) {
     return !!formData.value.shareConsent &&
            !!formData.value.updateConsent
+    // promoConsent is optional
   }
 
   return true
 }
+
 
 const formData = ref({
   firstName: '',
