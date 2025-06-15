@@ -30,7 +30,7 @@
     
       <button
         :disabled="!formData.shareConsent || !formData.updateConsent"
-        @click="submit"
+        @click="submitForm"
         class="px-6 py-2 rounded text-white font-semibold transition duration-200"
         :class="formData.shareConsent && formData.updateConsent 
                  ? 'bg-blue-600 hover:bg-blue-700' 
