@@ -27,7 +27,11 @@ const formData = ref({
   dob: '',
   age: '',
   email: '',
-  phone: ''
+  phone: '',
+  address1: '',
+  address2: '',
+  city: '',
+  postcode: ''
 })
 
 function nextStep() {
