@@ -59,8 +59,18 @@ const validateStep = () => {
 
   // Pill History
   if (stepIndex === 3) {
-    return !!formData.value.currentUse
+  // Always required
+  if (!formData.value.currentContraceptive) return false
+
+  // If they have a treatment preference, ensure a pill choice is selected
+  if (formData.value.treatmentPreference === 'Yes' && !formData.value.pillChoice) return false
+
+  // If 'Other' pill is selected, a description must be provided
+  if (formData.value.pillChoice === 'Other' && !formData.value.otherPill) return false
+
+  return true
   }
+
 
   // Final Consent
   if (stepIndex === 6) {
