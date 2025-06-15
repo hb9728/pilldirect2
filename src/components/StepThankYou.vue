@@ -1,11 +1,16 @@
 <template>
-  <div class="text-center p-6">
-    <h2 class="text-2xl font-semibold mb-4">Thank you for choosing PillDirect.co.uk!</h2>
-    <p class="mb-2">Your response ID is <strong>{{ formData.responseId }}</strong>.</p>
-    <p class="mb-4">Please keep a record of this in case we need to follow up with you.</p>
+  <div class="text-center py-10">
+    <h2 class="text-2xl font-bold mb-4">Thank you for choosing PillDirect.co.uk!</h2>
+    <p class="text-lg mb-2">Your response has been submitted successfully.</p>
+    <p class="mb-6">Your response ID is <strong>{{ responseId }}</strong>.</p>
+    <p class="text-sm text-gray-600">Please keep a record of this in case we need to follow up with you.</p>
   </div>
 </template>
 
 <script setup>
-const props = defineProps(['formData'])
+import { inject } from 'vue'
+
+// Grab the responseId from global formData
+const formData = inject('formData')
+const responseId = formData?.responseId || ''
 </script>
