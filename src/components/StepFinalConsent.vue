@@ -20,17 +20,21 @@
       </label>
     </div>
 
-    <div class="mt-6 flex justify-between">
-      <button @click="$emit('back')" class="btn-secondary">Back</button>
+    <div class="flex justify-between mt-6">
+      <button
+        @click="$emit('back')"
+        class="px-6 py-2 bg-gray-300 text-black rounded hover:bg-gray-400 transition"
+      >
+        Back
+      </button>
+    
       <button
         :disabled="!formData.shareConsent || !formData.updateConsent"
-        :class="[
-          'mt-6 px-4 py-2 rounded text-white font-semibold',
-          formData.shareConsent && formData.updateConsent
-            ? 'bg-blue-600 hover:bg-blue-700'
-            : 'bg-gray-400 cursor-not-allowed opacity-60'
-        ]"
-        @click="$emit('submit', formData)"
+        @click="submit"
+        class="px-6 py-2 rounded text-white font-semibold transition duration-200"
+        :class="formData.shareConsent && formData.updateConsent 
+                 ? 'bg-blue-600 hover:bg-blue-700' 
+                 : 'bg-gray-400 cursor-not-allowed opacity-60'"
       >
         Submit
       </button>
