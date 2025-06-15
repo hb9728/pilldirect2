@@ -49,9 +49,15 @@ const generateSubmissionId = () => {
 }
 
 const submitForm = () => {
-  responseId.value = generateSubmissionId()
-  props.formData.responseId = responseId.value
+  if (!props.formData.responseId) {
+    responseId.value = generateSubmissionId()
+    props.formData.responseId = responseId.value
+  } else {
+    responseId.value = props.formData.responseId
+  }
+
   submitted.value = true
   emit('submit', props.formData)
 }
+
 </script>
