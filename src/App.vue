@@ -22,6 +22,7 @@ import StepPillHistory from './components/StepPillHistory.vue'
 import StepVitals from './components/StepVitals.vue'
 import StepMedicalHistory from './components/StepMedicalHistory.vue'
 import StepFinalConsent from './components/StepFinalConsent.vue'
+import StepThankYou from './components/StepThankYou.vue'
 
 const emptyToNull = (val) => val === '' || val === undefined ? null : val
 
@@ -95,7 +96,9 @@ const handleSubmit = async (data) => {
     return
   }
 
-  console.log('✅ Submitted to Supabase:', filtered)
+  console.log('✅ Submitted successfully to Supabase:', submission)
+  
+  currentStep.value++ 
 
   submitted.value = true
 }
@@ -155,6 +158,7 @@ const steps = [
   StepVitals,
   StepMedicalHistory,
   StepFinalConsent,
+  StepThankYou
 ]
 const currentStep = ref(0)
 
