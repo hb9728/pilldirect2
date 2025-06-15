@@ -21,6 +21,13 @@ import StepMedicalHistory from './components/StepMedicalHistory.vue'
 import StepFinalConsent from './components/StepFinalConsent.vue'
 
 const emptyToNull = (val) => val === '' || val === undefined ? null : val
+
+
+
+
+
+
+
   
 import { supabase } from './supabase'
 
@@ -30,11 +37,13 @@ const handleSubmit = async (data) => {
     return
   }
 
+  // Helper to clean numeric inputs
   const clean = (val) => {
     if (val === '' || val === null || isNaN(val)) return null
     return val
   }
 
+  // Build the submission object
   const submission = {
     firstName: data.firstName,
     lastName: data.lastName,
@@ -70,30 +79,31 @@ const handleSubmit = async (data) => {
     responseId: data.responseId
   }
 
-  const { error } = await supabase.from('submissions').insert([submission])
+  // Final cleanup: convert all "" to null
+  const filtered = Object.fromEntries(
+    Object.entries(submission).map(([k, v]) => [k, v === '' ? null : v])
+  )
+
+  const { error } = await supabase.from('submissions').insert([filtered])
 
   if (error) {
-    console.error("❌ Error submitting to Supabase:", error)
-    alert("There was a problem saving your data. Please try again.")
+    console.error('❌ Supabase Insert Error:', JSON.stringify(error, null, 2))
+    alert('There was a problem saving your data. Please try again.')
     return
   }
 
-  console.log('Payload:', payload)
-
-  console.log('Submitting to Supabase:', {
-    heightFt: clean(parseInt(data.heightFt)),
-    heightIn: clean(parseInt(data.heightIn)),
-    weightSt: clean(parseInt(data.weightSt)),
-    weightLbs: clean(parseInt(data.weightLbs)),
-    heightCm: clean(parseFloat(data.heightCm)),
-    weightKg: clean(parseFloat(data.weightKg)),
-    bpSystolic: clean(parseInt(data.bpSystolic)),
-    bpDiastolic: clean(parseInt(data.bpDiastolic)),
-  })
-
-  console.log('✅ Submitted successfully to Supabase:', submission)
+  console.log('✅ Submitted to Supabase:', filtered)
 }
 
+
+
+
+
+
+
+
+
+  
 
 
 const formData = ref({
