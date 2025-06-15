@@ -18,6 +18,7 @@ import StepScreening from './components/StepScreening.vue'
 import StepContact from './components/StepContact.vue'
 import StepPillHistory from './components/StepPillHistory.vue'
 import StepVitals from './components/StepVitals.vue'
+import StepMedicalHistory from './components/StepMedicalHistory.vue'
 
 const steps = [
   StepIntro,
@@ -25,6 +26,7 @@ const steps = [
   StepContact,
   StepPillHistory,
   StepVitals,
+  StepMedicalHistory,
 ]
 const currentStep = ref(0)
 
@@ -54,7 +56,9 @@ const formData = ref({
   weightKg: '',
   bpChecked: '',
   bpSystolic: '',
-  bpDiastolic: ''
+  bpDiastolic: '',
+  selectApplicable: [],
+  extraInfo: '',
 })
 
 function nextStep() {
