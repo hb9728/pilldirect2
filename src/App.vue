@@ -28,41 +28,42 @@ const handleSubmit = async (data) => {
   }
 
   const { error } = await supabase.from('submissions').insert([
-    {
-      firstName: data.firstName,
-      lastName: data.lastName,
-      dob: data.dob,
-      sex: data.sex,
-      email: data.email,
-      phone: data.phone,
-      address1: data.address1,
-      address2: data.address2,
-      city: data.city,
-      postcode: data.postcode,
-      currentContraceptive: data.currentContraceptive,
-      treatmentPreference: data.treatmentPreference,
-      pillChoice: data.pillChoice,
-      otherPill: data.otherPill,
-      pillGap: data.pillGap,
-      extraMeds: data.extraMeds,
-      imperialMetric: data.imperialMetric,
-      heightFt: data.heightFt,
-      heightIn: data.heightIn,
-      weightSt: data.weightSt,
-      weightLbs: data.weightLbs,
-      heightCm: data.heightCm,
-      weightKg: data.weightKg,
-      bpChecked: data.bpChecked,
-      bpSystolic: data.bpSystolic,
-      bpDiastolic: data.bpDiastolic,
-      selectApplicable: data.selectApplicable,
-      extraInfo: data.extraInfo,
-      promoConsent: data.promoConsent,
-      shareConsent: data.shareConsent,
-      updateConsent: data.updateConsent,
-      responseId: data.responseId
-    }
-  ])
+  {
+    firstName: data.firstName,
+    lastName: data.lastName,
+    dob: data.dob,
+    sex: data.sex,
+    email: data.email,
+    phone: data.phone,
+    address1: data.address1,
+    address2: data.address2,
+    city: data.city,
+    postcode: data.postcode,
+    currentContraceptive: data.currentContraceptive,
+    treatmentPreference: data.treatmentPreference,
+    pillChoice: data.pillChoice,
+    otherPill: data.otherPill,
+    pillGap: data.pillGap,
+    extraMeds: data.extraMeds,
+    imperialMetric: data.imperialMetric,
+    heightFt: emptyToNull(data.heightFt),
+    heightIn: emptyToNull(data.heightIn),
+    weightSt: emptyToNull(data.weightSt),
+    weightLbs: emptyToNull(data.weightLbs),
+    heightCm: emptyToNull(data.heightCm),
+    weightKg: emptyToNull(data.weightKg),
+    bpChecked: data.bpChecked,
+    bpSystolic: emptyToNull(data.bpSystolic),
+    bpDiastolic: emptyToNull(data.bpDiastolic),
+    selectApplicable: data.selectApplicable,
+    extraInfo: data.extraInfo,
+    promoConsent: data.promoConsent,
+    shareConsent: data.shareConsent,
+    updateConsent: data.updateConsent,
+    responseId: data.responseId
+  }
+])
+
 
   if (error) {
     console.error("❌ Supabase Insert Error:", JSON.stringify(error, null, 2))
