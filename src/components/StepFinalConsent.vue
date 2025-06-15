@@ -23,10 +23,15 @@
     <div class="flex justify-between mt-6">
       <button
         @click="$emit('back')"
-        class="px-6 py-2 bg-gray-300 text-black rounded hover:bg-gray-400 transition"
+        :disabled="submitted"
+        :class="[
+          'px-6 py-2 rounded transition',
+          submitted ? 'bg-gray-200 text-gray-400 cursor-not-allowed' : 'bg-gray-300 text-black hover:bg-gray-400'
+        ]"
       >
         Back
       </button>
+
     
       <button
         :disabled="!formData.shareConsent || !formData.updateConsent"
