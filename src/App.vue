@@ -125,13 +125,12 @@ const validateStep = () => {
   
   // Final Consent
   if (stepIndex === 6) {
-    return !!formData.value.shareConsent &&
-           !!formData.value.updateConsent
-    // promoConsent is optional
+  if (!formData.value.shareConsent || !formData.value.updateConsent) {
+    return false
   }
 
   return true
-}
+  }
 
 
 const formData = ref({
