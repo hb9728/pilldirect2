@@ -78,9 +78,9 @@ const validateStep = () => {
     if (!formData.value.extraMeds) return false
   
     return true
-  }
+    }
 
-
+  // Pill Vitals
   if (stepIndex === 4) {
   if (!formData.value.imperialMetric) return false
 
@@ -108,8 +108,20 @@ const validateStep = () => {
   }
 
   return true
-}
+  }
 
+  // Medical History
+  if (stepIndex === 5) {
+  const selected = formData.value.selectApplicable
+  const notes = formData.value.extraInfo?.trim()
+
+  // If nothing selected and no extra info, block the user
+  if ((!selected || selected.length === 0) && !notes) {
+    return false
+  }
+
+  return true
+  }
   
   // Final Consent
   if (stepIndex === 6) {
