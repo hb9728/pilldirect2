@@ -80,17 +80,6 @@ const handleSubmit = async (data) => {
 
 
 
-  if (error) {
-    console.error("❌ Supabase Insert Error:", JSON.stringify(error, null, 2))
-    alert("There was a problem saving your data. Please try again.")
-    return
-  }
-
-  console.log('✅ Submitted successfully to Supabase:', data)
-}
-
-
-
 const formData = ref({
   firstName: '',
   lastName: '',
