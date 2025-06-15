@@ -71,7 +71,36 @@ const validateStep = () => {
   return true
   }
 
+  if (stepIndex === 4) {
+  if (!formData.value.imperialMetric) return false
 
+  if (formData.value.imperialMetric === 'Imperial') {
+    if (
+      !formData.value.heightFt ||
+      !formData.value.heightIn ||
+      !formData.value.weightSt ||
+      !formData.value.weightLbs
+    ) return false
+  }
+
+  if (formData.value.imperialMetric === 'Metric') {
+    if (
+      !formData.value.heightCm ||
+      !formData.value.weightKg
+    ) return false
+  }
+
+  if (formData.value.bpChecked === 'Yes') {
+    if (
+      !formData.value.bpSystolic ||
+      !formData.value.bpDiastolic
+    ) return false
+  }
+
+  return true
+}
+
+  
   // Final Consent
   if (stepIndex === 6) {
     return !!formData.value.shareConsent &&
