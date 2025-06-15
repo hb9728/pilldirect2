@@ -52,7 +52,7 @@ const validateStep = () => {
   if (stepIndex === 2) {
     return !!formData.value.email &&
            !!formData.value.phone &&
-           !!formData.value.addressLine1 &&
+           !!formData.value.address1 &&
            !!formData.value.city &&
            !!formData.value.postcode
   }
