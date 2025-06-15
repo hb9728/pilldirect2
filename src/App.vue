@@ -160,12 +160,12 @@ const validateStep = () => {
   
   // Final Consent
   if (stepIndex === 6) {
-  if (!formData.value.shareConsent || !formData.value.updateConsent) {
-    return false
-  }
-
+    if (!formData.value.shareConsent || !formData.value.updateConsent) {
+      return false
+    }
   return true
   }
+
 
 
 function nextStep() {
