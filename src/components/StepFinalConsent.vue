@@ -34,15 +34,16 @@
 
     
       <button
-        :disabled="!formData.shareConsent || !formData.updateConsent || submitted"
         @click="submitForm"
+        :disabled="submitted || !formData.shareConsent || !formData.updateConsent"
         class="px-6 py-2 rounded text-white font-semibold transition duration-200"
-        :class="(formData.shareConsent && formData.updateConsent && !submitted)
-                 ? 'bg-blue-600 hover:bg-blue-700'
-                 : 'bg-gray-400 cursor-not-allowed opacity-60'"
+        :class="submitted || !formData.shareConsent || !formData.updateConsent
+                 ? 'bg-gray-400 cursor-not-allowed opacity-60'
+                 : 'bg-blue-600 hover:bg-blue-700'"
       >
         Submit
       </button>
+
 
 
     </div>
@@ -56,25 +57,25 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, watchEffect } from 'vue'
 
 const props = defineProps(['formData'])
 const emit = defineEmits(['submit'])
 
 const submitted = ref(false)
-const submitting = ref(false)
 const responseId = ref('')
 
-// Create a unique submission ID (e.g., timestamp-based or hash)
+// Create a unique submission ID
 const generateSubmissionId = () => {
   const now = new Date()
   return 'PD-' + now.getTime().toString(36).toUpperCase()
 }
 
+// Set submitted before emitting to ensure lock-in before rerender
 const submitForm = () => {
-  if (submitted.value || submitting.value) return
+  if (submitted.value) return
 
-  submitting.value = true
+  submitted.value = true
 
   if (!props.formData.responseId) {
     responseId.value = generateSubmissionId()
@@ -83,10 +84,6 @@ const submitForm = () => {
     responseId.value = props.formData.responseId
   }
 
-  submitted.value = true
   emit('submit', props.formData)
 }
-
-
-
 </script>
