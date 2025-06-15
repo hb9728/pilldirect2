@@ -6,7 +6,7 @@
                  :formData="formData" 
                  @next="nextStep" 
                  @back="prevStep" 
-                 @submit="submitForm" />
+                 @submit="handleSubmit" />
     </div>
   </div>
 </template>
@@ -19,6 +19,12 @@ import StepContact from './components/StepContact.vue'
 import StepPillHistory from './components/StepPillHistory.vue'
 import StepVitals from './components/StepVitals.vue'
 import StepMedicalHistory from './components/StepMedicalHistory.vue'
+import StepFinalConsent from './components/StepFinalConsent.vue'
+
+const handleSubmit = (data) => {
+  console.log('Final submission:', data)
+  // TODO: send to backend / Supabase / Zapier / etc.
+}
 
 const steps = [
   StepIntro,
@@ -27,6 +33,7 @@ const steps = [
   StepPillHistory,
   StepVitals,
   StepMedicalHistory,
+  StepFinalConsent,
 ]
 const currentStep = ref(0)
 
@@ -59,6 +66,10 @@ const formData = ref({
   bpDiastolic: '',
   selectApplicable: [],
   extraInfo: '',
+  promoConsent: false,
+  shareConsent: false,
+  updateConsent: false,
+  responseId: ''
 })
 
 function nextStep() {
