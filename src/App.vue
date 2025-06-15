@@ -99,8 +99,6 @@ const handleSubmit = async (data) => {
   console.log('✅ Submitted successfully to Supabase:', submission)
   
   currentStep.value++ 
-
-  submitted.value = true
 }
 
 
