@@ -5,17 +5,17 @@
 
     <div class="space-y-3 mb-6">
       <label class="inline-flex items-start space-x-2">
-        <input type="checkbox" v-model="formData.promoConsent" class="mt-1" />
+        <input type="checkbox" v-model="formData.promoConsent" :disabled="submitted" class="mt-1" />
         <span>I consent to receive occasional emails about relevant health services and promotions. I understand I can unsubscribe at any time.</span>
       </label>
 
       <label class="inline-flex items-start space-x-2">
-        <input type="checkbox" v-model="formData.shareConsent" class="mt-1" required />
+        <input type="checkbox" v-model="formData.shareConsent" :disabled="submitted" class="mt-1" required />
         <span>I consent to my information being securely shared with the dispensing pharmacy for the purpose of reviewing my consultation and safely supplying my medication.</span>
       </label>
 
       <label class="inline-flex items-start space-x-2">
-        <input type="checkbox" v-model="formData.updateConsent" class="mt-1" required />
+        <input type="checkbox" v-model="formData.updateConsent" :disabled="submitted" class="mt-1" required />
         <span>I consent to being contacted via email or telephone with updates regarding the status of my contraceptive consultation, prescription, and delivery.</span>
       </label>
     </div>
