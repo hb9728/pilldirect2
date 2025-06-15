@@ -26,6 +26,41 @@ const handleSubmit = (data) => {
   // TODO: send to backend / Supabase / Zapier / etc.
 }
 
+const formData = ref({
+  firstName: '',
+  lastName: '',
+  sex: '',
+  dob: '',
+  email: '',
+  phone: '',
+  address1: '',
+  address2: '',
+  city: '',
+  postcode: '',
+  currentContraceptive: '',
+  treatmentPreference: '',
+  pillChoice: '',
+  otherPill: '',
+  pillGap: '',
+  extraMeds: '',
+  imperialMetric: '',
+  heightFt: '',
+  heightIn: '',
+  weightSt: '',
+  weightLbs: '',
+  heightCm: '',
+  weightKg: '',
+  bpChecked: '',
+  bpSystolic: '',
+  bpDiastolic: '',
+  selectApplicable: [],
+  extraInfo: '',
+  promoConsent: false,
+  shareConsent: false,
+  updateConsent: false,
+  responseId: ''
+})
+
 const steps = [
   StepIntro,
   StepScreening,
@@ -132,41 +167,6 @@ const validateStep = () => {
   return true
   }
 
-
-const formData = ref({
-  firstName: '',
-  lastName: '',
-  sex: '',
-  dob: '',
-  email: '',
-  phone: '',
-  address1: '',
-  address2: '',
-  city: '',
-  postcode: '',
-  currentContraceptive: '',
-  treatmentPreference: '',
-  pillChoice: '',
-  otherPill: '',
-  pillGap: '',
-  extraMeds: '',
-  imperialMetric: '',
-  heightFt: '',
-  heightIn: '',
-  weightSt: '',
-  weightLbs: '',
-  heightCm: '',
-  weightKg: '',
-  bpChecked: '',
-  bpSystolic: '',
-  bpDiastolic: '',
-  selectApplicable: [],
-  extraInfo: '',
-  promoConsent: false,
-  shareConsent: false,
-  updateConsent: false,
-  responseId: ''
-})
 
 function nextStep() {
   if (!validateStep()) {
