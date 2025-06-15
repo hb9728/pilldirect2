@@ -5,6 +5,8 @@
       NHS Pharmacy Contraceptive Questionnaire
     </h1>
 
+    <p class="mb-4">This online form will guide you through the consultation process for starting or renewing your contraceptive pill.</p>
+
     <h2 class="text-lg font-semibold mb-2">Disclaimer</h2>
     <p class="mb-4">
       <strong>Before We Get Started</strong> we would like to give you some information on the combined contraceptive and mini pills (progesterone-only pill) we offer.
