@@ -16,8 +16,14 @@ import { ref } from 'vue'
 import StepIntro from './components/StepIntro.vue'
 import StepScreening from './components/StepScreening.vue'
 import StepContact from './components/StepContact.vue'
+import StepPillHistory from './components/StepPillHistory.vue'
 
-const steps = [StepIntro, StepScreening, StepContact]
+const steps = [
+  StepIntro,
+  StepScreening,
+  StepContact,
+  StepPillHistory
+]
 const currentStep = ref(0)
 
 const formData = ref({
