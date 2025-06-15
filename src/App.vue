@@ -14,6 +14,7 @@
 </template>
 
 <script setup>
+import { provide } from 'vue'
 import { ref } from 'vue'
 import StepIntro from './components/StepIntro.vue'
 import StepScreening from './components/StepScreening.vue'
@@ -147,6 +148,7 @@ const formData = ref({
   updateConsent: false,
   responseId: ''
 })
+  provide('formData', formData.value)
 
 const steps = [
   StepIntro,
