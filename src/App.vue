@@ -25,7 +25,6 @@ const formData = ref({
   lastName: '',
   sex: '',
   dob: '',
-  age: '',
   email: '',
   phone: '',
   address1: '',
