@@ -21,7 +21,7 @@ import StepVitals from './components/StepVitals.vue'
 import StepMedicalHistory from './components/StepMedicalHistory.vue'
 import StepFinalConsent from './components/StepFinalConsent.vue'
 
-const emptyToNull = (val) => val === '' ? null : val
+const emptyToNull = (val) => val === '' || val === undefined ? null : val
   
 const handleSubmit = async (data) => {
   if (!validateStep()) {
