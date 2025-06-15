@@ -30,7 +30,13 @@ const formData = ref({
   address1: '',
   address2: '',
   city: '',
-  postcode: ''
+  postcode: '',
+  currentContraceptive: '',
+  treatmentPreference: '',
+  pillChoice: '',
+  otherPill: '',
+  pillGap: '',
+  extraMeds: ''
 })
 
 function nextStep() {
