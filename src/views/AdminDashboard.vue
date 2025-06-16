@@ -77,39 +77,40 @@
     </table>
 
     <!-- Pagination -->
-    <div v-if="totalPages > 1" class="flex justify-between items-center mt-4 text-sm">
-      <div class="space-x-2">
-        <button
-          @click="changePage(currentPage - 1)"
-          :disabled="currentPage === 1"
-          class="px-3 py-1 border rounded disabled:opacity-50"
-        >Prev</button>
+<div class="flex items-center justify-between mt-4 flex-wrap gap-2">
+  <div v-if="totalPages > 1" class="space-x-2">
+    <button
+      :disabled="currentPage === 1"
+      @click="currentPage--"
+      class="px-3 py-1 border rounded disabled:opacity-50"
+    >Prev</button>
 
-        <button
-          v-for="page in totalPages"
-          :key="page"
-          @click="changePage(page)"
-          class="px-3 py-1 border rounded"
-          :class="{ 'bg-blue-100': currentPage === page }"
-        >{{ page }}</button>
+    <button
+      v-for="page in totalPages"
+      :key="page"
+      @click="currentPage = page"
+      class="px-3 py-1 border rounded"
+      :class="{ 'bg-blue-100': currentPage === page }"
+    >{{ page }}</button>
 
-        <button
-          @click="changePage(currentPage + 1)"
-          :disabled="currentPage === totalPages"
-          class="px-3 py-1 border rounded disabled:opacity-50"
-        >Next</button>
-      </div>
+    <button
+      :disabled="currentPage === totalPages"
+      @click="currentPage++"
+      class="px-3 py-1 border rounded disabled:opacity-50"
+    >Next</button>
+  </div>
 
-      <div>
-        Show
-        <select v-model.number="itemsPerPage" class="ml-1 border rounded p-1">
-          <option :value="10">10</option>
-          <option :value="25">25</option>
-          <option :value="50">50</option>
-        </select>
-        per page
-      </div>
-    </div>
+  <div class="text-sm ml-auto">
+    Show
+    <select v-model="itemsPerPage" class="border rounded p-1 text-sm ml-1">
+      <option :value="10">10</option>
+      <option :value="25">25</option>
+      <option :value="50">50</option>
+    </select>
+    per page
+  </div>
+</div>
+
 
     <!-- Inline Submission View -->
     <div v-if="selectedSubmission" class="mt-8 bg-white p-4 rounded shadow">
