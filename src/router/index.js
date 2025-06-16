@@ -3,7 +3,7 @@ import AdminLogin from '../views/AdminLogin.vue'
 import FormView from '../App.vue' // Your form lives in App.vue
 
 const routes = [
-  { path: '/', component: FormView },
+  { path: '/', component: App },
   { path: '/admin/login', component: AdminLogin }
 ]
 
