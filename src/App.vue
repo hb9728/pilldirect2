@@ -1,4 +1,4 @@
- <!-- <template>
+<template>
   <div class="min-h-screen bg-gray-50 text-gray-800 p-6">
     <div class="max-w-2xl mx-auto bg-white rounded-lg shadow-md p-4">
       <component
@@ -12,34 +12,6 @@
     </div>
   </div>
 </template>
--->
-
-
-<template>
-  <div>
-    <router-view v-slot="{ Component }">
-      <!-- Only show router component if /admin route -->
-      <component :is="Component" v-if="isAdminRoute" />
-
-      <!-- Otherwise show the form -->
-      <div v-else>
-        <div class="min-h-screen bg-gray-50 text-gray-800 p-6">
-          <div class="max-w-2xl mx-auto bg-white rounded-lg shadow-md p-4">
-            <component
-              :is="steps[currentStep]"
-              :formData="formData"
-              :submitted="submitted"
-              @next="nextStep"
-              @back="prevStep"
-              @submit="handleSubmit"
-            />
-          </div>
-        </div>
-      </div>
-    </router-view>
-  </div>
-</template>
-
 
 
 
