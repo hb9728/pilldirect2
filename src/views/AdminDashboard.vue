@@ -99,7 +99,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { supabase } from '../supabase'
 
@@ -166,4 +166,12 @@ const paginatedSubmissions = computed(() => {
 const viewSubmission = (entry) => {
   selectedSubmission.value = entry
 }
+
+  watch([filteredSubmissions, itemsPerPage], () => {
+  const total = Math.ceil(filteredSubmissions.value.length / itemsPerPage.value)
+  if (currentPage.value > total) {
+    currentPage.value = Math.max(1, total)
+  }
+})
+
 </script>
