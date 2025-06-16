@@ -20,14 +20,14 @@
 <script setup>
 import { provide } from 'vue'
 import { ref } from 'vue'
-import StepIntro from './components/StepIntro.vue'
-import StepScreening from './components/StepScreening.vue'
-import StepContact from './components/StepContact.vue'
-import StepPillHistory from './components/StepPillHistory.vue'
-import StepVitals from './components/StepVitals.vue'
-import StepMedicalHistory from './components/StepMedicalHistory.vue'
-import StepFinalConsent from './components/StepFinalConsent.vue'
-import StepThankYou from './components/StepThankYou.vue'
+import StepIntro from '../components/StepIntro.vue'
+import StepScreening from '../components/StepScreening.vue'
+import StepContact from '../components/StepContact.vue'
+import StepPillHistory from '../components/StepPillHistory.vue'
+import StepVitals from '../components/StepVitals.vue'
+import StepMedicalHistory from '../components/StepMedicalHistory.vue'
+import StepFinalConsent from '../components/StepFinalConsent.vue'
+import StepThankYou from '../components/StepThankYou.vue'
 
 
 
