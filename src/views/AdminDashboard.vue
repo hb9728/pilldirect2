@@ -76,6 +76,7 @@
           <option :value="25">25</option>
           <option :value="50">50</option>
         </select>
+        per page
       </div>
     </div>
 
@@ -159,22 +160,18 @@ const totalPages = computed(() => {
 
 const paginatedSubmissions = computed(() => {
   const start = (currentPage.value - 1) * itemsPerPage.value
-  const end = start + itemsPerPage.value
-  return filteredSubmissions.value.slice(start, end)
+  return filteredSubmissions.value.slice(start, start + itemsPerPage.value)
 })
-
 
 const viewSubmission = (entry) => {
   selectedSubmission.value = entry
 }
 
-watch([filteredSubmissions, itemsPerPage], () => {
-  const maxPage = Math.ceil(filteredSubmissions.value.length / itemsPerPage.value)
-  if (currentPage.value > maxPage) {
-    currentPage.value = Math.max(1, maxPage)
+  watch([filteredSubmissions, itemsPerPage], () => {
+  const total = Math.ceil(filteredSubmissions.value.length / itemsPerPage.value)
+  if (currentPage.value > total) {
+    currentPage.value = Math.max(1, total)
   }
-})
-
 })
 
 </script>
