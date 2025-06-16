@@ -24,6 +24,7 @@
           <th class="p-2 border-b text-left">Email</th>
           <th class="p-2 border-b text-left">Response ID</th>
           <th class="p-2 border-b text-left">Submitted</th>
+          <th class="p-2 border-b text-left">Status</th>
           <th class="p-2 border-b text-left">Action</th>
         </tr>
       </thead>
@@ -38,6 +39,7 @@
           <td class="p-2">{{ submission.email }}</td>
           <td class="p-2">{{ submission.responseId }}</td>
           <td class="p-2">{{ formatDateTime(submission.created_at) }}</td>
+          <td class="p-2">{{ submission.status || 'Pending' }}</td>
           <td class="p-2">
             <button @click="viewSubmission(submission)" class="text-blue-600 hover:underline">View</button>
           </td>
@@ -92,6 +94,14 @@
         <div><strong>Sex:</strong> {{ selectedSubmission.sex }}</div>
         <div><strong>Submitted:</strong> {{ formatDateTime(selectedSubmission.created_at) }}</div>
         <div><strong>Response ID:</strong> {{ selectedSubmission.responseId }}</div>
+        <div>
+  <strong>Status:</strong>
+  <select v-model="selectedSubmission.status" @change="updateStatus(selectedSubmission)">
+    <option>Pending</option>
+    <option>Complete</option>
+    <option>Rejected</option>
+  </select>
+</div>
       </div>
     </div>
   </div>
