@@ -3,13 +3,11 @@ import FormView from '../views/FormView.vue'
 import AdminLogin from '../views/AdminLogin.vue'
 
 const routes = [
-  { path: '/', component: FormView },
-  { path: '/admin/login', component: AdminLogin }
+  { path: '/', component: FormView },              // root = your form view
+  { path: '/admin/login', component: AdminLogin }  // admin login route
 ]
 
-const router = createRouter({
+export default createRouter({
   history: createWebHistory(),
-  routes
+  routes,
 })
-
-export default router
