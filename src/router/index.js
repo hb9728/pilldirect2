@@ -12,3 +12,18 @@ const router = createRouter({
 })
 
 export default router
+
+import FormView from '../App.vue'
+
+const routes = [
+  {
+    path: '/',
+    name: 'Form',
+    component: FormView
+  },
+  {
+    path: '/admin/login',
+    name: 'AdminLogin',
+    component: () => import('../components/AdminLogin.vue')
+  }
+]
