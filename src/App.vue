@@ -31,11 +31,6 @@ import StepThankYou from './components/StepThankYou.vue'
 
 
 
-import { useRoute } from 'vue-router'
-
-const route = useRoute()
-const isAdminRoute = computed(() => route.path.startsWith('/admin'))
-
 // const emptyToNull = (val) => val === '' || val === undefined ? null : val
 
 
