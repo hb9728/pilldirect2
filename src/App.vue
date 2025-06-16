@@ -50,8 +50,6 @@ import StepThankYou from './components/StepThankYou.vue'
 
 
 
-  
-import { ref, computed } from 'vue'
 import { useRoute } from 'vue-router'
 const route = useRoute()
 
