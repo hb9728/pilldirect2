@@ -76,7 +76,6 @@
           <option :value="25">25</option>
           <option :value="50">50</option>
         </select>
-        per page
       </div>
     </div>
 
