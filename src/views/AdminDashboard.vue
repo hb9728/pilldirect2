@@ -96,7 +96,7 @@
         <div><strong>Response ID:</strong> {{ selectedSubmission.responseId }}</div>
         <div>
   <strong>Status:</strong>
-  <select v-model="selectedSubmission.status" @change="updateStatus(selectedSubmission)class="ml-2 border border-blue-500 rounded px-2 py-1 text-sm font-medium text-blue-700 bg-blue-50 hover:bg-blue-100"">
+  <select v-model="selectedSubmission.status" @change="updateStatus(selectedSubmission)">
     <option>Pending</option>
     <option>Complete</option>
     <option>Rejected</option>
