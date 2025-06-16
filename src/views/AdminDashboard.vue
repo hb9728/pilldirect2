@@ -43,6 +43,7 @@
           <td class="p-2">{{ submission.dob }}</td>
           <td class="p-2">{{ submission.email }}</td>
           <td class="p-2">{{ submission.responseId }}</td>
+          <td class="p-2">{{ formatDateTime(submission.created_at) }}</td>
           <td class="p-2">
             <button @click="viewSubmission(submission)" class="text-blue-600 hover:underline">View</button>
           </td>
@@ -69,11 +70,24 @@ const selectedSubmission = ref(null)
 const sortKey = ref('created_at')
 const sortOrder = ref('desc') // default: latest first
 
+const formatDateTime = (isoString) => {
+  if (!isoString) return ''
+  const date = new Date(isoString)
+  return date.toLocaleString('en-GB', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  })
+}
+
 const columns = [
   { key: 'name', label: 'Name' },
   { key: 'dob', label: 'Date of Birth' },
   { key: 'email', label: 'Email' },
-  { key: 'responseId', label: 'Response ID' }
+  { key: 'responseId', label: 'Response ID' },
+  { key: 'created_at', label: 'Submitted' }
 ]
 
 const logout = async () => {
