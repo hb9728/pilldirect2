@@ -16,8 +16,29 @@
 
 
 <template>
-  <router-view />
+  <div>
+    <router-view v-slot="{ Component }">
+      <component :is="Component" v-if="Component" />
+    </router-view>
+
+    <!-- Fallback for when no router matches -->
+    <div v-if="!$route.name">
+      <div class="min-h-screen bg-gray-50 text-gray-800 p-6">
+        <div class="max-w-2xl mx-auto bg-white rounded-lg shadow-md p-4">
+          <component
+            :is="steps[currentStep]"
+            :formData="formData"
+            :submitted="submitted"
+            @next="nextStep"
+            @back="prevStep"
+            @submit="handleSubmit"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
+
 
 
 <script setup>
