@@ -40,7 +40,7 @@ import StepThankYou from '../components/StepThankYou.vue'
 
 
   
-import { supabase } from './supabase'
+import { supabase } from '../supabase'
 
 const handleSubmit = async (data) => {
   if (!validateStep()) {
