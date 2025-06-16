@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "vue": "^3.3.4",
-    "@supabase/supabase-js": "^2.43.3"
+    "@supabase/supabase-js": "^2.43.3",
     "vue-router": "^4.2.5"
   },
   "devDependencies": {
