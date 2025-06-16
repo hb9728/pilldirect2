@@ -1,10 +1,9 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import AdminLogin from '../views/AdminLogin.vue'
-import FormView from '../App.vue' // Your form lives in App.vue
 
 const routes = [
-  { path: '/', component: App },
-  { path: '/admin/login', component: AdminLogin }
+  { path: '/admin/login', name: 'AdminLogin', component: AdminLogin },
+  // You can add more routes later like /admin/dashboard
 ]
 
 const router = createRouter({
