@@ -18,26 +18,27 @@
 <template>
   <div>
     <router-view v-slot="{ Component }">
+      <!-- If route is matched, show admin component -->
       <component :is="Component" v-if="Component" />
-    </router-view>
-
-    <!-- Show form when route is not matched (i.e. we're not on /admin/login) -->
-    <div v-if="!$route.name">
-      <div class="min-h-screen bg-gray-50 text-gray-800 p-6">
-        <div class="max-w-2xl mx-auto bg-white rounded-lg shadow-md p-4">
-          <component
-            :is="steps[currentStep]"
-            :formData="formData"
-            :submitted="submitted"
-            @next="nextStep"
-            @back="prevStep"
-            @submit="handleSubmit"
-          />
+      <!-- If no route matched, show the main form -->
+      <div v-else>
+        <div class="min-h-screen bg-gray-50 text-gray-800 p-6">
+          <div class="max-w-2xl mx-auto bg-white rounded-lg shadow-md p-4">
+            <component
+              :is="steps[currentStep]"
+              :formData="formData"
+              :submitted="submitted"
+              @next="nextStep"
+              @back="prevStep"
+              @submit="handleSubmit"
+            />
+          </div>
         </div>
       </div>
-    </div>
+    </router-view>
   </div>
 </template>
+
 
 
 
