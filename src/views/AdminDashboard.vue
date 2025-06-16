@@ -34,26 +34,15 @@
         </tr>
       </thead>
       <tbody>
-        <tr
+       <tr
           v-for="submission in sortedSubmissions"
           :key="submission.responseId"
-          class="hover:bg-gray-50"
         >
-          <td
-            v-for="column in columns"
-            :key="column.key"
-            class="p-2"
-          >
-            <span v-if="column.key === 'name'">
-              {{ submission.firstName }} {{ submission.lastName }}
-            </span>
-            <span v-else-if="column.key === 'created_at'">
-              {{ formatDateTime(submission.created_at) }}
-            </span>
-            <span v-else>
-              {{ submission[column.key] }}
-            </span>
-          </td>
+          <td class="p-2">{{ submission.firstName }} {{ submission.lastName }}</td>
+          <td class="p-2">{{ submission.dob }}</td>
+          <td class="p-2">{{ submission.email }}</td>
+          <td class="p-2">{{ submission.responseId }}</td>
+          <td class="p-2">{{ formatDateTime(submission.created_at) }}</td>
           <td class="p-2">
             <button @click="viewSubmission(submission)" class="text-blue-600 hover:underline">View</button>
           </td>
