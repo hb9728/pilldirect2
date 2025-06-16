@@ -187,4 +187,18 @@ watch([filteredSubmissions, itemsPerPage], () => {
 const viewSubmission = (entry) => {
   selectedSubmission.value = entry
 }
+
+  const updateStatus = async (entry) => {
+  const { error } = await supabase
+    .from('submissions')
+    .update({ status: entry.status })
+    .eq('responseId', entry.responseId)
+
+  if (error) {
+    console.error('Error updating status:', error.message)
+  } else {
+    console.log('✅ Status updated')
+  }
+}
+
 </script>
