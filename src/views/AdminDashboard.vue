@@ -124,17 +124,33 @@ const filteredSubmissions = computed(() => {
 })
 
 const sortedSubmissions = computed(() => {
-  return [...filteredSubmissions.value].sort((a, b) => {
-    const aVal = a[sortKey.value] || ''
-    const bVal = b[sortKey.value] || ''
+  if (!sortKey.value) return filteredSubmissions.value
 
-    if (sortOrder.value === 'asc') {
-      return aVal > bVal ? 1 : -1
-    } else {
-      return aVal < bVal ? 1 : -1
+  return [...filteredSubmissions.value].sort((a, b) => {
+    const aVal = a[sortKey.value]
+    const bVal = b[sortKey.value]
+
+    // Handle null or undefined values
+    if (aVal == null) return 1
+    if (bVal == null) return -1
+
+    // Special case: sort by created_at (date)
+    if (sortKey.value === 'created_at') {
+      return sortOrder.value === 'asc'
+        ? new Date(aVal) - new Date(bVal)
+        : new Date(bVal) - new Date(aVal)
     }
+
+    // Default: string or number comparison
+    const aStr = aVal.toString().toLowerCase()
+    const bStr = bVal.toString().toLowerCase()
+
+    if (aStr < bStr) return sortOrder.value === 'asc' ? -1 : 1
+    if (aStr > bStr) return sortOrder.value === 'asc' ? 1 : -1
+    return 0
   })
 })
+
 
 const sortBy = (key) => {
   if (sortKey.value === key) {
