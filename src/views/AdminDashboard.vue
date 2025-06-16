@@ -230,6 +230,13 @@ watch([filteredSubmissions, itemsPerPage], () => {
   }
 })
 
+  watch(currentPage, (newPage) => {
+  const total = Math.ceil(filteredSubmissions.value.length / itemsPerPage.value)
+  if (newPage < 1) currentPage.value = 1
+  else if (newPage > total) currentPage.value = total
+})
+
+
 const viewSubmission = (entry) => {
   selectedSubmission.value = entry
 }
