@@ -19,24 +19,19 @@
     <table v-else class="w-full bg-white shadow rounded">
       <thead>
         <tr>
-          <th
-            v-for="column in columns"
-            :key="column.key"
-            @click="sortBy(column.key)"
-            class="text-left p-2 border-b cursor-pointer hover:bg-gray-100"
-          >
-            {{ column.label }}
-            <span v-if="sortKey === column.key">
-              {{ sortOrder === 'asc' ? '▲' : '▼' }}
-            </span>
-          </th>
-          <th class="p-2 border-b">Action</th>
+          <th class="text-left p-2 border-b">Name</th>
+          <th class="text-left p-2 border-b">Date of Birth</th>
+          <th class="text-left p-2 border-b">Email</th>
+          <th class="text-left p-2 border-b">Response ID</th>
+          <th class="text-left p-2 border-b">Submitted</th>
+          <th class="text-left p-2 border-b">Action</th>
         </tr>
       </thead>
       <tbody>
-       <tr
-          v-for="submission in sortedSubmissions"
+        <tr
+          v-for="submission in filteredSubmissions"
           :key="submission.responseId"
+          class="hover:bg-gray-50"
         >
           <td class="p-2">{{ submission.firstName }} {{ submission.lastName }}</td>
           <td class="p-2">{{ submission.dob }}</td>
@@ -66,8 +61,6 @@ const router = useRouter()
 const submissions = ref([])
 const searchQuery = ref('')
 const selectedSubmission = ref(null)
-const sortKey = ref('created_at')
-const sortOrder = ref('desc') // default: latest first
 
 const formatDateTime = (isoString) => {
   if (!isoString) return ''
@@ -81,15 +74,6 @@ const formatDateTime = (isoString) => {
   })
 }
 
-const columns = [
-  { key: 'lastName', label: 'Name' }, // use lastName (or firstName if preferred)
-  { key: 'dob', label: 'Date of Birth' },
-  { key: 'email', label: 'Email' },
-  { key: 'responseId', label: 'Response ID' },
-  { key: 'created_at', label: 'Submitted' }
-]
-
-
 const logout = async () => {
   await supabase.auth.signOut()
   router.push('/admin/login')
@@ -99,7 +83,7 @@ const fetchSubmissions = async () => {
   const { data, error } = await supabase
     .from('submissions')
     .select('*')
-    .order('created_at', { ascending: false })
+    .order('created_at', { ascending: false }) // always newest first
 
   if (error) {
     console.error('Error loading submissions:', error.message)
@@ -113,8 +97,8 @@ onMounted(fetchSubmissions)
 const filteredSubmissions = computed(() => {
   if (!searchQuery.value) return submissions.value
 
+  const q = searchQuery.value.toLowerCase()
   return submissions.value.filter((entry) => {
-    const q = searchQuery.value.toLowerCase()
     return (
       (entry.firstName + ' ' + entry.lastName).toLowerCase().includes(q) ||
       (entry.dob || '').toLowerCase().includes(q) ||
@@ -122,44 +106,6 @@ const filteredSubmissions = computed(() => {
     )
   })
 })
-
-const sortedSubmissions = computed(() => {
-  if (!sortKey.value) return filteredSubmissions.value
-
-  return [...filteredSubmissions.value].sort((a, b) => {
-    const aVal = a[sortKey.value]
-    const bVal = b[sortKey.value]
-
-    // Handle null or undefined values
-    if (aVal == null) return 1
-    if (bVal == null) return -1
-
-    // Special case: sort by created_at (date)
-    if (sortKey.value === 'created_at') {
-      return sortOrder.value === 'asc'
-        ? new Date(aVal) - new Date(bVal)
-        : new Date(bVal) - new Date(aVal)
-    }
-
-    // Default: string or number comparison
-    const aStr = aVal.toString().toLowerCase()
-    const bStr = bVal.toString().toLowerCase()
-
-    if (aStr < bStr) return sortOrder.value === 'asc' ? -1 : 1
-    if (aStr > bStr) return sortOrder.value === 'asc' ? 1 : -1
-    return 0
-  })
-})
-
-
-const sortBy = (key) => {
-  if (sortKey.value === key) {
-    sortOrder.value = sortOrder.value === 'asc' ? 'desc' : 'asc'
-  } else {
-    sortKey.value = key
-    sortOrder.value = 'asc'
-  }
-}
 
 const viewSubmission = (entry) => {
   selectedSubmission.value = entry
