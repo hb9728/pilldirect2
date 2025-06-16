@@ -12,31 +12,19 @@
       class="w-full mb-4 p-2 border border-gray-300 rounded"
     />
 
-    <div v-if="filteredSubmissions.length === 0" class="text-gray-500">
+    <div v-if="paginatedSubmissions.length === 0" class="text-gray-500">
       No submissions found.
     </div>
 
-    <div class="mb-4 flex justify-between items-center">
-      <span class="text-sm text-gray-700">Showing page {{ currentPage }} of {{ totalPages }}</span>
-      <label class="text-sm">
-        Show:
-        <select v-model.number="perPage" class="ml-2 border rounded px-2 py-1">
-          <option :value="10">10</option>
-          <option :value="20">20</option>
-          <option :value="50">50</option>
-        </select>
-      </label>
-    </div>
-
-    <table v-if="paginatedSubmissions.length > 0" class="w-full bg-white shadow rounded">
+    <table v-else class="w-full bg-white shadow rounded text-sm">
       <thead>
-        <tr>
-          <th class="text-left p-2 border-b">Name</th>
-          <th class="text-left p-2 border-b">DOB</th>
-          <th class="text-left p-2 border-b">Email</th>
-          <th class="text-left p-2 border-b">Response ID</th>
-          <th class="text-left p-2 border-b">Submitted</th>
-          <th class="p-2 border-b">Action</th>
+        <tr class="bg-gray-100">
+          <th class="p-2 border-b text-left">Name</th>
+          <th class="p-2 border-b text-left">DOB</th>
+          <th class="p-2 border-b text-left">Email</th>
+          <th class="p-2 border-b text-left">Response ID</th>
+          <th class="p-2 border-b text-left">Submitted</th>
+          <th class="p-2 border-b text-left">Action</th>
         </tr>
       </thead>
       <tbody>
@@ -57,35 +45,54 @@
       </tbody>
     </table>
 
-    <div class="mt-4 flex justify-between items-center" v-if="totalPages > 1">
-      <button
-        :disabled="currentPage === 1"
-        @click="currentPage--"
-        class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300"
-      >
-        Prev
-      </button>
-      <button
-        :disabled="currentPage === totalPages"
-        @click="currentPage++"
-        class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300"
-      >
-        Next
-      </button>
+    <!-- Pagination Controls -->
+    <div v-if="totalPages > 1" class="flex items-center justify-between mt-4">
+      <div class="space-x-2">
+        <button
+          :disabled="currentPage === 1"
+          @click="currentPage--"
+          class="px-3 py-1 border rounded disabled:opacity-50"
+        >Prev</button>
+
+        <button
+          v-for="page in totalPages"
+          :key="page"
+          @click="currentPage = page"
+          class="px-3 py-1 border rounded"
+          :class="{ 'bg-blue-100': currentPage === page }"
+        >{{ page }}</button>
+
+        <button
+          :disabled="currentPage === totalPages"
+          @click="currentPage++"
+          class="px-3 py-1 border rounded disabled:opacity-50"
+        >Next</button>
+      </div>
+
+      <div class="text-sm">
+        Show
+        <select v-model="itemsPerPage" class="border rounded p-1 text-sm ml-1">
+          <option :value="10">10</option>
+          <option :value="25">25</option>
+          <option :value="50">50</option>
+        </select>
+        per page
+      </div>
     </div>
 
-    <div v-if="selectedSubmission" class="mt-10 bg-white p-6 rounded shadow-md">
-      <h3 class="text-lg font-semibold mb-4">Submission Details</h3>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+    <!-- Inline View Panel -->
+    <div v-if="selectedSubmission" class="mt-8 bg-white p-4 rounded shadow">
+      <h3 class="text-lg font-semibold mb-2">Submission Details</h3>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm text-gray-800">
         <div><strong>Name:</strong> {{ selectedSubmission.firstName }} {{ selectedSubmission.lastName }}</div>
         <div><strong>DOB:</strong> {{ selectedSubmission.dob }}</div>
         <div><strong>Email:</strong> {{ selectedSubmission.email }}</div>
         <div><strong>Phone:</strong> {{ selectedSubmission.phone }}</div>
-        <div><strong>Address:</strong> {{ selectedSubmission.address1 }} {{ selectedSubmission.address2 }}</div>
-        <div><strong>Postcode:</strong> {{ selectedSubmission.postcode }}</div>
-        <div><strong>Response ID:</strong> {{ selectedSubmission.responseId }}</div>
+        <div><strong>Address:</strong> {{ selectedSubmission.address1 }} {{ selectedSubmission.address2 }}, {{ selectedSubmission.city }}, {{ selectedSubmission.postcode }}</div>
+        <div><strong>Sex:</strong> {{ selectedSubmission.sex }}</div>
         <div><strong>Submitted:</strong> {{ formatDateTime(selectedSubmission.created_at) }}</div>
-        <!-- Add more fields as needed -->
+        <div><strong>Response ID:</strong> {{ selectedSubmission.responseId }}</div>
+        <!-- Add more fields here as needed -->
       </div>
     </div>
   </div>
@@ -93,20 +100,31 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import { supabase } from '../supabase'
 import { useRouter } from 'vue-router'
+import { supabase } from '../supabase'
 
 const router = useRouter()
 const submissions = ref([])
-const searchQuery = ref('')
 const selectedSubmission = ref(null)
-
-const perPage = ref(10)
+const searchQuery = ref('')
 const currentPage = ref(1)
+const itemsPerPage = ref(10)
 
 const logout = async () => {
   await supabase.auth.signOut()
   router.push('/admin/login')
+}
+
+const formatDateTime = (isoString) => {
+  if (!isoString) return ''
+  const date = new Date(isoString)
+  return date.toLocaleString('en-GB', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  })
 }
 
 const fetchSubmissions = async () => {
@@ -126,9 +144,8 @@ onMounted(fetchSubmissions)
 
 const filteredSubmissions = computed(() => {
   if (!searchQuery.value) return submissions.value
-
+  const q = searchQuery.value.toLowerCase()
   return submissions.value.filter((entry) => {
-    const q = searchQuery.value.toLowerCase()
     return (
       (entry.firstName + ' ' + entry.lastName).toLowerCase().includes(q) ||
       (entry.dob || '').toLowerCase().includes(q) ||
@@ -137,28 +154,16 @@ const filteredSubmissions = computed(() => {
   })
 })
 
-const paginatedSubmissions = computed(() => {
-  const start = (currentPage.value - 1) * perPage.value
-  return filteredSubmissions.value.slice(start, start + perPage.value)
+const totalPages = computed(() => {
+  return Math.ceil(filteredSubmissions.value.length / itemsPerPage.value)
 })
 
-const totalPages = computed(() => {
-  return Math.ceil(filteredSubmissions.value.length / perPage.value)
+const paginatedSubmissions = computed(() => {
+  const start = (currentPage.value - 1) * itemsPerPage.value
+  return filteredSubmissions.value.slice(start, start + itemsPerPage.value)
 })
 
 const viewSubmission = (entry) => {
   selectedSubmission.value = entry
-}
-
-const formatDateTime = (isoString) => {
-  if (!isoString) return ''
-  const date = new Date(isoString)
-  return date.toLocaleString('en-GB', {
-    day: '2-digit',
-    month: 'short',
-    year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit'
-  })
 }
 </script>
