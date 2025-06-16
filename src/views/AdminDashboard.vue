@@ -1,57 +1,58 @@
 <template>
   <div class="min-h-screen bg-gray-50 p-6">
     <div class="flex justify-between items-center mb-6">
-      <h2 class="text-2xl font-bold">Patient Submissions</h2>
-      <button @click="logout" class="btn bg-red-500 hover:bg-red-600 text-white">Logout</button>
+      <h2 class="text-2xl font-semibold">Submissions Dashboard</h2>
+      <button @click="logout" class="text-red-600 hover:underline">Logout</button>
     </div>
 
-    <table class="min-w-full bg-white shadow rounded overflow-hidden">
+    <input
+      v-model="searchQuery"
+      type="text"
+      placeholder="Search by name, DOB, or ID..."
+      class="w-full mb-4 p-2 border border-gray-300 rounded"
+    />
+
+    <div v-if="filteredSubmissions.length === 0" class="text-gray-500">
+      No submissions found.
+    </div>
+
+    <table v-else class="w-full bg-white shadow rounded">
       <thead>
-        <tr class="bg-gray-200 text-left">
+        <tr>
           <th
-            v-for="col in columns"
-            :key="col.key"
-            class="cursor-pointer px-4 py-2"
-            @click="sortBy(col.key)"
+            v-for="column in columns"
+            :key="column.key"
+            @click="sortBy(column.key)"
+            class="text-left p-2 border-b cursor-pointer hover:bg-gray-100"
           >
-            {{ col.label }}
-            <span v-if="sortColumn === col.key">
-              {{ sortAsc ? '↑' : '↓' }}
+            {{ column.label }}
+            <span v-if="sortKey === column.key">
+              {{ sortOrder === 'asc' ? '▲' : '▼' }}
             </span>
           </th>
-          <th class="px-4 py-2">Actions</th>
+          <th class="p-2 border-b">Action</th>
         </tr>
       </thead>
       <tbody>
         <tr
           v-for="submission in sortedSubmissions"
           :key="submission.responseId"
-          class="border-b hover:bg-gray-50"
+          class="hover:bg-gray-50"
         >
-          <td class="px-4 py-2">{{ submission.responseId }}</td>
-          <td class="px-4 py-2">{{ submission.firstName }}</td>
-          <td class="px-4 py-2">{{ submission.lastName }}</td>
-          <td class="px-4 py-2">{{ submission.dob }}</td>
-          <td class="px-4 py-2">{{ submission.email }}</td>
-          <td class="px-4 py-2">{{ submission.submitted_at?.split('T')[0] }}</td>
-          <td class="px-4 py-2">
-            <button @click="selectSubmission(submission)" class="text-blue-600 hover:underline">
-              View
-            </button>
+          <td class="p-2">{{ submission.firstName }} {{ submission.lastName }}</td>
+          <td class="p-2">{{ submission.dob }}</td>
+          <td class="p-2">{{ submission.email }}</td>
+          <td class="p-2">{{ submission.responseId }}</td>
+          <td class="p-2">
+            <button @click="viewSubmission(submission)" class="text-blue-600 hover:underline">View</button>
           </td>
         </tr>
       </tbody>
     </table>
 
-    <!-- Detail Panel -->
-    <div v-if="selectedSubmission" class="mt-6 p-4 bg-white rounded shadow">
+    <div v-if="selectedSubmission" class="mt-8 bg-white p-4 rounded shadow">
       <h3 class="text-lg font-semibold mb-2">Submission Details</h3>
-      <pre class="text-sm bg-gray-100 p-3 rounded overflow-auto max-h-96">
-{{ selectedSubmission }}
-      </pre>
-      <button @click="selectedSubmission = null" class="mt-2 text-blue-600 hover:underline">
-        Close
-      </button>
+      <pre class="overflow-auto text-sm text-gray-800">{{ selectedSubmission }}</pre>
     </div>
   </div>
 </template>
@@ -63,63 +64,74 @@ import { useRouter } from 'vue-router'
 
 const router = useRouter()
 const submissions = ref([])
+const searchQuery = ref('')
 const selectedSubmission = ref(null)
-const sortColumn = ref('submitted_at')
-const sortAsc = ref(false)
+const sortKey = ref('created_at')
+const sortOrder = ref('desc') // default: latest first
 
 const columns = [
-  { key: 'responseId', label: 'Response ID' },
-  { key: 'firstName', label: 'First Name' },
-  { key: 'lastName', label: 'Last Name' },
+  { key: 'name', label: 'Name' },
   { key: 'dob', label: 'Date of Birth' },
   { key: 'email', label: 'Email' },
-  { key: 'submitted_at', label: 'Submission Date' }
+  { key: 'responseId', label: 'Response ID' }
 ]
-
-const fetchSubmissions = async () => {
-  const { data, error } = await supabase
-    .from('submissions')
-    .select('*')
-    .order('submitted_at', { ascending: false })
-
-  if (!error) submissions.value = data
-  else console.error('❌ Failed to fetch submissions:', error)
-}
-
-const sortedSubmissions = computed(() => {
-  return [...submissions.value].sort((a, b) => {
-    const aVal = a[sortColumn.value]
-    const bVal = b[sortColumn.value]
-    return sortAsc.value
-      ? (aVal > bVal ? 1 : -1)
-      : (aVal < bVal ? 1 : -1)
-  })
-})
-
-const sortBy = (column) => {
-  if (sortColumn.value === column) {
-    sortAsc.value = !sortAsc.value
-  } else {
-    sortColumn.value = column
-    sortAsc.value = true
-  }
-}
-
-const selectSubmission = (submission) => {
-  selectedSubmission.value = submission
-}
 
 const logout = async () => {
   await supabase.auth.signOut()
   router.push('/admin/login')
 }
 
-onMounted(fetchSubmissions)
-</script>
+const fetchSubmissions = async () => {
+  const { data, error } = await supabase
+    .from('submissions')
+    .select('*')
+    .order('created_at', { ascending: false })
 
-<style scoped>
-pre {
-  white-space: pre-wrap;
-  word-wrap: break-word;
+  if (error) {
+    console.error('Error loading submissions:', error.message)
+  } else {
+    submissions.value = data
+  }
 }
-</style>
+
+onMounted(fetchSubmissions)
+
+const filteredSubmissions = computed(() => {
+  if (!searchQuery.value) return submissions.value
+
+  return submissions.value.filter((entry) => {
+    const q = searchQuery.value.toLowerCase()
+    return (
+      (entry.firstName + ' ' + entry.lastName).toLowerCase().includes(q) ||
+      (entry.dob || '').toLowerCase().includes(q) ||
+      (entry.responseId || '').toLowerCase().includes(q)
+    )
+  })
+})
+
+const sortedSubmissions = computed(() => {
+  return [...filteredSubmissions.value].sort((a, b) => {
+    const aVal = a[sortKey.value] || ''
+    const bVal = b[sortKey.value] || ''
+
+    if (sortOrder.value === 'asc') {
+      return aVal > bVal ? 1 : -1
+    } else {
+      return aVal < bVal ? 1 : -1
+    }
+  })
+})
+
+const sortBy = (key) => {
+  if (sortKey.value === key) {
+    sortOrder.value = sortOrder.value === 'asc' ? 'desc' : 'asc'
+  } else {
+    sortKey.value = key
+    sortOrder.value = 'asc'
+  }
+}
+
+const viewSubmission = (entry) => {
+  selectedSubmission.value = entry
+}
+</script>
