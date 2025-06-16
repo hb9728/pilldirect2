@@ -1,4 +1,4 @@
-<template>
+ <!-- <template>
   <div class="min-h-screen bg-gray-50 text-gray-800 p-6">
     <div class="max-w-2xl mx-auto bg-white rounded-lg shadow-md p-4">
       <component
@@ -12,6 +12,29 @@
     </div>
   </div>
 </template>
+-->
+
+
+<template>
+  <div class="min-h-screen bg-gray-50 text-gray-800 p-6">
+    <div class="max-w-2xl mx-auto bg-white rounded-lg shadow-md p-4">
+      <!-- Show multi-step form only if not on admin route -->
+      <component
+        v-if="!isAdminRoute"
+        :is="steps[currentStep]"
+        :formData="formData"
+        :submitted="submitted"
+        @next="nextStep"
+        @back="prevStep"
+        @submit="handleSubmit"
+      />
+
+      <!-- Show router-based pages like /admin/login -->
+      <router-view v-else />
+    </div>
+  </div>
+</template>
+
 
 <script setup>
 import { provide } from 'vue'
@@ -24,6 +47,15 @@ import StepVitals from './components/StepVitals.vue'
 import StepMedicalHistory from './components/StepMedicalHistory.vue'
 import StepFinalConsent from './components/StepFinalConsent.vue'
 import StepThankYou from './components/StepThankYou.vue'
+
+
+
+  
+import { ref, computed } from 'vue'
+import { useRoute } from 'vue-router'
+const route = useRoute()
+
+const isAdminRoute = computed(() => route.path.startsWith('/admin'))
 
 // const emptyToNull = (val) => val === '' || val === undefined ? null : val
 
