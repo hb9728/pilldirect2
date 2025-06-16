@@ -18,9 +18,10 @@
 <template>
   <div>
     <router-view v-slot="{ Component }">
-      <!-- If route is matched, show admin component -->
-      <component :is="Component" v-if="Component" />
-      <!-- If no route matched, show the main form -->
+      <!-- Only show router component if /admin route -->
+      <component :is="Component" v-if="isAdminRoute" />
+
+      <!-- Otherwise show the form -->
       <div v-else>
         <div class="min-h-screen bg-gray-50 text-gray-800 p-6">
           <div class="max-w-2xl mx-auto bg-white rounded-lg shadow-md p-4">
@@ -43,6 +44,7 @@
 
 
 
+
 <script setup>
 import { provide } from 'vue'
 import { ref } from 'vue'
@@ -58,8 +60,8 @@ import StepThankYou from './components/StepThankYou.vue'
 
 
 import { useRoute } from 'vue-router'
-const route = useRoute()
 
+const route = useRoute()
 const isAdminRoute = computed(() => route.path.startsWith('/admin'))
 
 // const emptyToNull = (val) => val === '' || val === undefined ? null : val
