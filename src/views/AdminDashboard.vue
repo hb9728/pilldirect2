@@ -30,7 +30,7 @@
       <tbody>
         <tr
           v-for="submission in paginatedSubmissions"
-          :key="submission.responseId"
+          :key="submission.id"
           class="hover:bg-gray-50"
         >
           <td class="p-2">{{ submission.firstName }} {{ submission.lastName }}</td>
@@ -45,33 +45,33 @@
       </tbody>
     </table>
 
-    <!-- Pagination Controls -->
-    <div v-if="totalPages > 1" class="flex items-center justify-between mt-4">
+    <!-- Pagination -->
+    <div v-if="totalPages > 1" class="flex justify-between items-center mt-4 text-sm">
       <div class="space-x-2">
         <button
+          @click="changePage(currentPage - 1)"
           :disabled="currentPage === 1"
-          @click="currentPage--"
           class="px-3 py-1 border rounded disabled:opacity-50"
         >Prev</button>
 
         <button
           v-for="page in totalPages"
           :key="page"
-          @click="currentPage = page"
+          @click="changePage(page)"
           class="px-3 py-1 border rounded"
           :class="{ 'bg-blue-100': currentPage === page }"
         >{{ page }}</button>
 
         <button
+          @click="changePage(currentPage + 1)"
           :disabled="currentPage === totalPages"
-          @click="currentPage++"
           class="px-3 py-1 border rounded disabled:opacity-50"
         >Next</button>
       </div>
 
-      <div class="text-sm">
+      <div>
         Show
-        <select v-model="itemsPerPage" class="border rounded p-1 text-sm ml-1">
+        <select v-model.number="itemsPerPage" class="ml-1 border rounded p-1">
           <option :value="10">10</option>
           <option :value="25">25</option>
           <option :value="50">50</option>
@@ -80,7 +80,7 @@
       </div>
     </div>
 
-    <!-- Inline View Panel -->
+    <!-- Inline Submission View -->
     <div v-if="selectedSubmission" class="mt-8 bg-white p-4 rounded shadow">
       <h3 class="text-lg font-semibold mb-2">Submission Details</h3>
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm text-gray-800">
@@ -92,7 +92,6 @@
         <div><strong>Sex:</strong> {{ selectedSubmission.sex }}</div>
         <div><strong>Submitted:</strong> {{ formatDateTime(selectedSubmission.created_at) }}</div>
         <div><strong>Response ID:</strong> {{ selectedSubmission.responseId }}</div>
-        <!-- Add more fields here as needed -->
       </div>
     </div>
   </div>
@@ -104,6 +103,7 @@ import { useRouter } from 'vue-router'
 import { supabase } from '../supabase'
 
 const router = useRouter()
+
 const submissions = ref([])
 const selectedSubmission = ref(null)
 const searchQuery = ref('')
@@ -143,35 +143,38 @@ const fetchSubmissions = async () => {
 onMounted(fetchSubmissions)
 
 const filteredSubmissions = computed(() => {
-  if (!searchQuery.value) return submissions.value
   const q = searchQuery.value.toLowerCase()
-  return submissions.value.filter((entry) => {
-    return (
-      (entry.firstName + ' ' + entry.lastName).toLowerCase().includes(q) ||
-      (entry.dob || '').toLowerCase().includes(q) ||
-      (entry.responseId || '').toLowerCase().includes(q)
-    )
-  })
+  return submissions.value.filter(entry =>
+    (entry.firstName + ' ' + entry.lastName).toLowerCase().includes(q) ||
+    (entry.dob || '').toLowerCase().includes(q) ||
+    (entry.responseId || '').toLowerCase().includes(q)
+  )
 })
 
 const totalPages = computed(() => {
-  return Math.ceil(filteredSubmissions.value.length / itemsPerPage.value)
+  return Math.ceil(filteredSubmissions.value.length / itemsPerPage.value) || 1
 })
 
 const paginatedSubmissions = computed(() => {
   const start = (currentPage.value - 1) * itemsPerPage.value
-  return filteredSubmissions.value.slice(start, start + itemsPerPage.value)
+  const end = start + itemsPerPage.value
+  return filteredSubmissions.value.slice(start, end)
+})
+
+const changePage = (newPage) => {
+  const maxPage = totalPages.value
+  if (newPage < 1 || newPage > maxPage) return
+  currentPage.value = newPage
+}
+
+watch([filteredSubmissions, itemsPerPage], () => {
+  const maxPage = totalPages.value
+  if (currentPage.value > maxPage) {
+    currentPage.value = maxPage
+  }
 })
 
 const viewSubmission = (entry) => {
   selectedSubmission.value = entry
 }
-
-  watch([filteredSubmissions, itemsPerPage], () => {
-  const total = Math.ceil(filteredSubmissions.value.length / itemsPerPage.value)
-  if (currentPage.value > total) {
-    currentPage.value = Math.max(1, total)
-  }
-})
-
 </script>
