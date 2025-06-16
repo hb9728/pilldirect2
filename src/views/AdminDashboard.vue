@@ -160,18 +160,22 @@ const totalPages = computed(() => {
 
 const paginatedSubmissions = computed(() => {
   const start = (currentPage.value - 1) * itemsPerPage.value
-  return filteredSubmissions.value.slice(start, start + itemsPerPage.value)
+  const end = start + itemsPerPage.value
+  return filteredSubmissions.value.slice(start, end)
 })
+
 
 const viewSubmission = (entry) => {
   selectedSubmission.value = entry
 }
 
-  watch([filteredSubmissions, itemsPerPage], () => {
-  const total = Math.ceil(filteredSubmissions.value.length / itemsPerPage.value)
-  if (currentPage.value > total) {
-    currentPage.value = Math.max(1, total)
+watch([filteredSubmissions, itemsPerPage], () => {
+  const maxPage = Math.ceil(filteredSubmissions.value.length / itemsPerPage.value)
+  if (currentPage.value > maxPage) {
+    currentPage.value = Math.max(1, maxPage)
   }
+})
+
 })
 
 </script>
