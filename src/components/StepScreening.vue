@@ -10,7 +10,33 @@
       <option>Male</option>
       <option>Other</option>
     </select>
-    <input v-model="formData.dob" type="date" class="input" @change="calculateAge" />
+    
+    <!-- <input v-model="formData.dob" type="date" class="input" @change="calculateAge" /> -->
+
+
+
+
+
+
+      <!-- 👇 Responsive Date Input -->
+    <div class="mt-2 w-full">
+      <label class="block text-sm font-medium mb-1">Date of Birth</label>
+      <input
+        v-model="formData.dob"
+        type="date"
+        @change="calculateAge"
+        class="w-full border border-gray-300 rounded px-3 py-2 text-sm"
+      />
+    </div>
+
+
+
+
+
+
+
+
+    
 
     <p class="mb-3">Age: <strong>{{ calculatedAge }}</strong></p>
     <p v-if="calculatedAge < 16" class="text-red-600 mt-2">You must be 16 or older to use this service.</p>
