@@ -39,7 +39,35 @@
           <td class="p-2">{{ submission.email }}</td>
           <td class="p-2">{{ submission.responseId }}</td>
           <td class="p-2">{{ formatDateTime(submission.created_at) }}</td>
-          <td class="p-2">{{ submission.status || 'Pending' }}</td>
+
+
+
+          
+          <td class="p-2">
+  <span
+    class="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium"
+    :class="{
+      'bg-yellow-100 text-yellow-800': submission.status === 'Pending',
+      'bg-green-100 text-green-800': submission.status === 'Complete',
+      'bg-red-100 text-red-800': submission.status === 'Rejected'
+    }"
+  >
+    <span
+      class="h-2 w-2 rounded-full"
+      :class="{
+        'bg-yellow-500': submission.status === 'Pending',
+        'bg-green-500': submission.status === 'Complete',
+        'bg-red-500': submission.status === 'Rejected'
+      }"
+    ></span>
+    {{ submission.status }}
+  </span>
+</td>
+
+          
+          
+          
+          
           <td class="p-2">
             <button @click="viewSubmission(submission)" class="text-blue-600 hover:underline">View</button>
           </td>
