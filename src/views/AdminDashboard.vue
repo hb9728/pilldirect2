@@ -90,6 +90,7 @@ const columns = [
   { key: 'created_at', label: 'Submitted' }
 ]
 
+
 const logout = async () => {
   await supabase.auth.signOut()
   router.push('/admin/login')
