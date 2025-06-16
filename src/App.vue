@@ -15,7 +15,7 @@
 -->
 
 
-<template>
+<!-- <template>
   <div class="min-h-screen bg-gray-50 text-gray-800 p-6">
     <div class="max-w-2xl mx-auto bg-white rounded-lg shadow-md p-4">
       <!-- Show multi-step form only if not on admin route -->
@@ -33,6 +33,11 @@
       <router-view v-else />
     </div>
   </div>
+</template>
+-->
+
+<template>
+  <router-view />
 </template>
 
 
