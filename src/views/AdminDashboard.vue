@@ -94,14 +94,19 @@
         <div><strong>Sex:</strong> {{ selectedSubmission.sex }}</div>
         <div><strong>Submitted:</strong> {{ formatDateTime(selectedSubmission.created_at) }}</div>
         <div><strong>Response ID:</strong> {{ selectedSubmission.responseId }}</div>
-        <div>
-  <strong>Status:</strong>
-  <select v-model="selectedSubmission.status" @change="updateStatus(selectedSubmission)">
+        <div class="col-span-2 mt-2">
+  <label class="block text-sm font-semibold text-blue-800 mb-1">Submission Status</label>
+  <select
+    v-model="selectedSubmission.status"
+    @change="updateStatus(selectedSubmission)"
+    class="w-full border border-blue-500 bg-blue-50 text-blue-800 rounded px-3 py-2 shadow-sm hover:bg-blue-100 transition-colors"
+  >
     <option>Pending</option>
     <option>Complete</option>
     <option>Rejected</option>
   </select>
 </div>
+
       </div>
     </div>
   </div>
