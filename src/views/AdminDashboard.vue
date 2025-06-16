@@ -83,7 +83,7 @@ const formatDateTime = (isoString) => {
 }
 
 const columns = [
-  { key: 'name', label: 'Name' },
+  { key: 'lastName', label: 'Name' }, // use lastName (or firstName if preferred)
   { key: 'dob', label: 'Date of Birth' },
   { key: 'email', label: 'Email' },
   { key: 'responseId', label: 'Response ID' },
