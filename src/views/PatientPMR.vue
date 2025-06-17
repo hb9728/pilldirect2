@@ -24,8 +24,8 @@
           </thead>
           <tbody>
             <tr
-              v-for="entry in paginatedSubmissions"
-              :key="entry.responseId"
+              v-for="(entry, index) in paginatedSubmissions"
+              :key="entry.responseId + '--' + index"
               :class="{ 'bg-blue-50': selectedSubmission?.responseId === entry.responseId }"
               class="hover:bg-gray-50 cursor-pointer"
             >
