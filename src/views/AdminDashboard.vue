@@ -78,7 +78,8 @@
 
 <!-- Pagination Controls -->
 <div class="flex justify-between items-center mt-4 text-sm">
-  <div v-if="totalPages > 1" class="space-x-2">
+  <!-- Page navigation stays always visible -->
+  <div class="space-x-2">
     <button
       @click="changePage(currentPage - 1)"
       :disabled="currentPage === 1"
@@ -100,7 +101,7 @@
     >Next</button>
   </div>
 
-  <!-- ✅ Always show this part -->
+  <!-- Dropdown always shown, on right -->
   <div>
     Show
     <select v-model.number="itemsPerPage" class="ml-1 border rounded p-1">
