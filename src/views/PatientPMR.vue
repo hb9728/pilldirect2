@@ -8,7 +8,7 @@
   <button @click="router.push('/admin/dashboard')" class="text-blue-600 hover:underline">
     ← Back to Dashboard
   </button>
-
+  </div>
 
     
 
