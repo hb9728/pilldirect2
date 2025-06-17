@@ -90,15 +90,22 @@
 <div class="space-y-6">
 
   <!-- Contact Info -->
-  <div>
-    <h4 class="font-semibold text-gray-700 mb-2">Contact Information</h4>
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-      <p><strong>Name:</strong> {{ selectedSubmission.firstName }} {{ selectedSubmission.lastName }}</p>
-      <p><strong>Email:</strong> {{ selectedSubmission.email }}</p>
-      <p><strong>Phone:</strong> {{ selectedSubmission.phone }}</p>
-      <p><strong>DOB:</strong> {{ selectedSubmission.dob }}</p>
-      <p><strong>Sex:</strong> {{ selectedSubmission.sex }}</p>
-      <p><strong>Address:</strong> {{ selectedSubmission.address1 }} {{ selectedSubmission.address2 }}, {{ selectedSubmission.city }}, {{ selectedSubmission.postcode }}</p>
+  <div class="border border-gray-300 rounded bg-gray-50 p-4 mb-6 shadow-sm">
+    <h4 class="font-semibold text-gray-800 text-md mb-3 border-b pb-1">Contact Information</h4>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-y-2 gap-x-6 text-sm text-gray-800">
+      <div>
+        <p class="text-base font-semibold">{{ selectedSubmission.firstName }} {{ selectedSubmission.lastName }}</p>
+        <p><strong>Phone:</strong> {{ selectedSubmission.phone || '—' }}</p>
+        <p><strong>Sex:</strong> {{ selectedSubmission.sex || '—' }}</p>
+      </div>
+      <div>
+        <p><strong>Email:</strong> {{ selectedSubmission.email || '—' }}</p>
+        <p><strong>DOB:</strong> {{ selectedSubmission.dob || '—' }}</p>
+        <p><strong>Address:</strong> 
+          {{ selectedSubmission.address1 }} {{ selectedSubmission.address2 }},
+          {{ selectedSubmission.city }}, {{ selectedSubmission.postcode }}
+        </p>
+      </div>
     </div>
   </div>
 
