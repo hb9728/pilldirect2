@@ -29,11 +29,11 @@
         </tr>
       </thead>
       <tbody>
-        <tr
-  v-for="submission in paginatedSubmissions"
-  :key="submission.responseId"
-  class="hover:bg-gray-50"
+<tr
+  v-for="(submission, index) in paginatedSubmissions"
+  :key="submission.responseId + '-' + index"
   :class="{ 'bg-blue-50': selectedSubmission?.responseId === submission.responseId }"
+  class="hover:bg-gray-50"
 >
           <td class="p-2">{{ submission.firstName }} {{ submission.lastName }}</td>
           <td class="p-2">{{ submission.dob }}</td>
