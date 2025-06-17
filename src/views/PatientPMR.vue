@@ -108,9 +108,9 @@
           <template v-for="(label, key) in fieldLabels" :key="key">
             <div>
               <strong>{{ label }}:</strong>
-              <template v-if="key === 'medicationHistory'">
-                <ul v-if="getMedicationList(selectedSubmission[key]).length">
-                  <li v-for="item in getMedicationList(selectedSubmission[key])" :key="item" class="list-disc list-inside">
+              <template v-if="key === 'medicalHistory'">
+                <ul v-if="getMedicalList(selectedSubmission[key]).length">
+                  <li v-for="item in getMedicalList(selectedSubmission[key])" :key="item" class="list-disc list-inside">
                     {{ item }}
                   </li>
                 </ul>
@@ -218,7 +218,7 @@ const updateStatus = async (entry) => {
   }
 }
 
-const getMedicationList = (raw) => {
+const getMedicalList = (raw) => {
   if (!raw) return []
   try {
     const parsed = JSON.parse(raw)
@@ -256,7 +256,7 @@ const fieldLabels = {
   smoker: 'Smoking Status',
   migraines: 'Migraines',
   medications: 'Current Medications',
-  medicationHistory: 'Medication History',
+  medicalHistory: 'Medical History',
   allergies: 'Allergies',
   created_at: 'Submitted At',
   responseId: 'Response ID',
