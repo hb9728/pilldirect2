@@ -260,7 +260,7 @@
     </div>
 
     <div v-else class="text-gray-600">Loading submissions...</div>
-  </div>
+
 </template>
 
 <script setup>
