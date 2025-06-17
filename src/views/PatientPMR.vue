@@ -1,7 +1,6 @@
 <template>
-  
     <!-- Header Row -->
-<div class="flex justify-between items-center mb-6">
+    <div class="p-6">
   <h2 class="text-2xl font-bold">PillDirect.co.uk miniPMR®</h2>
   <button @click="logout" class="text-red-600 hover:underline">Logout</button>
 </div>
