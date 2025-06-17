@@ -7,9 +7,9 @@
       <div class="mb-6 border border-gray-200 rounded shadow bg-white p-4">
         <h3 class="text-lg font-semibold mb-3 border-b pb-2">Patient Details</h3>
         <div class="text-sm grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div><strong>Name:</strong> {{ submissions[0].firstName }} {{ submissions[0].lastName }}</div>
-          <div><strong>Email:</strong> {{ submissions[0].email }}</div>
-          <div><strong>DOB:</strong> {{ submissions[0].dob }}</div>
+          <div><strong>Name:</strong> {{ submissions[0]?.firstName }} {{ submissions[0]?.lastName }}</div>
+          <div><strong>Email:</strong> {{ submissions[0]?.email }}</div>
+          <div><strong>DOB:</strong> {{ submissions[0]?.dob }}</div>
         </div>
       </div>
 
@@ -25,49 +25,44 @@
             </tr>
           </thead>
           <tbody>
-            <template v-for="(entry, index) in paginatedSubmissions" :key="entry.responseId">
-              <tr
-                v-if="index + (currentPage - 1) * itemsPerPage < submissions.length"
-                :class="{ 'bg-blue-50': selectedSubmission?.responseId === entry.responseId }"
-                class="hover:bg-gray-50"
-              >
-                <td class="p-2">{{ formatDateTime(entry.created_at) }}</td>
-                <td class="p-2">
+            <tr
+              v-for="entry in paginatedSubmissions"
+              :key="entry.responseId"
+              :class="{ 'bg-blue-50': selectedSubmission?.responseId === entry.responseId }"
+              class="hover:bg-gray-50"
+            >
+              <td class="p-2">{{ formatDateTime(entry.created_at) }}</td>
+              <td class="p-2">
+                <span
+                  class="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium"
+                  :class="{
+                    'bg-yellow-100 text-yellow-800': entry.status === 'Pending',
+                    'bg-green-100 text-green-800': entry.status === 'Complete',
+                    'bg-red-100 text-red-800': entry.status === 'Rejected'
+                  }"
+                >
                   <span
-                    class="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium"
+                    class="h-2 w-2 rounded-full"
                     :class="{
-                      'bg-yellow-100 text-yellow-800': entry.status === 'Pending',
-                      'bg-green-100 text-green-800': entry.status === 'Complete',
-                      'bg-red-100 text-red-800': entry.status === 'Rejected'
+                      'bg-yellow-500': entry.status === 'Pending',
+                      'bg-green-500': entry.status === 'Complete',
+                      'bg-red-500': entry.status === 'Rejected'
                     }"
-                  >
-                    <span
-                      class="h-2 w-2 rounded-full"
-                      :class="{
-                        'bg-yellow-500': entry.status === 'Pending',
-                        'bg-green-500': entry.status === 'Complete',
-                        'bg-red-500': entry.status === 'Rejected'
-                      }"
-                    ></span>
-                    {{ entry.status }}
-                  </span>
-                </td>
-                <td class="p-2">
-                  <button @click="selectSubmission(entry)" class="text-blue-600 hover:underline">Open</button>
-                </td>
-              </tr>
-            </template>
+                  ></span>
+                  {{ entry.status }}
+                </span>
+              </td>
+              <td class="p-2">
+                <button @click="selectSubmission(entry)" class="text-blue-600 hover:underline">Open</button>
+              </td>
+            </tr>
           </tbody>
         </table>
 
         <!-- Pagination Controls -->
         <div class="flex justify-between items-center mt-4 text-sm">
           <div class="space-x-2">
-            <button
-              @click="changePage(currentPage - 1)"
-              :disabled="currentPage === 1"
-              class="px-3 py-1 border rounded disabled:opacity-50"
-            >Prev</button>
+            <button @click="changePage(currentPage - 1)" :disabled="currentPage === 1" class="px-3 py-1 border rounded disabled:opacity-50">Prev</button>
             <button
               v-for="page in totalPages"
               :key="page"
@@ -75,11 +70,7 @@
               class="px-3 py-1 border rounded"
               :class="{ 'bg-blue-100': currentPage === page }"
             >{{ page }}</button>
-            <button
-              @click="changePage(currentPage + 1)"
-              :disabled="currentPage === totalPages"
-              class="px-3 py-1 border rounded disabled:opacity-50"
-            >Next</button>
+            <button @click="changePage(currentPage + 1)" :disabled="currentPage === totalPages" class="px-3 py-1 border rounded disabled:opacity-50">Next</button>
           </div>
           <div>
             Show
@@ -93,12 +84,12 @@
         </div>
       </div>
 
-      <!-- Submission Viewer -->
+      <!-- Full Submission Viewer -->
       <div v-if="selectedSubmission" class="bg-white p-6 border border-gray-200 rounded shadow">
         <h3 class="text-lg font-semibold mb-4 border-b pb-2">Full Submission Details</h3>
 
-        <div v-for="(group, title, i) in groupedFields" :key="title" class="mb-6">
-          <div v-if="i !== 0"><hr class="my-4 border-t border-gray-300" /></div>
+        <div v-for="(group, title) in groupedFields" :key="title" class="mb-6">
+          <hr class="my-4 border-gray-300" />
           <h4 class="font-semibold text-md mb-2">{{ title }}</h4>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm text-gray-800">
             <div v-for="(label, key) in group" :key="key">
@@ -194,15 +185,14 @@ const formatDateTime = (iso) => {
 }
 
 const fetchByHashedEmail = async () => {
-  const all = await supabase.from('submissions').select('*')
-  const target = all.data.find(sub => sha256(sub.email.trim().toLowerCase()).toString() === route.params.patientId)
+  const { data: all } = await supabase.from('submissions').select('*')
+  const target = all.find(sub => sha256(sub.email.trim().toLowerCase()).toString() === route.params.patientId)
 
   if (target) {
-    const email = target.email
     const { data } = await supabase
       .from('submissions')
       .select('*')
-      .eq('email', email)
+      .eq('email', target.email)
       .order('created_at', { ascending: false })
 
     submissions.value = data
