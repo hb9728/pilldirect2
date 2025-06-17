@@ -2,6 +2,8 @@
   <div class="p-6">
     <h2 class="text-2xl font-bold mb-6">Patient Record</h2>
 
+    
+    <!--
     <!-- Patient Info -->
     <div v-if="submissions.length">
       <div class="mb-6 bg-white p-4 rounded shadow">
@@ -10,7 +12,21 @@
         <p><strong>Email:</strong> {{ submissions[0].email }}</p>
         <p><strong>DOB:</strong> {{ submissions[0].dob }}</p>
       </div>
+-->
 
+<!-- PMR Header -->
+<div v-if="submissions.length">
+  <div class="mb-6 bg-white p-4 rounded shadow border border-gray-200">
+    <h3 class="text-lg font-semibold mb-2">Patient Record</h3>
+    <p class="text-sm text-gray-700">
+      Submissions associated with: <strong>{{ submissions[0].email }}</strong>
+    </p>
+    <p class="text-xs text-red-500 mt-1">
+      ⚠️ Multiple people may be using this email address. Verify each entry carefully.
+    </p>
+  </div>
+
+      
       <!-- Submission History -->
       <div class="mb-6">
         <h3 class="text-lg font-semibold mb-2">Submission History</h3>
