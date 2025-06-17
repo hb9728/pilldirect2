@@ -108,7 +108,17 @@
           <template v-for="(label, key) in fieldLabels" :key="key">
             <div>
               <strong>{{ label }}:</strong>
-              {{ selectedSubmission[key] || '—' }}
+              <template v-if="key === 'medicationHistory'">
+                <ul v-if="getMedicationList(selectedSubmission[key]).length">
+                  <li v-for="item in getMedicationList(selectedSubmission[key])" :key="item" class="list-disc list-inside">
+                    {{ item }}
+                  </li>
+                </ul>
+                <span v-else>—</span>
+              </template>
+              <template v-else>
+                {{ selectedSubmission[key] || '—' }}
+              </template>
             </div>
           </template>
           <div>
@@ -208,6 +218,18 @@ const updateStatus = async (entry) => {
   }
 }
 
+const getMedicationList = (raw) => {
+  if (!raw) return []
+  try {
+    const parsed = JSON.parse(raw)
+    if (Array.isArray(parsed)) return parsed
+  } catch (e) {
+    // Not valid JSON, fallback to comma-separated string
+    return raw.split(',').map(s => s.trim()).filter(Boolean)
+  }
+  return []
+}
+
 watch([itemsPerPage], () => {
   if (currentPage.value > totalPages.value) {
     currentPage.value = Math.max(1, totalPages.value)
@@ -234,6 +256,7 @@ const fieldLabels = {
   smoker: 'Smoking Status',
   migraines: 'Migraines',
   medications: 'Current Medications',
+  medicationHistory: 'Medication History',
   allergies: 'Allergies',
   created_at: 'Submitted At',
   responseId: 'Response ID',
