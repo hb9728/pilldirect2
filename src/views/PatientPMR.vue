@@ -87,88 +87,99 @@
         <h3 class="text-lg font-semibold mb-4">Full Submission Details</h3>
 
         <!-- Sections -->
-        <div class="space-y-6">
+<div class="space-y-6">
 
-          <!-- Contact Info -->
-          <div>
-            <h4 class="font-semibold text-gray-700 mb-2">Contact Information</h4>
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <p><strong>Name:</strong> {{ selectedSubmission.firstName }} {{ selectedSubmission.lastName }}</p>
-              <p><strong>Email:</strong> {{ selectedSubmission.email }}</p>
-              <p><strong>Phone:</strong> {{ selectedSubmission.phone }}</p>
-              <p><strong>DOB:</strong> {{ selectedSubmission.dob }}</p>
-              <p><strong>Sex:</strong> {{ selectedSubmission.sex }}</p>
-              <p><strong>Address:</strong> {{ selectedSubmission.address1 }} {{ selectedSubmission.address2 }}, {{ selectedSubmission.city }}, {{ selectedSubmission.postcode }}</p>
-            </div>
-          </div>
+  <!-- Contact Info -->
+  <div>
+    <h4 class="font-semibold text-gray-700 mb-2">Contact Information</h4>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <p><strong>Name:</strong> {{ selectedSubmission.firstName }} {{ selectedSubmission.lastName }}</p>
+      <p><strong>Email:</strong> {{ selectedSubmission.email }}</p>
+      <p><strong>Phone:</strong> {{ selectedSubmission.phone }}</p>
+      <p><strong>DOB:</strong> {{ selectedSubmission.dob }}</p>
+      <p><strong>Sex:</strong> {{ selectedSubmission.sex }}</p>
+      <p><strong>Address:</strong> {{ selectedSubmission.address1 }} {{ selectedSubmission.address2 }}, {{ selectedSubmission.city }}, {{ selectedSubmission.postcode }}</p>
+    </div>
+  </div>
 
-          <!-- Contraception -->
-          <div>
-            <h4 class="font-semibold text-gray-700 mb-2">Contraception</h4>
-            <p><strong>Current:</strong> {{ selectedSubmission.currentContraceptive || '—' }}</p>
-            <p><strong>Preference:</strong> {{ selectedSubmission.treatmentPreference || '—' }}</p>
-            <p><strong>Pill Choice:</strong> {{ selectedSubmission.pillChoice || '—' }}</p>
-            <p><strong>Other Pill:</strong> {{ selectedSubmission.otherPill || '—' }}</p>
-            <p><strong>Pill Gap:</strong> {{ selectedSubmission.pillGap || '—' }}</p>
-            <p><strong>Other Meds:</strong> {{ selectedSubmission.extraMeds || '—' }}</p>
-          </div>
+  <hr class="my-4 border-gray-200" />
 
-          <!-- Vitals -->
-          <div>
-            <h4 class="font-semibold text-gray-700 mb-2">Vitals</h4>
-            <p><strong>Measurement System:</strong> {{ selectedSubmission.imperialMetric || '—' }}</p>
-            <p><strong>Height (ft/in):</strong> {{ selectedSubmission.heightFt || '—' }}' {{ selectedSubmission.heightIn || '—' }}"</p>
-            <p><strong>Height (cm):</strong> {{ selectedSubmission.heightCm || '—' }}</p>
-            <p><strong>Weight (st/lbs):</strong> {{ selectedSubmission.weightSt || '—' }} st {{ selectedSubmission.weightLbs || '—' }} lbs</p>
-            <p><strong>Weight (kg):</strong> {{ selectedSubmission.weightKg || '—' }}</p>
-            <p><strong>Blood Pressure:</strong> {{ selectedSubmission.bpChecked || '—' }}</p>
-            <p><strong>BP Reading:</strong> {{ selectedSubmission.bpSystolic || '—' }}/{{ selectedSubmission.bpDiastolic || '—' }}</p>
-          </div>
+  <!-- Contraception -->
+  <div>
+    <h4 class="font-semibold text-gray-700 mb-2">Contraception</h4>
+    <p><strong>Current:</strong> {{ selectedSubmission.currentContraceptive || '—' }}</p>
+    <p><strong>Preference:</strong> {{ selectedSubmission.treatmentPreference || '—' }}</p>
+    <p><strong>Pill Choice:</strong> {{ selectedSubmission.pillChoice || '—' }}</p>
+    <p><strong>Other Pill:</strong> {{ selectedSubmission.otherPill || '—' }}</p>
+    <p><strong>Pill Gap:</strong> {{ selectedSubmission.pillGap || '—' }}</p>
+    <p><strong>Other Meds:</strong> {{ selectedSubmission.extraMeds || '—' }}</p>
+  </div>
 
-          <!-- Medical History -->
-          <div>
-            <h4 class="font-semibold text-gray-700 mb-2">Medical History</h4>
-            <div v-if="parsedMedicalHistory.length">
-              <ul class="list-disc list-inside">
-                <li v-for="item in parsedMedicalHistory" :key="item">{{ item }}</li>
-              </ul>
-            </div>
-            <p v-else>—</p>
-            <p><strong>Extra Info:</strong> {{ selectedSubmission.extraInfo || '—' }}</p>
-          </div>
+  <hr class="my-4 border-gray-200" />
 
-          <!-- Consents -->
-          <div>
-            <h4 class="font-semibold text-gray-700 mb-2">Consents</h4>
-            <p><strong>Promo Consent:</strong> {{ selectedSubmission.promoConsent ? 'Yes' : 'No' }}</p>
-            <p><strong>Share with GP:</strong> {{ selectedSubmission.shareConsent ? 'Yes' : 'No' }}</p>
-            <p><strong>Receive Updates:</strong> {{ selectedSubmission.updateConsent ? 'Yes' : 'No' }}</p>
-          </div>
+  <!-- Vitals -->
+  <div>
+    <h4 class="font-semibold text-gray-700 mb-2">Vitals</h4>
+    <p><strong>Measurement System:</strong> {{ selectedSubmission.imperialMetric || '—' }}</p>
+    <p><strong>Height (ft/in):</strong> {{ selectedSubmission.heightFt || '—' }}' {{ selectedSubmission.heightIn || '—' }}"</p>
+    <p><strong>Height (cm):</strong> {{ selectedSubmission.heightCm || '—' }}</p>
+    <p><strong>Weight (st/lbs):</strong> {{ selectedSubmission.weightSt || '—' }} st {{ selectedSubmission.weightLbs || '—' }} lbs</p>
+    <p><strong>Weight (kg):</strong> {{ selectedSubmission.weightKg || '—' }}</p>
+    <p><strong>Blood Pressure:</strong> {{ selectedSubmission.bpChecked || '—' }}</p>
+    <p><strong>BP Reading:</strong> {{ selectedSubmission.bpSystolic || '—' }}/{{ selectedSubmission.bpDiastolic || '—' }}</p>
+  </div>
 
-          <!-- Meta -->
-          <div>
-            <h4 class="font-semibold text-gray-700 mb-2">Meta</h4>
-            <p><strong>Submitted:</strong> {{ formatDateTime(selectedSubmission.created_at) }}</p>
-            <p><strong>Response ID:</strong> {{ selectedSubmission.responseId }}</p>
-            <div class="mt-2">
-              <label class="block text-sm font-semibold text-gray-700 mb-1">Submission Status</label>
-              <select
-                v-model="selectedSubmission.status"
-                @change="updateStatus(selectedSubmission)"
-                :class="[
-                  'border rounded px-3 py-2 shadow-sm transition-colors',
-                  selectedSubmission.status === 'Pending' ? 'bg-yellow-100 text-yellow-800 border-yellow-400' :
-                  selectedSubmission.status === 'Complete' ? 'bg-green-100 text-green-800 border-green-400' :
-                  selectedSubmission.status === 'Rejected' ? 'bg-red-100 text-red-800 border-red-400' : ''
-                ]"
-              >
-                <option>Pending</option>
-                <option>Complete</option>
-                <option>Rejected</option>
-              </select>
-            </div>
-          </div>
-        </div>
+  <hr class="my-4 border-gray-200" />
+
+  <!-- Medical History -->
+  <div>
+    <h4 class="font-semibold text-gray-700 mb-2">Medical History</h4>
+    <div v-if="parsedMedicalHistory.length">
+      <ul class="list-disc list-inside">
+        <li v-for="item in parsedMedicalHistory" :key="item">{{ item }}</li>
+      </ul>
+    </div>
+    <p v-else>—</p>
+    <p><strong>Extra Info:</strong> {{ selectedSubmission.extraInfo || '—' }}</p>
+  </div>
+
+  <hr class="my-4 border-gray-200" />
+
+  <!-- Consents -->
+  <div>
+    <h4 class="font-semibold text-gray-700 mb-2">Consents</h4>
+    <p><strong>Promo Consent:</strong> {{ selectedSubmission.promoConsent ? 'Yes' : 'No' }}</p>
+    <p><strong>Share with GP:</strong> {{ selectedSubmission.shareConsent ? 'Yes' : 'No' }}</p>
+    <p><strong>Receive Updates:</strong> {{ selectedSubmission.updateConsent ? 'Yes' : 'No' }}</p>
+  </div>
+
+  <hr class="my-4 border-gray-200" />
+
+  <!-- Meta -->
+  <div>
+    <h4 class="font-semibold text-gray-700 mb-2">Meta</h4>
+    <p><strong>Submitted:</strong> {{ formatDateTime(selectedSubmission.created_at) }}</p>
+    <p><strong>Response ID:</strong> {{ selectedSubmission.responseId }}</p>
+    <div class="mt-2">
+      <label class="block text-sm font-semibold text-gray-700 mb-1">Submission Status</label>
+      <select
+        v-model="selectedSubmission.status"
+        @change="updateStatus(selectedSubmission)"
+        :class="[
+          'border rounded px-3 py-2 shadow-sm transition-colors',
+          selectedSubmission.status === 'Pending' ? 'bg-yellow-100 text-yellow-800 border-yellow-400' :
+          selectedSubmission.status === 'Complete' ? 'bg-green-100 text-green-800 border-green-400' :
+          selectedSubmission.status === 'Rejected' ? 'bg-red-100 text-red-800 border-red-400' : ''
+        ]"
+      >
+        <option>Pending</option>
+        <option>Complete</option>
+        <option>Rejected</option>
+      </select>
+    </div>
+  </div>
+
+</div>
       </div>
     </div>
 
