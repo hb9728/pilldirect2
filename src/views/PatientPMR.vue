@@ -1,6 +1,6 @@
 <template>
   <div class="p-6">
-    <h2 class="text-2xl font-bold mb-6">Patient Record</h2>
+    <h2 class="text-2xl font-bold mb-6">PillDirect.co.uk miniPMR®</h2>
 
 
     
