@@ -203,6 +203,7 @@ const changePage = (page) => {
   const max = totalPages.value
   if (page < 1 || page > max) return
   currentPage.value = page
+  selectedSubmission.value = null // ← This line fixes the ghosting
 }
 
 const totalPages = computed(() => {
