@@ -167,6 +167,7 @@
 import { ref, computed, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { supabase } from '../supabase'
+import sha256 from 'crypto-js/sha256'
 
 const router = useRouter()
 
