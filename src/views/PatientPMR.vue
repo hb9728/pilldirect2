@@ -10,7 +10,10 @@
     <p class="text-sm text-gray-700">
       Submissions associated with: <strong>{{ submissions[0].email }}</strong>
     </p>
-    <p class="text-xs text-red-500 mt-1">
+    <p
+      v-if="hasConflictingDetails"
+      class="text-xs text-red-500 mt-1"
+    >
       ⚠️ Multiple people may be using this email address. Verify each entry carefully.
     </p>
   </div>
@@ -278,6 +281,30 @@ const parsedMedicalHistory = computed(() => {
   } catch {
     return raw.split(',').map(s => s.trim()).filter(Boolean)
   }
+})
+
+const hasConflictingDetails = computed(() => {
+  if (submissions.value.length <= 1) return false
+
+  const norm = (str) => (str || '').trim().toLowerCase()
+
+  const reference = {
+    firstName: norm(submissions.value[0].firstName),
+    lastName: norm(submissions.value[0].lastName),
+    dob: submissions.value[0].dob,
+    phone: submissions.value[0].phone,
+    sex: norm(submissions.value[0].sex)
+  }
+
+  return submissions.value.some(entry => {
+    return (
+      norm(entry.firstName) !== reference.firstName ||
+      norm(entry.lastName) !== reference.lastName ||
+      entry.dob !== reference.dob ||
+      entry.phone !== reference.phone ||
+      norm(entry.sex) !== reference.sex
+    )
+  })
 })
 
 watch(itemsPerPage, () => {
