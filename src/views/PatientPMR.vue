@@ -72,32 +72,52 @@
           </tbody>
         </table>
 
-        <!-- Pagination -->
-        <div class="flex justify-between items-center mt-4 text-sm">
-          <div class="space-x-2">
-            <button @click="changePage(currentPage - 1)" :disabled="currentPage === 1"
-              class="px-3 py-1 border rounded disabled:opacity-50">Prev</button>
-            <button
-              v-for="page in totalPages"
-              :key="page"
-              @click="changePage(page)"
-              class="px-3 py-1 border rounded"
-              :class="{ 'bg-blue-100': currentPage === page }"
-            >{{ page }}</button>
-            <button @click="changePage(currentPage + 1)" :disabled="currentPage === totalPages"
-              class="px-3 py-1 border rounded disabled:opacity-50">Next</button>
-          </div>
-          <div>
-            Show
-            <select v-model.number="itemsPerPage" class="ml-1 border rounded p-1">
-              <option :value="5">5</option>
-              <option :value="10">10</option>
-              <option :value="25">25</option>
-              <option :value="50">50</option>
-            </select>
-            per page
-          </div>
-        </div>
+<!-- Pagination -->
+<div class="flex justify-between items-center mt-4 text-sm">
+  <div class="flex items-center space-x-1">
+    <button
+      @click="changePage(currentPage - 1)"
+      :disabled="currentPage === 1"
+      class="px-3 py-1 border rounded disabled:opacity-50"
+    >
+      Prev
+    </button>
+
+    <template v-for="page in visiblePageNumbers" :key="page">
+      <span v-if="page === '...'" class="px-2">...</span>
+      <button
+        v-else
+        @click="changePage(page)"
+        class="px-3 py-1 border rounded"
+        :class="{ 'bg-blue-100': currentPage === page }"
+      >
+        {{ page }}
+      </button>
+    </template>
+
+    <button
+      @click="changePage(currentPage + 1)"
+      :disabled="currentPage === totalPages"
+      class="px-3 py-1 border rounded disabled:opacity-50"
+    >
+      Next
+    </button>
+  </div>
+
+  <div>
+    Show
+    <select v-model.number="itemsPerPage" class="ml-1 border rounded p-1">
+      <option :value="5">5</option>
+      <option :value="10">10</option>
+      <option :value="25">25</option>
+      <option :value="50">50</option>
+    </select>
+    per page
+  </div>
+</div>
+
+
+        
       </div>
 
 
@@ -382,6 +402,26 @@ const logout = async () => {
   await supabase.auth.signOut()
   router.push('/admin/login')
 }
+
+const visiblePageNumbers = computed(() => {
+  const pages = []
+  const total = totalPages.value
+  const current = currentPage.value
+
+  if (total <= 7) {
+    for (let i = 1; i <= total; i++) pages.push(i)
+  } else {
+    if (current > 3) pages.push(1)
+    if (current > 4) pages.push('...')
+    for (let i = current - 2; i <= current + 2; i++) {
+      if (i > 0 && i <= total) pages.push(i)
+    }
+    if (current < total - 3) pages.push('...')
+    if (current < total - 2) pages.push(total)
+  }
+
+  return pages
+})
 
 onMounted(fetchByHashedEmail)
 //hello
