@@ -186,6 +186,7 @@ const formatDateTime = (iso) => {
 
 const fetchByHashedEmail = async () => {
   const { data: all } = await supabase.from('submissions').select('*')
+
   const target = all.find(sub => {
     if (!sub.email) return false
     return sha256(sub.email.trim().toLowerCase()).toString() === route.params.patientId
@@ -200,6 +201,8 @@ const fetchByHashedEmail = async () => {
 
     submissions.value = data
     selectedSubmission.value = data[0]
+  } else {
+    console.warn('No matching patient found for hash:', route.params.patientId)
   }
 }
 
