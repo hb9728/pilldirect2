@@ -3,6 +3,23 @@
     <h2 class="text-2xl font-bold mb-6">Patient Record</h2>
 
 
+    
+<div class="flex justify-between items-center mb-4">
+  <button @click="router.push('/admin/dashboard')" class="text-blue-600 hover:underline">
+    ← Back to Dashboard
+  </button>
+
+  <div class="space-x-4">
+    <button @click="printPDF" class="bg-blue-600 text-white text-sm px-4 py-2 rounded hover:bg-blue-700">
+      Download as PDF
+    </button>
+    <button @click="logout" class="text-red-600 hover:underline">Logout</button>
+  </div>
+</div>
+
+
+    
+
 <!-- PMR Header -->
 <div v-if="submissions.length">
   <div class="mb-6 bg-white p-4 rounded shadow border border-gray-200">
