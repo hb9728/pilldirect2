@@ -107,20 +107,13 @@
 
 
 
-  
-
-
-<div
-  v-if="selectedSubmission"
-  id="pdfContent"
-  class="bg-white p-4 rounded shadow text-sm text-gray-800"
->
-  <h3 class="text-lg font-semibold mb-4">Full Submission Details</h3>
-
 
   
       <!-- Full Submission Detail Viewer -->
-      <div v-if="selectedSubmission" class="bg-white p-4 rounded shadow text-sm text-gray-800">
+      <div
+        v-if="selectedSubmission"
+        id="pdfContent"
+        class="bg-white p-4 rounded shadow text-sm text-gray-800">
         <h3 class="text-lg font-semibold mb-4">Full Submission Details</h3>
 
 <!-- PDF Button -->
@@ -235,14 +228,6 @@
 
 </div>
       </div>
-  
-
-
-
-
-
-
-</div>
 
 
 
