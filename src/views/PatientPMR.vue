@@ -73,6 +73,7 @@
           <div>
             Show
             <select v-model.number="itemsPerPage" class="ml-1 border rounded p-1">
+              <option :value="5">5</option>
               <option :value="10">10</option>
               <option :value="25">25</option>
               <option :value="50">50</option>
@@ -204,7 +205,7 @@ const route = useRoute()
 const submissions = ref([])
 const selectedSubmission = ref(null)
 const currentPage = ref(1)
-const itemsPerPage = ref(10)
+const itemsPerPage = ref(5)
 
 const changePage = (page) => {
   const max = totalPages.value
