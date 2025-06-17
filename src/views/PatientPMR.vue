@@ -271,9 +271,5 @@ watch(itemsPerPage, () => {
   }
 })
 
-  watch(currentPage, () => {
-  selectedSubmission.value = null
-})
-
 onMounted(fetchByHashedEmail)
 </script>
