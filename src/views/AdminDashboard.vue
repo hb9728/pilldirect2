@@ -238,7 +238,7 @@ const viewSubmission = (entry) => {
   selectedSubmission.value = { ...entry }
 }
 
-  const updateStatus = async (entry) => {
+const updateStatus = async (entry) => {
   const { error } = await supabase
     .from('submissions')
     .update({ status: entry.status })
@@ -248,6 +248,7 @@ const viewSubmission = (entry) => {
     console.error('Error updating status:', error.message)
   } else {
     console.log('✅ Status updated')
+    await fetchSubmissions() // <-- re-fetch latest from Supabase
   }
 }
 
