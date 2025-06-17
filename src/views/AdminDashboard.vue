@@ -86,13 +86,19 @@
       class="px-3 py-1 border rounded disabled:opacity-50"
     >Prev</button>
 
-    <button
-      v-for="page in totalPages"
-      :key="page"
-      @click="changePage(page)"
-      class="px-3 py-1 border rounded"
-      :class="{ 'bg-blue-100': currentPage === page }"
-    >{{ page }}</button>
+  <button
+  v-for="page in getSmartPages"
+  :key="page"
+  @click="typeof page === 'number' && changePage(page)"
+  class="px-3 py-1 border rounded"
+  :class="{
+    'bg-blue-100': currentPage === page,
+    'cursor-default text-gray-400': page === '...'
+  }"
+  :disabled="page === '...'"
+>
+  {{ page }}
+</button>
 
     <button
       @click="changePage(currentPage + 1)"
@@ -272,5 +278,34 @@ const goToPatientPMR = (email, responseId) => {
   const hashed = sha256(email.trim().toLowerCase()).toString()
   router.push(`/admin/patient/${hashed}?open=${responseId}`)
 }
+
+const getSmartPages = computed(() => {
+  const pages = []
+  const total = totalPages.value
+  const current = currentPage.value
+
+  if (total <= 7) {
+    return Array.from({ length: total }, (_, i) => i + 1)
+  }
+
+  pages.push(1)
+
+  if (current > 4) {
+    pages.push('...')
+  }
+
+  const start = Math.max(2, current - 2)
+  const end = Math.min(total - 1, current + 2)
+  for (let i = start; i <= end; i++) {
+    pages.push(i)
+  }
+
+  if (current + 2 < total - 1) {
+    pages.push('...')
+  }
+
+  pages.push(total)
+  return pages
+})
 
 </script>
