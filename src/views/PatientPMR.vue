@@ -25,37 +25,38 @@
             </tr>
           </thead>
           <tbody>
-            <tr
-              v-for="entry in paginatedSubmissions"
-              :key="entry.responseId"
-              :class="{ 'bg-blue-50': selectedSubmission?.responseId === entry.responseId }"
-              class="hover:bg-gray-50"
-            >
-              <td class="p-2">{{ formatDateTime(entry.created_at) }}</td>
-              <td class="p-2">
-                <span
-                  class="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium"
-                  :class="{
-                    'bg-yellow-100 text-yellow-800': entry.status === 'Pending',
-                    'bg-green-100 text-green-800': entry.status === 'Complete',
-                    'bg-red-100 text-red-800': entry.status === 'Rejected'
-                  }"
-                >
+            <template v-for="(entry, index) in paginatedSubmissions" :key="entry.responseId">
+              <tr
+                v-if="index + (currentPage - 1) * itemsPerPage < submissions.length"
+                :class="{ 'bg-blue-50': selectedSubmission?.responseId === entry.responseId }"
+                class="hover:bg-gray-50"
+              >
+                <td class="p-2">{{ formatDateTime(entry.created_at) }}</td>
+                <td class="p-2">
                   <span
-                    class="h-2 w-2 rounded-full"
+                    class="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium"
                     :class="{
-                      'bg-yellow-500': entry.status === 'Pending',
-                      'bg-green-500': entry.status === 'Complete',
-                      'bg-red-500': entry.status === 'Rejected'
+                      'bg-yellow-100 text-yellow-800': entry.status === 'Pending',
+                      'bg-green-100 text-green-800': entry.status === 'Complete',
+                      'bg-red-100 text-red-800': entry.status === 'Rejected'
                     }"
-                  ></span>
-                  {{ entry.status }}
-                </span>
-              </td>
-              <td class="p-2">
-                <button @click="selectSubmission(entry)" class="text-blue-600 hover:underline">Open</button>
-              </td>
-            </tr>
+                  >
+                    <span
+                      class="h-2 w-2 rounded-full"
+                      :class="{
+                        'bg-yellow-500': entry.status === 'Pending',
+                        'bg-green-500': entry.status === 'Complete',
+                        'bg-red-500': entry.status === 'Rejected'
+                      }"
+                    ></span>
+                    {{ entry.status }}
+                  </span>
+                </td>
+                <td class="p-2">
+                  <button @click="selectSubmission(entry)" class="text-blue-600 hover:underline">Open</button>
+                </td>
+              </tr>
+            </template>
           </tbody>
         </table>
 
@@ -96,7 +97,8 @@
       <div v-if="selectedSubmission" class="bg-white p-6 border border-gray-200 rounded shadow">
         <h3 class="text-lg font-semibold mb-4 border-b pb-2">Full Submission Details</h3>
 
-        <div v-for="(group, title) in groupedFields" :key="title" class="mb-6">
+        <div v-for="(group, title, i) in groupedFields" :key="title" class="mb-6">
+          <div v-if="i !== 0"><hr class="my-4 border-t border-gray-300" /></div>
           <h4 class="font-semibold text-md mb-2">{{ title }}</h4>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm text-gray-800">
             <div v-for="(label, key) in group" :key="key">
@@ -115,6 +117,8 @@
             </div>
           </div>
         </div>
+
+        <hr class="my-6 border-t border-gray-300" />
 
         <div class="mt-4">
           <label class="block text-sm font-semibold text-gray-700 mb-1">Submission Status</label>
@@ -230,7 +234,6 @@ const getMedicalList = (raw) => {
 
 onMounted(fetchByHashedEmail)
 
-// Grouped field labels for hierarchy
 const groupedFields = {
   'Personal Info': {
     firstName: 'First Name',
