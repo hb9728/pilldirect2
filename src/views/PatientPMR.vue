@@ -37,6 +37,7 @@
 </template>
 
 <script setup>
+import sha256 from 'crypto-js/sha256'
 import { onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { supabase } from '../supabase'
@@ -48,17 +49,28 @@ const selectedSubmission = ref(null)
 const formatDateTime = (iso) => new Date(iso).toLocaleString('en-GB')
 
 const fetchByHashedEmail = async () => {
-  const all = await supabase.from('submissions').select('*')
-  const target = all.data.find(sub => sha256(sub.email.trim().toLowerCase()).toString() === route.params.patientId)
+  const { data: allSubs, error: allError } = await supabase.from('submissions').select('*')
+  if (allError) {
+    console.error('Error fetching submissions:', allError.message)
+    return
+  }
 
-  if (target) {
-    const email = target.email
-    const { data } = await supabase
-      .from('submissions')
-      .select('*')
-      .eq('email', email)
-      .order('created_at', { ascending: false })
+  const match = allSubs.find(sub => {
+    const hashed = sha256(sub.email.trim().toLowerCase()).toString()
+    return hashed === route.params.patientId
+  })
 
+  if (!match) return
+
+  const { data, error } = await supabase
+    .from('submissions')
+    .select('*')
+    .eq('email', match.email)
+    .order('created_at', { ascending: false })
+
+  if (error) {
+    console.error('Error loading patient PMR:', error.message)
+  } else {
     submissions.value = data
     selectedSubmission.value = data[0]
   }
