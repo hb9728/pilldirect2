@@ -217,7 +217,7 @@ const paginatedSubmissions = computed(() => {
 })
 
 const selectSubmission = (entry) => {
-  selectedSubmission.value = entry
+  selectedSubmission.value = { ...entry } // shallow copy avoids reactive leakage
 }
 
 const formatDateTime = (iso) => {
@@ -269,6 +269,10 @@ watch(itemsPerPage, () => {
   if (currentPage.value > totalPages.value) {
     currentPage.value = Math.max(1, totalPages.value)
   }
+})
+
+watch(currentPage, () => {
+  selectedSubmission.value = null
 })
 
 onMounted(fetchByHashedEmail)
