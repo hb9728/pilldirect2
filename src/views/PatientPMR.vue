@@ -227,6 +227,7 @@ import { onMounted, ref, computed, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { supabase } from '../supabase'
 import sha256 from 'crypto-js/sha256'
+import html2pdf from 'html2pdf.js'
 
 const route = useRoute()
 const submissions = ref([])
