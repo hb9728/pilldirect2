@@ -148,13 +148,13 @@
 
 
         <div>
-  <button
-    @click="goToPatientPMR(selectedSubmission.email)"
-    class="mt-2 inline-block bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium py-2 px-4 rounded"
-  >
-    Open Full PMR
-  </button>
-</div>
+          <button
+            @click="goToPatientPMR(selectedSubmission.email, selectedSubmission.responseId)"
+            class="mt-2 inline-block bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium py-2 px-4 rounded"
+          >
+            Open Full PMR
+          </button>
+        </div>
 
         
 
@@ -268,9 +268,9 @@ const updateStatus = async (entry) => {
   }
 }
 
-const goToPatientPMR = (email) => {
+const goToPatientPMR = (email, responseId) => {
   const hashed = sha256(email.trim().toLowerCase()).toString()
-  router.push(`/admin/patient/${hashed}`)
+  router.push(`/admin/patient/${hashed}?open=${responseId}`)
 }
 
 </script>
