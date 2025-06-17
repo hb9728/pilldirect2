@@ -334,6 +334,18 @@ watch(currentPage, () => {
   selectedSubmission.value = null
 })
 
+import { useRouter } from 'vue-router'
+const router = useRouter()
+
+const printPDF = () => {
+  window.print()
+}
+
+const logout = async () => {
+  await supabase.auth.signOut()
+  router.push('/admin/login')
+}
+
 onMounted(fetchByHashedEmail)
 //hello
 </script>
