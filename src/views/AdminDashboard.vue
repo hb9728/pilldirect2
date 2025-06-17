@@ -147,6 +147,15 @@
 
 
 
+        <div>
+  <button
+    @click="goToPatientPMR(selectedSubmission.email)"
+    class="mt-2 inline-block bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium py-2 px-4 rounded"
+  >
+    Open Full PMR
+  </button>
+</div>
+
         
 
       </div>
@@ -256,6 +265,11 @@ const updateStatus = async (entry) => {
     console.log('✅ Status updated')
     await fetchSubmissions() // <-- re-fetch latest from Supabase
   }
+}
+
+  const goToPatientPMR = (email) => {
+  const patientId = btoa(email) // base64 encode the email to obfuscate it
+  router.push(`/admin/patient/${patientId}`)
 }
 
 </script>
