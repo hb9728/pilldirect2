@@ -35,7 +35,7 @@
               v-for="(entry, index) in paginatedSubmissions"
               :key="entry.responseId + '--' + index"
               :class="{ 'bg-blue-50': selectedSubmission?.responseId === entry.responseId }"
-              class="hover:bg-gray-50 cursor-pointer"
+              class="hover:bg-gray-50"
             >
               <td class="p-2">{{ formatDateTime(entry.created_at) }}</td>
               <td class="p-2">
