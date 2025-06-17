@@ -123,10 +123,10 @@
       <div v-if="selectedSubmission" class="bg-white p-4 rounded shadow text-sm text-gray-800">
         <h3 class="text-lg font-semibold mb-4">Full Submission Details</h3>
 
-        <!-- Download Button -->
+<!-- PDF Button -->
 <div class="mb-4 flex justify-end">
   <button
-    @click="window.print()"
+    @click="downloadPDF"
     class="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium py-2 px-4 rounded"
   >
     Download as PDF
@@ -360,6 +360,21 @@ const hasConflictingDetails = computed(() => {
     )
   })
 })
+
+  const downloadPDF = () => {
+  const element = document.getElementById('pdfContent')
+  if (!element) return
+
+  const opt = {
+    margin:       0.5,
+    filename:     `Submission-${selectedSubmission.value?.responseId || 'export'}.pdf`,
+    image:        { type: 'jpeg', quality: 0.98 },
+    html2canvas:  { scale: 2 },
+    jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
+  }
+
+  html2pdf().set(opt).from(element).save()
+}
 
 watch(itemsPerPage, () => {
   if (currentPage.value > totalPages.value) {
