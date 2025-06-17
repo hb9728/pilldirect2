@@ -2,13 +2,10 @@
   <div class="p-6">
     <h2 class="text-2xl font-bold mb-6">Patient Record</h2>
 
-    <!-- Patient Info -->
-    <div v-if="submissions.length">
+      <!-- PMR Header -->
       <div class="mb-6 bg-white p-4 rounded shadow">
-        <h3 class="text-lg font-semibold mb-2">Patient Details</h3>
-        <p><strong>Name:</strong> {{ submissions[0].firstName }} {{ submissions[0].lastName }}</p>
-        <p><strong>Email:</strong> {{ submissions[0].email }}</p>
-        <p><strong>DOB:</strong> {{ submissions[0].dob }}</p>
+        <h3 class="text-lg font-semibold mb-2">Patient Record</h3>
+        <p class="text-sm text-gray-700">Submissions associated with: <strong>{{ submissions[0].email }}</strong></p>
       </div>
 
       <!-- Submission History -->
