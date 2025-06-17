@@ -7,9 +7,9 @@
       <div class="mb-6 border border-gray-200 rounded shadow bg-white p-4">
         <h3 class="text-lg font-semibold mb-3 border-b pb-2">Patient Details</h3>
         <div class="text-sm grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div><strong>Name:</strong> {{ submissions[0]?.firstName }} {{ submissions[0]?.lastName }}</div>
-          <div><strong>Email:</strong> {{ submissions[0]?.email }}</div>
-          <div><strong>DOB:</strong> {{ submissions[0]?.dob }}</div>
+          <div><strong>Name:</strong> {{ submissions[0].firstName }} {{ submissions[0].lastName }}</div>
+          <div><strong>Email:</strong> {{ submissions[0].email }}</div>
+          <div><strong>DOB:</strong> {{ submissions[0].dob }}</div>
         </div>
       </div>
 
@@ -62,7 +62,11 @@
         <!-- Pagination Controls -->
         <div class="flex justify-between items-center mt-4 text-sm">
           <div class="space-x-2">
-            <button @click="changePage(currentPage - 1)" :disabled="currentPage === 1" class="px-3 py-1 border rounded disabled:opacity-50">Prev</button>
+            <button
+              @click="changePage(currentPage - 1)"
+              :disabled="currentPage === 1"
+              class="px-3 py-1 border rounded disabled:opacity-50"
+            >Prev</button>
             <button
               v-for="page in totalPages"
               :key="page"
@@ -70,7 +74,11 @@
               class="px-3 py-1 border rounded"
               :class="{ 'bg-blue-100': currentPage === page }"
             >{{ page }}</button>
-            <button @click="changePage(currentPage + 1)" :disabled="currentPage === totalPages" class="px-3 py-1 border rounded disabled:opacity-50">Next</button>
+            <button
+              @click="changePage(currentPage + 1)"
+              :disabled="currentPage === totalPages"
+              class="px-3 py-1 border rounded disabled:opacity-50"
+            >Next</button>
           </div>
           <div>
             Show
@@ -84,12 +92,11 @@
         </div>
       </div>
 
-      <!-- Full Submission Viewer -->
+      <!-- Submission Viewer -->
       <div v-if="selectedSubmission" class="bg-white p-6 border border-gray-200 rounded shadow">
         <h3 class="text-lg font-semibold mb-4 border-b pb-2">Full Submission Details</h3>
 
         <div v-for="(group, title) in groupedFields" :key="title" class="mb-6">
-          <hr class="my-4 border-gray-300" />
           <h4 class="font-semibold text-md mb-2">{{ title }}</h4>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm text-gray-800">
             <div v-for="(label, key) in group" :key="key">
@@ -108,8 +115,6 @@
             </div>
           </div>
         </div>
-
-        <hr class="my-6 border-t border-gray-300" />
 
         <div class="mt-4">
           <label class="block text-sm font-semibold text-gray-700 mb-1">Submission Status</label>
@@ -185,24 +190,19 @@ const formatDateTime = (iso) => {
 }
 
 const fetchByHashedEmail = async () => {
-  const { data: all } = await supabase.from('submissions').select('*')
-
-  const target = all.find(sub => {
-    if (!sub.email) return false
-    return sha256(sub.email.trim().toLowerCase()).toString() === route.params.patientId
-  })
+  const all = await supabase.from('submissions').select('*')
+  const target = all.data.find(sub => sha256(sub.email.trim().toLowerCase()).toString() === route.params.patientId)
 
   if (target) {
+    const email = target.email
     const { data } = await supabase
       .from('submissions')
       .select('*')
-      .eq('email', target.email)
+      .eq('email', email)
       .order('created_at', { ascending: false })
 
     submissions.value = data
     selectedSubmission.value = data[0]
-  } else {
-    console.warn('No matching patient found for hash:', route.params.patientId)
   }
 }
 
@@ -230,6 +230,7 @@ const getMedicalList = (raw) => {
 
 onMounted(fetchByHashedEmail)
 
+// Grouped field labels for hierarchy
 const groupedFields = {
   'Personal Info': {
     firstName: 'First Name',
