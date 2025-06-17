@@ -268,9 +268,9 @@ const updateStatus = async (entry) => {
   }
 }
 
-  const goToPatientPMR = (email) => {
-  const patientId = btoa(email) // base64 encode the email to obfuscate it
-  router.push(`/admin/patient/${patientId}`)
+const goToPatientPMR = (email) => {
+  const hashed = sha256(email.trim().toLowerCase()).toString()
+  router.push(`/admin/patient/${hashed}`)
 }
 
 </script>
