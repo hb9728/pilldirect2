@@ -252,7 +252,7 @@ const fetchByHashedEmail = async () => {
     submissions.value = data
     const openId = route.query.open
     const match = data.find(s => s.responseId === openId)
-    selectedSubmission.value = match || data[1]
+    selectedSubmission.value = match || data[0]
   }
 }
 
