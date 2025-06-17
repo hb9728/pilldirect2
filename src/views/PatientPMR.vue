@@ -250,7 +250,9 @@ const fetchByHashedEmail = async () => {
       .eq('email', target.email)
       .order('created_at', { ascending: false })
     submissions.value = data
-    selectedSubmission.value = data[0]
+    const openId = route.query.open
+    const match = data.find(s => s.responseId === openId)
+    selectedSubmission.value = match || data[0]
   }
 }
 
