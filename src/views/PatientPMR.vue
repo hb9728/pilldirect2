@@ -1,9 +1,5 @@
 <template>
-  <div class="p-6">
-    <h2 class="text-2xl font-bold mb-6">PillDirect.co.uk miniPMR®</h2>
-
-
-
+  
     <!-- Header Row -->
 <div class="flex justify-between items-center mb-6">
   <h2 class="text-2xl font-bold">PillDirect.co.uk miniPMR®</h2>
