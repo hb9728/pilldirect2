@@ -9,14 +9,6 @@
     ← Back to Dashboard
   </button>
 
-  <div class="space-x-4">
-    <button @click="printPDF" class="bg-blue-600 text-white text-sm px-4 py-2 rounded hover:bg-blue-700">
-      Download as PDF
-    </button>
-    <button @click="logout" class="text-red-600 hover:underline">Logout</button>
-  </div>
-</div>
-
 
     
 
@@ -111,6 +103,16 @@
       <!-- Full Submission Detail Viewer -->
       <div v-if="selectedSubmission" class="bg-white p-4 rounded shadow text-sm text-gray-800">
         <h3 class="text-lg font-semibold mb-4">Full Submission Details</h3>
+
+        <!-- Download Button -->
+<div class="mb-4 flex justify-end">
+  <button
+    @click="window.print()"
+    class="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium py-2 px-4 rounded"
+  >
+    Download as PDF
+  </button>
+</div>
 
         <!-- Sections -->
 <div class="space-y-6">
