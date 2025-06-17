@@ -235,7 +235,7 @@ watch([filteredSubmissions, itemsPerPage], () => {
 })  
 
 const viewSubmission = (entry) => {
-  selectedSubmission.value = entry
+  selectedSubmission.value = { ...entry }
 }
 
   const updateStatus = async (entry) => {
