@@ -186,7 +186,10 @@ const formatDateTime = (iso) => {
 
 const fetchByHashedEmail = async () => {
   const { data: all } = await supabase.from('submissions').select('*')
-  const target = all.find(sub => sha256(sub.email.trim().toLowerCase()).toString() === route.params.patientId)
+  const target = all.find(sub => {
+    if (!sub.email) return false
+    return sha256(sub.email.trim().toLowerCase()).toString() === route.params.patientId
+  })
 
   if (target) {
     const { data } = await supabase
