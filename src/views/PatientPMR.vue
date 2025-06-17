@@ -257,9 +257,9 @@
     </div>
 
     <div v-else class="text-gray-600">Loading submissions...</div>
-
-</template>
 </div>
+</template>
+
 <script setup>
 import { onMounted, ref, computed, watch } from 'vue'
 import { useRoute } from 'vue-router'
