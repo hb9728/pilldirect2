@@ -234,6 +234,10 @@ watch([filteredSubmissions, itemsPerPage], () => {
   if (currentPage.value > maxPage) currentPage.value = maxPage
 })  
 
+  watch(currentPage, () => {
+  selectedSubmission.value = null
+})
+
 const viewSubmission = (entry) => {
   selectedSubmission.value = { ...entry }
 }
