@@ -25,7 +25,7 @@
           <tbody>
             <tr
               v-for="entry in paginatedSubmissions"
-              :key="entry.responseId"
+              :key="entry.responseId || entry.created_at + Math.random()"
               :class="{ 'bg-blue-50': selectedSubmission?.responseId === entry.responseId }"
               class="hover:bg-gray-50 cursor-pointer"
             >
@@ -269,6 +269,14 @@ const parsedMedicalHistory = computed(() => {
 watch(itemsPerPage, () => {
   if (currentPage.value > totalPages.value) {
     currentPage.value = Math.max(1, totalPages.value)
+  }
+})
+
+import { watchEffect } from 'vue'
+
+watchEffect(() => {
+  if (!paginatedSubmissions.value.includes(selectedSubmission.value)) {
+    selectedSubmission.value = null
   }
 })
 
