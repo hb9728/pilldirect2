@@ -213,8 +213,7 @@ const totalPages = computed(() => {
 const paginatedSubmissions = computed(() => {
   const start = (currentPage.value - 1) * itemsPerPage.value
   const end = start + itemsPerPage.value
-  const pageSlice = submissions.value.slice(start, end)
-  return pageSlice.map(entry => ({ ...entry })) // ← break reactivity that causes ghosting
+  return submissions.value.slice(start, end).map(s => ({ ...s }))
 })
 
 const selectSubmission = (entry) => {
