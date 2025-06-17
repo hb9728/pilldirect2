@@ -165,19 +165,6 @@
         
 
       </div>
-
-      <!-- Notes -->
-<div class="mt-6">
-  <h4 class="font-semibold text-gray-700 mb-2">Staff Notes</h4>
-  <textarea
-    v-model="selectedSubmission.notes"
-    @blur="saveNotes(selectedSubmission)"
-    placeholder="Add notes about this submission..."
-    rows="4"
-    class="w-full border border-gray-300 rounded p-3 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-300"
-  ></textarea>
-  <p class="text-xs text-gray-500 mt-1">Saved automatically when you click away.</p>
-</div>
       
     </div>
   </div>
@@ -321,18 +308,5 @@ const getSmartPages = computed(() => {
   pages.push(total)
   return pages
 })
-
-const saveNotes = async (entry) => {
-  const { error } = await supabase
-    .from('submissions')
-    .update({ notes: entry.notes })
-    .eq('responseId', entry.responseId)
-
-  if (error) {
-    console.error('Failed to save notes:', error.message)
-  } else {
-    console.log('✅ Notes saved')
-  }
-}
 
 </script>
