@@ -322,4 +322,17 @@ const getSmartPages = computed(() => {
   return pages
 })
 
+const saveNotes = async (entry) => {
+  const { error } = await supabase
+    .from('submissions')
+    .update({ notes: entry.notes })
+    .eq('responseId', entry.responseId)
+
+  if (error) {
+    console.error('Failed to save notes:', error.message)
+  } else {
+    console.log('✅ Notes saved')
+  }
+}
+
 </script>
