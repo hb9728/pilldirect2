@@ -164,7 +164,7 @@ const totalPages = computed(() => {
 const paginatedSubmissions = computed(() => {
   const start = (currentPage.value - 1) * itemsPerPage.value
   const end = start + itemsPerPage.value
-  return submissions.value.slice(start, end)
+  return submissions.value.slice(start, end).filter(Boolean)
 })
 
 watch(itemsPerPage, () => {
