@@ -13,6 +13,7 @@
     "vue-router": "^4.2.5",
     "crypto-js": "^4.1.1",
     "html2pdf.js": "^0.10.1"
+    "luxon": "^3.4.4"
   },
   "devDependencies": {
     "vite": "^5.0.0",
