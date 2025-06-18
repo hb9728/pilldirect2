@@ -121,7 +121,20 @@
 
     <!-- Inline Submission View -->
     <div v-if="selectedSubmission" class="mt-8 bg-white p-4 rounded shadow">
-      <h3 class="text-lg font-semibold mb-2">Submission Details</h3>
+
+      
+      <div class="flex justify-between items-center mb-2">
+        <h3 class="text-lg font-semibold">Submission Details</h3>
+        <button
+          v-if="selectedSubmission"
+          @click="goToPatientPMR(selectedSubmission.email, selectedSubmission.responseId)"
+          class="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium py-1.5 px-4 rounded"
+        >
+          Open Full PMR
+        </button>
+      </div>
+      
+      
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm text-gray-800">
         <div><strong>Name:</strong> {{ selectedSubmission.firstName }} {{ selectedSubmission.lastName }}</div>
         <div><strong>DOB:</strong> {{ selectedSubmission.dob }}</div>
@@ -150,18 +163,6 @@
     <option>Rejected</option>
   </select>
 </div>
-
-
-
-        <div>
-          <button
-            @click="goToPatientPMR(selectedSubmission.email, selectedSubmission.responseId)"
-            class="mt-2 inline-block bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium py-2 px-4 rounded"
-          >
-            Open Full PMR
-          </button>
-        </div>
-
         
 
       </div>
