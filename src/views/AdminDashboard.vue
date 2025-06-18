@@ -184,6 +184,13 @@ const searchQuery = ref('')
 const currentPage = ref(1)
 const itemsPerPage = ref(10)
 
+onMounted(async () => {
+  const { data: { session } } = await supabase.auth.getSession()
+  if (!session) {
+    router.push('/admin/login')
+  }
+})
+
 const logout = async () => {
   await supabase.auth.signOut()
   router.replace('/admin/login')
