@@ -36,9 +36,9 @@
         <table class="w-full bg-white shadow rounded text-sm">
           <thead>
             <tr class="bg-gray-100">
+              <th class="p-2 border-b text-left">Response ID</th>
               <th class="p-2 border-b text-left">Submitted</th>
               <th class="p-2 border-b text-left">Status</th>
-              <th class="p-2 border-b text-left">Response ID</th>
               <th class="p-2 border-b text-left">Action</th>
             </tr>
           </thead>
