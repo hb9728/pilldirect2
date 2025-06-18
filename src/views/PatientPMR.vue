@@ -309,6 +309,14 @@ const paginatedSubmissions = computed(() => {
 
 const selectSubmission = (entry) => {
   selectedSubmission.value = { ...entry } // shallow copy avoids reactive leakage
+
+  // Update ?open= in the URL without navigating away
+  router.replace({
+    query: {
+      ...route.query,
+      open: entry.responseId
+    }
+  })
 }
 
 const formatDateTime = (iso) => {
