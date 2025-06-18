@@ -283,6 +283,7 @@ import { useRoute } from 'vue-router'
 import { supabase } from '../supabase'
 import sha256 from 'crypto-js/sha256'
 import html2pdf from 'html2pdf.js'
+import { useRouter } from 'vue-router'
 
 const route = useRoute()
 const submissions = ref([])
@@ -423,9 +424,6 @@ watch(itemsPerPage, () => {
 watch(currentPage, () => {
   selectedSubmission.value = null
 })
-
-import { useRouter } from 'vue-router'
-const router = useRouter()
 
 const printPDF = () => {
   window.print()
