@@ -424,7 +424,8 @@ const printPDF = () => {
 
 const logout = async () => {
   await supabase.auth.signOut()
-  router.push('/admin/login')
+  router.replace('/admin/login')
+  location.reload() // full reload to flush memory state
 }
 
 const visiblePageNumbers = computed(() => {
