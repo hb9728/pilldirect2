@@ -218,21 +218,25 @@ const validateStep = () => {
   if (stepIndex === 4) {
   if (!formData.value.imperialMetric) return false
 
-  if (formData.value.imperialMetric === 'Imperial') {
-    if (
-      !formData.value.heightFt ||
-      !formData.value.heightIn ||
-      !formData.value.weightSt ||
-      !formData.value.weightLbs
-    ) return false
-  }
+if (formData.value.imperialMetric === 'Imperial') {
+  const isEmpty = val => val === '' || val === null || val === undefined
 
-  if (formData.value.imperialMetric === 'Metric') {
-    if (
-      !formData.value.heightCm ||
-      !formData.value.weightKg
-    ) return false
-  }
+  if (
+    isEmpty(formData.value.heightFt) ||
+    isEmpty(formData.value.heightIn) ||
+    isEmpty(formData.value.weightSt) ||
+    isEmpty(formData.value.weightLbs)
+  ) return false
+}
+
+if (formData.value.imperialMetric === 'Metric') {
+  const isEmpty = val => val === '' || val === null || val === undefined
+
+  if (
+    isEmpty(formData.value.heightCm) ||
+    isEmpty(formData.value.weightKg)
+  ) return false
+}
 
   if (formData.value.bpChecked === 'Yes') {
     if (
