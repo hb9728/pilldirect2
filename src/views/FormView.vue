@@ -115,7 +115,7 @@ const handleSubmit = async (data) => {
 
 
 const submitted = ref(false)
-
+const validationError = ref('')
 
   
 
@@ -231,8 +231,13 @@ if (formData.value.imperialMetric === 'Imperial') {
     isEmpty(st) || isEmpty(lbs)
   ) return false
 
-  // At least one part of height and one part of weight must be > 0
-  if ((ft === 0 && inches === 0) || (st === 0 && lbs === 0)) {
+  if (ft === 0 && inches === 0) {
+    validationError.value = 'Please enter a height in either feet or inches (cannot both be 0).'
+    return false
+  }
+
+  if (st === 0 && lbs === 0) {
+    validationError.value = 'Please enter a weight in either stone or pounds (cannot both be 0).'
     return false
   }
 }
@@ -280,13 +285,20 @@ if (formData.value.imperialMetric === 'Imperial') {
 
 function nextStep() {
   if (!validateStep()) {
-    alert("Please complete all required fields before proceeding.")
+    if (validationError.value) {
+      alert(validationError.value)
+      validationError.value = '' // clear it for next time
+    } else {
+      alert("Please complete all required fields before proceeding.")
+    }
     return
   }
   if (currentStep.value < steps.length - 1) {
     currentStep.value++
   }
 }
+
+  
 function prevStep() {
   if (currentStep.value > 0) currentStep.value--
 }
