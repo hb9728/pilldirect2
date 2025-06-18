@@ -3,6 +3,7 @@ import AdminLogin from '../views/AdminLogin.vue'
 import AdminDashboard from '../views/AdminDashboard.vue'
 import FormView from '../views/FormView.vue'
 import PatientPMR from '../views/PatientPMR.vue'
+import { supabase } from '../supabase'
 
 const routes = [
   { path: '/', component: FormView },
@@ -13,7 +14,19 @@ const routes = [
 
 const router = createRouter({
   history: createWebHistory(),
-  routes,
+  routes
+})
+
+router.beforeEach(async (to, from, next) => {
+  const {
+    data: { session }
+  } = await supabase.auth.getSession()
+
+  if (to.meta.requiresAuth && !session) {
+    next('/admin/login')
+  } else {
+    next()
+  }
 })
 
 export default router
