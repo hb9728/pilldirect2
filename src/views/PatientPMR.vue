@@ -286,6 +286,7 @@ import { supabase } from '../supabase'
 import sha256 from 'crypto-js/sha256'
 import html2pdf from 'html2pdf.js'
 import { useRouter } from 'vue-router'
+import { DateTime } from 'luxon'
 
 const route = useRoute()
 const submissions = ref([])
@@ -331,16 +332,11 @@ const selectSubmission = (entry) => {
   })
 }
 
-const formatDateTime = (iso) => {
-  if (!iso) return ''
-  const date = new Date(iso)
-  return date.toLocaleString('en-GB', {
-    day: '2-digit',
-    month: 'short',
-    year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit'
-  })
+const formatDateTime = (isoString) => {
+  if (!isoString) return ''
+  return DateTime.fromISO(isoString, { zone: 'utc' }) // read as UTC
+    .setZone('Europe/London')                         // convert to UK time
+    .toFormat('dd LLL yyyy, HH:mm')                   // e.g. 18 Jun 2025, 14:05
 }
 
 const fetchByHashedEmail = async () => {
