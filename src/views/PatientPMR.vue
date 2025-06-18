@@ -290,6 +290,15 @@ const selectedSubmission = ref(null)
 const currentPage = ref(1)
 const itemsPerPage = ref(5)
 
+const router = useRouter()
+
+onMounted(async () => {
+  const { data: { session } } = await supabase.auth.getSession()
+  if (!session) {
+    router.push('/admin/login')
+  }
+})
+
 const changePage = (page) => {
   const max = totalPages.value
   if (page < 1 || page > max) return
