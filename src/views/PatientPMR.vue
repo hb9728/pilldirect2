@@ -38,6 +38,7 @@
             <tr class="bg-gray-100">
               <th class="p-2 border-b text-left">Submitted</th>
               <th class="p-2 border-b text-left">Status</th>
+              <th class="p-2 border-b text-left">Response ID</th>
               <th class="p-2 border-b text-left">Action</th>
             </tr>
           </thead>
@@ -67,6 +68,7 @@
                   {{ entry.status }}
                 </span>
               </td>
+               <td class="p-2">{{ entry.responseId }}</td>
               <td class="p-2">
                 <button @click="selectSubmission(entry)" class="text-blue-600 hover:underline">Open</button>
               </td>
