@@ -49,6 +49,7 @@
               :class="{ 'bg-blue-50': selectedSubmission?.responseId === entry.responseId }"
               class="hover:bg-gray-50"
             >
+              <td class="p-2">{{ entry.responseId }}</td>
               <td class="p-2">{{ formatDateTime(entry.created_at) }}</td>
               <td class="p-2">
                 <span class="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium"
@@ -68,7 +69,6 @@
                   {{ entry.status }}
                 </span>
               </td>
-               <td class="p-2">{{ entry.responseId }}</td>
               <td class="p-2">
                 <button @click="selectSubmission(entry)" class="text-blue-600 hover:underline">Open</button>
               </td>
