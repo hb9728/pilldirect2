@@ -176,6 +176,7 @@ import { ref, computed, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { supabase } from '../supabase'
 import sha256 from 'crypto-js/sha256'
+import { DateTime } from 'luxon'
 
 const router = useRouter()
 
@@ -200,16 +201,9 @@ const logout = async () => {
 
 const formatDateTime = (isoString) => {
   if (!isoString) return ''
-  const date = new Date(isoString)
-  return date.toLocaleString('en-GB', {
-    timeZone: 'Europe/London',
-    day: '2-digit',
-    month: 'short',
-    year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-    hour12: false
-  })
+  return DateTime.fromISO(isoString, { zone: 'utc' }) // read as UTC
+    .setZone('Europe/London')                         // convert to UK time
+    .toFormat('dd LLL yyyy, HH:mm')                   // e.g. 18 Jun 2025, 14:05
 }
 
 const fetchSubmissions = async () => {
