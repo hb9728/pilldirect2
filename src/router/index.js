@@ -7,8 +7,8 @@ import PatientPMR from '../views/PatientPMR.vue'
 const routes = [
   { path: '/', component: FormView },
   { path: '/admin/login', component: AdminLogin },
-  { path: '/admin/dashboard', component: AdminDashboard },
-  { path: '/admin/patient/:patientId', component: PatientPMR, props: true } 
+  { path: '/admin/dashboard', component: AdminDashboard, meta: { requiresAuth: true } },
+  { path: '/admin/patient/:patientId', component: PatientPMR, props: true, meta: { requiresAuth: true } }
 ]
 
 const router = createRouter({
