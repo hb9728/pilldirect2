@@ -17,6 +17,11 @@ Generate a concise pharmacist-style summary for a contraceptive consultation:
 
 Respond with only the summary text.`
 
+  // 🔍 Debug logs
+  console.log('Calling Hugging Face API...')
+  console.log('Prompt:', prompt)
+  console.log('HF_API_KEY:', process.env.HF_API_KEY ? 'Exists' : 'Missing')
+
   const llamaResponse = await fetch("https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.2", {
     headers: {
       Authorization: `Bearer ${process.env.HF_API_KEY}`,
@@ -26,9 +31,19 @@ Respond with only the summary text.`
     body: JSON.stringify({ inputs: prompt })
   })
 
-  const data = await llamaResponse.json()
+  const raw = await llamaResponse.text()
+  console.log('Raw HF response:', raw)
+
+  let data
+  try {
+    data = JSON.parse(raw)
+  } catch (err) {
+    console.error('❌ Failed to parse HF response:', err)
+    return res.status(500).json({ error: 'Bad response from Hugging Face' })
+  }
 
   if (data.error) {
+    console.error('❌ HF API Error:', data.error)
     return res.status(500).json({ error: data.error })
   }
 
