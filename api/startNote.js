@@ -23,7 +23,7 @@ Generate a clinical summary in 2–4 bullet points for a pharmacist:
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        version: "db21e45e230c8cf3c519942df8eefc8ee600e1f7c5f8708ad4eecc3fd4effc31",
+        version: "db21e45e230c8cf3c519942df8eefc8ee600e1f7c5f8708ad4eecc3fd4effc31", // LLaMA 3 8B Instruct
         input: {
           prompt,
           max_new_tokens: 200,
@@ -37,10 +37,11 @@ Generate a clinical summary in 2–4 bullet points for a pharmacist:
     if (prediction.id) {
       return res.status(200).json({ id: prediction.id });
     } else {
-      return res.status(500).json({ error: prediction.error || 'Failed to start prediction' });
+      console.error("❌ Prediction start failed:", prediction);
+      return res.status(500).json({ error: prediction.error || 'Replicate start failed' });
     }
   } catch (err) {
-    console.error('Replicate init error:', err);
+    console.error('❌ API error:', err);
     return res.status(500).json({ error: 'Server error' });
   }
 }
