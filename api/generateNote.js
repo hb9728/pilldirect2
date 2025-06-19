@@ -6,46 +6,51 @@ export default async function handler(req, res) {
   const { submission } = req.body
 
   const prompt = `
-Generate a concise pharmacist-style summary for a contraceptive consultation:
-- Patient: ${submission.firstName} ${submission.lastName}, DOB: ${submission.dob}
-- Pill Choice: ${submission.pillChoice}
-- Medical History: ${Array.isArray(submission.selectApplicable) ? submission.selectApplicable.join(', ') : 'None'}
-- Extra Meds: ${submission.extraMeds || 'None'}
-- BP: ${submission.bpSystolic}/${submission.bpDiastolic}
-- Height: ${submission.heightFt || submission.heightCm}, Weight: ${submission.weightSt || submission.weightKg}
-- Notes should summarize suitability for contraception and highlight any flags.
+Summarise this contraceptive consultation into 2-4 clinical sentences for a pharmacist:
 
-Respond with only the summary text.`
+Patient: ${submission.firstName} ${submission.lastName}, DOB: ${submission.dob}
+Pill Choice: ${submission.pillChoice}
+Medical History: ${Array.isArray(submission.selectApplicable) ? submission.selectApplicable.join(', ') : 'None'}
+Extra Meds: ${submission.extraMeds || 'None'}
+BP: ${submission.bpSystolic}/${submission.bpDiastolic}
+Height: ${submission.heightFt || submission.heightCm}, Weight: ${submission.weightSt || submission.weightKg}
+`
 
-  // 🔍 Debug logs
-  console.log('Calling Hugging Face API...')
-  console.log('Prompt:', prompt)
-  console.log('HF_API_KEY:', process.env.HF_API_KEY ? 'Exists' : 'Missing')
-
-  const llamaResponse = await fetch("https://api-inference.huggingface.co/google/flan-t5-large", {
-    headers: {
-      Authorization: `Bearer ${process.env.HF_API_KEY}`,
-      "Content-Type": "application/json"
-    },
-    method: "POST",
-    body: JSON.stringify({ inputs: prompt })
-  })
-
-  const raw = await llamaResponse.text()
-  console.log('Raw HF response:', raw)
-
-  let data
   try {
-    data = JSON.parse(raw)
+    const response = await fetch("https://api-inference.huggingface.co/models/google/flan-t5-large", {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${process.env.HF_API_KEY}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        inputs: prompt,
+        parameters: {
+          max_new_tokens: 200,
+          return_full_text: false
+        }
+      })
+    })
+
+    const raw = await response.text()
+    let data
+    try {
+      data = JSON.parse(raw)
+    } catch (err) {
+      console.error('❌ HF returned invalid JSON:', raw)
+      return res.status(500).json({ error: 'Hugging Face response was not JSON' })
+    }
+
+    if (data.error) {
+      console.error('❌ HF API Error:', data.error)
+      return res.status(500).json({ error: data.error })
+    }
+
+    const generatedText = data[0]?.generated_text || '—'
+    return res.status(200).json({ note: generatedText })
+
   } catch (err) {
-    console.error('❌ Failed to parse HF response:', err)
-    return res.status(500).json({ error: 'Bad response from Hugging Face' })
+    console.error('❌ Unexpected failure:', err)
+    return res.status(500).json({ error: 'Unexpected error' })
   }
-
-  if (data.error) {
-    console.error('❌ HF API Error:', data.error)
-    return res.status(500).json({ error: data.error })
-  }
-
-  return res.status(200).json({ note: data.generated_text || data[0]?.generated_text })
 }
