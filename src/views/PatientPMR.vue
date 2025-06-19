@@ -252,9 +252,22 @@
 
 </div>
 
-        <!-- Notes -->
+<!-- Notes -->
 <div class="mt-6">
   <h4 class="font-semibold text-gray-700 mb-2">Staff Notes</h4>
+
+  <!-- AI Note Generator -->
+  <div class="flex items-center gap-2 mb-2">
+    <button
+      @click="generateAINote"
+      :disabled="loadingNote || !selectedSubmission"
+      class="px-3 py-1 bg-blue-600 text-white rounded shadow-sm hover:bg-blue-700 transition"
+    >
+      {{ loadingNote ? 'Generating...' : 'Generate AI Note' }}
+    </button>
+    <span v-if="aiNoteStatus" class="text-sm text-gray-500">{{ aiNoteStatus }}</span>
+  </div>
+
   <textarea
     v-model="selectedSubmission.notes"
     @blur="saveNotes(selectedSubmission)"
@@ -262,6 +275,7 @@
     rows="4"
     class="w-full border border-gray-300 rounded p-3 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-300"
   ></textarea>
+
   <p class="text-xs text-gray-500 mt-1">Saved automatically when you click away.</p>
 </div>
         
@@ -463,6 +477,34 @@ const saveNotes = async (entry) => {
     console.error('Failed to save notes:', error.message)
   } else {
     console.log('✅ Notes saved')
+  }
+}
+
+const loadingNote = ref(false)
+const aiNoteStatus = ref('')
+
+const generateAINote = async () => {
+  if (!selectedSubmission.value) return
+  loadingNote.value = true
+  aiNoteStatus.value = ''
+
+  try {
+    const res = await fetch('/api/generateNote', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ submission: selectedSubmission.value })
+    })
+
+    const data = await res.json()
+    if (data.error) throw new Error(data.error)
+
+    selectedSubmission.value.notes = data.note || '—'
+    aiNoteStatus.value = 'AI note inserted. Review & edit before saving.'
+  } catch (err) {
+    console.error('❌ AI Note generation failed:', err)
+    aiNoteStatus.value = 'Could not generate AI note. Please try again.'
+  } finally {
+    loadingNote.value = false
   }
 }
 
