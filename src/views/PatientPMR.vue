@@ -486,22 +486,43 @@ const aiNoteStatus = ref('')
 const generateAINote = async () => {
   if (!selectedSubmission.value) return
   loadingNote.value = true
-  aiNoteStatus.value = ''
+  aiNoteStatus.value = 'Generating...'
 
   try {
-    const res = await fetch('/api/generateNote', {
+    // Step 1: Start prediction
+    const startRes = await fetch('/api/startNote', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ submission: selectedSubmission.value })
     })
 
-    const data = await res.json()
-    if (data.error) throw new Error(data.error)
+    const { id, error } = await startRes.json()
+    if (error || !id) throw new Error(error || 'No prediction ID returned')
 
-    selectedSubmission.value.notes = data.note || '—'
+    // Step 2: Poll Replicate until done
+    let done = false
+    let result
+    const timeout = Date.now() + 60000 // 60s timeout
+
+    while (!done && Date.now() < timeout) {
+      await new Promise(r => setTimeout(r, 1000))
+      const pollRes = await fetch(`https://api.replicate.com/v1/predictions/${id}`, {
+        headers: {
+          Authorization: `Token ${import.meta.env.VITE_REPLICATE_API_KEY}`
+        }
+      })
+      result = await pollRes.json()
+      if (result.status === 'succeeded' || result.status === 'failed') done = true
+    }
+
+    if (result.status !== 'succeeded') throw new Error('AI generation failed or timed out')
+
+    // Step 3: Insert into note field
+    selectedSubmission.value.notes = result.output?.join(' ') || '—'
     aiNoteStatus.value = 'AI note inserted. Review & edit before saving.'
+
   } catch (err) {
-    console.error('❌ AI Note generation failed:', err)
+    console.error('❌ AI polling failed:', err)
     aiNoteStatus.value = 'Could not generate AI note. Please try again.'
   } finally {
     loadingNote.value = false
