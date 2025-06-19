@@ -17,7 +17,7 @@ Generate a concise pharmacist-style summary for a contraceptive consultation:
 
 Respond with only the summary text.`
 
-  const llamaResponse = await fetch("https://api-inference.huggingface.co/models/meta-llama/Meta-Llama-3-8B-Instruct", {
+  const llamaResponse = await fetch("https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.2", {
     headers: {
       Authorization: `Bearer ${process.env.HF_API_KEY}`,
       "Content-Type": "application/json"
