@@ -1,56 +1,65 @@
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' })
+    return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { submission } = req.body
+  const { submission } = req.body;
 
   const prompt = `
-Summarise this contraceptive consultation into 2-4 clinical sentences for a pharmacist:
+Generate a brief clinical note for a UK pharmacist based on this contraceptive consultation:
 
-Patient: ${submission.firstName} ${submission.lastName}, DOB: ${submission.dob}
-Pill Choice: ${submission.pillChoice}
+Name: ${submission.firstName} ${submission.lastName}
+DOB: ${submission.dob}
+Preferred Pill: ${submission.pillChoice}
 Medical History: ${Array.isArray(submission.selectApplicable) ? submission.selectApplicable.join(', ') : 'None'}
-Extra Meds: ${submission.extraMeds || 'None'}
-BP: ${submission.bpSystolic}/${submission.bpDiastolic}
+Current Medications: ${submission.extraMeds || 'None'}
+Blood Pressure: ${submission.bpSystolic}/${submission.bpDiastolic}
 Height: ${submission.heightFt || submission.heightCm}, Weight: ${submission.weightSt || submission.weightKg}
-`
+
+Summarise suitability for contraception in 2–4 bullet points, highlighting key risks or considerations.
+`;
 
   try {
-    const response = await fetch("https://api-inference.huggingface.co/models/google/flan-t5-large", {
-      method: 'POST',
+    const replicateRes = await fetch("https://api.replicate.com/v1/predictions", {
+      method: "POST",
       headers: {
-        Authorization: `Bearer ${process.env.HF_API_KEY}`,
-        'Content-Type': 'application/json'
+        Authorization: `Token ${process.env.REPLICATE_API_KEY}`,
+        "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        inputs: prompt,
-        parameters: {
+        version: "db21e45e230c8cf3c519942df8eefc8ee600e1f7c5f8708ad4eecc3fd4effc31", // LLaMA 3 8B Instruct
+        input: {
+          prompt: prompt,
           max_new_tokens: 200,
-          return_full_text: false
+          temperature: 0.7
         }
       })
-    })
+    });
 
-    const raw = await response.text()
-    let data
-    try {
-      data = JSON.parse(raw)
-    } catch (err) {
-      console.error('❌ HF returned invalid JSON:', raw)
-      return res.status(500).json({ error: 'Hugging Face response was not JSON' })
+    const prediction = await replicateRes.json();
+
+    // Poll the endpoint until completion
+    let result = prediction;
+    while (result.status !== "succeeded" && result.status !== "failed") {
+      await new Promise(r => setTimeout(r, 1000)); // wait 1s
+      const poll = await fetch(`https://api.replicate.com/v1/predictions/${result.id}`, {
+        headers: {
+          Authorization: `Token ${process.env.REPLICATE_API_KEY}`
+        }
+      });
+      result = await poll.json();
     }
 
-    if (data.error) {
-      console.error('❌ HF API Error:', data.error)
-      return res.status(500).json({ error: data.error })
+    if (result.status === "succeeded") {
+      const outputText = result.output?.join(' ') || '—';
+      return res.status(200).json({ note: outputText });
+    } else {
+      console.error('❌ Replicate failed:', result.error);
+      return res.status(500).json({ error: 'AI generation failed' });
     }
-
-    const generatedText = data[0]?.generated_text || '—'
-    return res.status(200).json({ note: generatedText })
 
   } catch (err) {
-    console.error('❌ Unexpected failure:', err)
-    return res.status(500).json({ error: 'Unexpected error' })
+    console.error('❌ Unexpected error:', err);
+    return res.status(500).json({ error: 'Server error' });
   }
 }
