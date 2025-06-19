@@ -22,7 +22,7 @@ Respond with only the summary text.`
   console.log('Prompt:', prompt)
   console.log('HF_API_KEY:', process.env.HF_API_KEY ? 'Exists' : 'Missing')
 
-  const llamaResponse = await fetch("https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.2", {
+  const llamaResponse = await fetch("https://api-inference.huggingface.co/models/google/flan-t5-large", {
     headers: {
       Authorization: `Bearer ${process.env.HF_API_KEY}`,
       "Content-Type": "application/json"
