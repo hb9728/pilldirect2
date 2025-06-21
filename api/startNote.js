@@ -23,7 +23,7 @@ Generate a clinical summary in 2–4 bullet points for a pharmacist:
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        version: "db21e45e230c8cf3c519942df8eefc8ee600e1f7c5f8708ad4eecc3fd4effc31", // LLaMA 3 8B Instruct
+      version: "a05ef4bd013f86018cbe7148aa91870e485e71c9c57267f697eb4c0e5c34e4eb", // Mistral-7B-Instruct-v0.2
         input: {
           prompt,
           max_new_tokens: 200,
