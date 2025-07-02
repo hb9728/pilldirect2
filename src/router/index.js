@@ -10,7 +10,7 @@ const routes = [
   { path: '/', component: FormView },
   { path: '/admin/login', component: AdminLogin },
   { path: '/admin/dashboard', component: AdminDashboard, meta: { requiresAuth: true } },
-  { path: '/admin/patient/:patientId', component: PatientPMR, props: true, meta: { requiresAuth: true } }
+  { path: '/admin/patient/:patientId', component: PatientPMR, props: true, meta: { requiresAuth: true } },
   { path: '/admin/calendar', name: 'AdminCalendar', component: AdminCalendar }
 ]
 
