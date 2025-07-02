@@ -115,7 +115,7 @@ export default {
       },
       events: [], // populated on mount
       eventClick: (info) => {
-        selectedEvent.value = info.event.extendedProps.submission
+selectedEvent.value = info.event.extendedProps
         showModal.value = true
       }
     })
