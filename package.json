@@ -14,7 +14,7 @@
     "crypto-js": "^4.1.1",
     "html2pdf.js": "^0.10.1",
     "luxon": "^3.4.4",
-    "@vuepic/vue-datepicker": "^3.8.5"
+    "@vuepic/vue-datepicker": "11.0.2"
   },
   "devDependencies": {
     "vite": "^5.0.0",
