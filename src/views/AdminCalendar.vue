@@ -37,7 +37,9 @@
 import FullCalendar from '@fullcalendar/vue3'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
-import '@fullcalendar/core/main.css'
+
+// ✅ Correct CSS imports (safe for modern versions)
+import '@fullcalendar/common/main.css'
 import '@fullcalendar/daygrid/main.css'
 import '@fullcalendar/timegrid/main.css'
 
@@ -91,7 +93,7 @@ onMounted(async () => {
       const start = eventDate.set({ hour: +hour, minute: +minute })
       const end = start.plus({ minutes: 15 })
 
-      let color = '#facc15' // yellow for Pending
+      let color = '#facc15' // Pending
       if (row.status === 'Complete') color = '#4ade80'
       if (row.status === 'Rejected') color = '#f87171'
 
