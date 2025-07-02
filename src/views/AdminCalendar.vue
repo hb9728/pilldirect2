@@ -1,10 +1,11 @@
 <template>
-  <div class="min-h-screen bg-gray-50 p-6">
-    <div class="flex justify-between items-center mb-6">
-      <h2 class="text-2xl font-semibold">PillDirect.co.uk Booking Calendar</h2>
+  <div class="p-6">
+    <!-- Header -->
+    <div class="flex justify-between items-center mb-4">
+      <h1 class="text-xl font-semibold">PillDirect.co.uk Booking Calendar</h1>
       <div class="flex space-x-2">
         <RouterLink to="/admin/dashboard">
-          <button class="bg-gray-100 hover:bg-gray-200 text-gray-800 px-4 py-2 rounded text-sm border">
+          <button class="px-4 py-2 bg-gray-100 hover:bg-gray-200 border border-gray-300 rounded text-sm">
             ← Back to Dashboard
           </button>
         </RouterLink>
@@ -12,8 +13,22 @@
       </div>
     </div>
 
-    <div class="bg-white rounded-lg shadow border border-gray-200 p-4">
+    <!-- Calendar Card -->
+    <div class="bg-white p-4 rounded-lg shadow border border-gray-200 text-sm">
       <FullCalendar ref="fullCalendar" :options="calendarOptions" />
+    </div>
+
+    <!-- Legend -->
+    <div class="mt-4 text-sm flex gap-4 text-gray-700">
+      <div class="flex items-center gap-2">
+        <span class="w-3 h-3 bg-blue-500 rounded-full"></span> Pending
+      </div>
+      <div class="flex items-center gap-2">
+        <span class="w-3 h-3 bg-green-600 rounded-full"></span> Complete
+      </div>
+      <div class="flex items-center gap-2">
+        <span class="w-3 h-3 bg-red-500 rounded-full"></span> Rejected
+      </div>
     </div>
   </div>
 </template>
@@ -39,14 +54,25 @@ export default {
       initialView: 'timeGridWeek',
       slotMinTime: '09:00:00',
       slotMaxTime: '17:00:00',
+      slotDuration: '00:15:00',
+      slotLabelInterval: '01:00',
+      slotLabelFormat: { hour: 'numeric', minute: '2-digit', hour12: true },
       allDaySlot: false,
       height: 'auto',
+      nowIndicator: true,
       eventTimeFormat: {
         hour: '2-digit',
         minute: '2-digit',
         hour12: false
       },
-      events: [] // initially empty
+      eventDisplay: 'block',
+      eventTextColor: '#fff',
+      eventContent: function (arg) {
+        return {
+          html: `<div class="px-1 text-xs truncate">${arg.timeText} – ${arg.event.title}</div>`
+        }
+      },
+      events: [] // populated on mount
     })
 
     const fetchEvents = async () => {
@@ -59,7 +85,6 @@ export default {
         return
       }
 
-      // Convert to FullCalendar format
       const bookings = data
         .filter(sub => sub.contactDay && sub.contactTime)
         .map(sub => {
@@ -67,7 +92,7 @@ export default {
           return {
             title: `${sub.firstName} ${sub.lastName}`,
             start,
-            end: new Date(new Date(start).getTime() + 15 * 60000).toISOString(), // 15 min slot
+            end: new Date(new Date(start).getTime() + 15 * 60000).toISOString(),
             color:
               sub.status === 'Complete'
                 ? '#16a34a'
@@ -85,9 +110,7 @@ export default {
       router.push('/admin/login')
     }
 
-    onMounted(() => {
-      fetchEvents()
-    })
+    onMounted(fetchEvents)
 
     return {
       calendarOptions,
