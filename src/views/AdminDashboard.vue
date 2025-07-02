@@ -144,6 +144,9 @@
         <div><strong>Sex:</strong> {{ selectedSubmission.sex }}</div>
         <div><strong>Submitted:</strong> {{ formatDateTime(selectedSubmission.created_at) }}</div>
         <div><strong>Response ID:</strong> {{ selectedSubmission.responseId }}</div>
+        
+        <div><strong>Preferred Contact Day:</strong> {{ selectedSubmission.contactDay || '—' }}</div>
+        <div><strong>Preferred Contact Time:</strong> {{ selectedSubmission.contactTime || '—' }}</div>
 
         
         <div>
