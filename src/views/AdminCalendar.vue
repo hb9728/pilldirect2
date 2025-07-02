@@ -68,7 +68,7 @@
 
       <div>
         <label class="block text-sm font-semibold text-gray-700 mb-1">Submission Status</label>
-        <!--
+
         <select
           v-model="selectedEvent.status"
           @change="updateStatus(selectedEvent)"
@@ -83,16 +83,7 @@
           <option>Complete</option>
           <option>Rejected</option>
         </select>
-        -->
-        <select
-  v-model="selectedEvent.status"
-  @change="updateStatus"
-  class="mt-1 border rounded px-3 py-2 text-sm"
->
-  <option value="Pending">Pending</option>
-  <option value="Complete">Complete</option>
-  <option value="Rejected">Rejected</option>
-</select>
+
       </div>
     </div>
   </div>
