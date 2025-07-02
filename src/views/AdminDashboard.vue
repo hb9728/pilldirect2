@@ -10,7 +10,7 @@
 
     <template>
 <div class="min-h-screen bg-gray-50 p-6">
-    <div class="flex justify-between items-center mb-6">
+<div class="flex justify-between items-center mb-6">
   <h2 class="text-2xl font-semibold">PillDirect.co.uk Submissions Dashboard</h2>
 
   <div class="relative">
@@ -31,11 +31,14 @@
       >
         📅 View Calendar
       </button>
-      <!-- Future items go here -->
+      <button
+        class="w-full text-left px-4 py-2 hover:bg-gray-100 text-sm text-red-600"
+        @click="logout"
+      >
+        🚪 Logout
+      </button>
     </div>
   </div>
-
-  <button @click="logout" class="ml-4 text-red-600 hover:underline text-sm">Logout</button>
 </div>
 
 
