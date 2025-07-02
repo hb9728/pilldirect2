@@ -367,4 +367,27 @@ const getSmartPages = computed(() => {
     menuOpen.value = !menuOpen.value
   }
 
+  import { ref, onMounted, onBeforeUnmount } from 'vue'
+
+const menuOpen = ref(false)
+const menuRef = ref(null)
+
+const toggleMenu = () => {
+  menuOpen.value = !menuOpen.value
+}
+
+const handleClickOutside = (event) => {
+  if (menuRef.value && !menuRef.value.contains(event.target)) {
+    menuOpen.value = false
+  }
+}
+
+onMounted(() => {
+  document.addEventListener('click', handleClickOutside)
+})
+
+onBeforeUnmount(() => {
+  document.removeEventListener('click', handleClickOutside)
+})
+  
 </script>
