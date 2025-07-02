@@ -1,5 +1,3 @@
-this is the code from the admincalendar.vue file
-
 <template>
   <div class="p-6">
     <div class="flex justify-between items-center mb-4">
