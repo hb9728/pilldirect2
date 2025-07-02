@@ -63,20 +63,24 @@
       <div>
         <label class="block text-sm font-semibold text-gray-700 mb-1">Submission Status</label>
 
-        <select
-          v-model="selectedEvent.status"
-          @change="updateStatus(selectedEvent)"
-          :class="[
-            'border rounded px-3 py-2 shadow-sm transition-colors',
-            selectedEvent.status === 'Pending' ? 'bg-yellow-100 text-yellow-800 border-yellow-400' :
-            selectedEvent.status === 'Complete' ? 'bg-green-100 text-green-800 border-green-400' :
-            selectedEvent.status === 'Rejected' ? 'bg-red-100 text-red-800 border-red-400' : ''
-          ]"
-        >
-          <option>Pending</option>
-          <option>Complete</option>
-          <option>Rejected</option>
-        </select>
+<select
+  v-model="selectedEvent.status"
+  @change="updateStatus"
+  :class="[
+    'mt-1 border rounded px-3 py-2 text-sm shadow-sm transition-colors',
+    selectedEvent.status === 'Pending'
+      ? 'bg-yellow-100 text-yellow-800 border-yellow-400'
+      : selectedEvent.status === 'Complete'
+      ? 'bg-green-100 text-green-800 border-green-400'
+      : selectedEvent.status === 'Rejected'
+      ? 'bg-red-100 text-red-800 border-red-400'
+      : ''
+  ]"
+>
+  <option value="Pending">Pending</option>
+  <option value="Complete">Complete</option>
+  <option value="Rejected">Rejected</option>
+</select>
 
       </div>
     </div>
