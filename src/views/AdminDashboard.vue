@@ -219,7 +219,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, watch } from 'vue'
+import { ref, computed, onMounted, watch, onBeforeUnmount } from 'vue'
 import { useRouter } from 'vue-router'
 import { supabase } from '../supabase'
 import sha256 from 'crypto-js/sha256'
@@ -233,6 +233,24 @@ const searchQuery = ref('')
 const currentPage = ref(1)
 const itemsPerPage = ref(10)
 
+// Menu logic
+const menuOpen = ref(false)
+const menuRef = ref(null)
+const toggleMenu = () => {
+  menuOpen.value = !menuOpen.value
+}
+const handleClickOutside = (event) => {
+  if (menuRef.value && !menuRef.value.contains(event.target)) {
+    menuOpen.value = false
+  }
+}
+onMounted(() => {
+  document.addEventListener('click', handleClickOutside)
+})
+onBeforeUnmount(() => {
+  document.removeEventListener('click', handleClickOutside)
+})
+
 onMounted(async () => {
   const { data: { session } } = await supabase.auth.getSession()
   if (!session) {
@@ -243,14 +261,12 @@ onMounted(async () => {
 const logout = async () => {
   await supabase.auth.signOut()
   router.replace('/admin/login')
-  location.reload() // full reload to flush memory state
+  location.reload()
 }
 
 const formatDateTime = (isoString) => {
   if (!isoString) return ''
-  return DateTime.fromISO(isoString, { zone: 'utc' }) // read as UTC
-    .setZone('Europe/London')                         // convert to UK time
-    .toFormat('dd LLL yyyy, HH:mm')                   // e.g. 18 Jun 2025, 14:05
+  return DateTime.fromISO(isoString, { zone: 'utc' }).setZone('Europe/London').toFormat('dd LLL yyyy, HH:mm')
 }
 
 const fetchSubmissions = async () => {
@@ -258,14 +274,12 @@ const fetchSubmissions = async () => {
     .from('submissions')
     .select('*')
     .order('created_at', { ascending: false })
-
   if (error) {
     console.error('Error loading submissions:', error.message)
   } else {
     submissions.value = data
   }
 }
-
 onMounted(fetchSubmissions)
 
 const filteredSubmissions = computed(() => {
@@ -277,35 +291,22 @@ const filteredSubmissions = computed(() => {
   )
 })
 
-const totalPages = computed(() => {
-  return Math.ceil(filteredSubmissions.value.length / itemsPerPage.value) || 1
-})
-
+const totalPages = computed(() => Math.ceil(filteredSubmissions.value.length / itemsPerPage.value) || 1)
 const paginatedSubmissions = computed(() => {
-  const start = Math.max(0, (currentPage.value - 1) * itemsPerPage.value)
-  const end = Math.min(filteredSubmissions.value.length, start + itemsPerPage.value)
-  return filteredSubmissions.value.slice(start, end)
+  const start = (currentPage.value - 1) * itemsPerPage.value
+  return filteredSubmissions.value.slice(start, start + itemsPerPage.value)
 })
 
 const changePage = (newPage) => {
-  const maxPage = totalPages.value
-  if (newPage < 1 || newPage > maxPage) return
+  if (newPage < 1 || newPage > totalPages.value) return
   currentPage.value = newPage
 }
 
 watch([filteredSubmissions, itemsPerPage], () => {
   const maxPage = totalPages.value
-  if (currentPage.value > maxPage) {
-    currentPage.value = maxPage
-  }
-})
-
-watch([filteredSubmissions, itemsPerPage], () => {
-  const maxPage = Math.ceil(filteredSubmissions.value.length / itemsPerPage.value) || 1
   if (currentPage.value > maxPage) currentPage.value = maxPage
-})  
-
-  watch(currentPage, () => {
+})
+watch(currentPage, () => {
   selectedSubmission.value = null
 })
 
@@ -318,12 +319,10 @@ const updateStatus = async (entry) => {
     .from('submissions')
     .update({ status: entry.status })
     .eq('responseId', entry.responseId)
-
   if (error) {
     console.error('Error updating status:', error.message)
   } else {
-    console.log('✅ Status updated')
-    await fetchSubmissions() // <-- re-fetch latest from Supabase
+    await fetchSubmissions()
   }
 }
 
@@ -336,58 +335,14 @@ const getSmartPages = computed(() => {
   const pages = []
   const total = totalPages.value
   const current = currentPage.value
-
-  if (total <= 7) {
-    return Array.from({ length: total }, (_, i) => i + 1)
-  }
-
+  if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1)
   pages.push(1)
-
-  if (current > 4) {
-    pages.push('...')
-  }
-
-  const start = Math.max(2, current - 2)
-  const end = Math.min(total - 1, current + 2)
-  for (let i = start; i <= end; i++) {
+  if (current > 4) pages.push('...')
+  for (let i = Math.max(2, current - 2); i <= Math.min(total - 1, current + 2); i++) {
     pages.push(i)
   }
-
-  if (current + 2 < total - 1) {
-    pages.push('...')
-  }
-
+  if (current + 2 < total - 1) pages.push('...')
   pages.push(total)
   return pages
 })
-
-  const menuOpen = ref(false)
-
-  const toggleMenu = () => {
-    menuOpen.value = !menuOpen.value
-  }
-
-  import { ref, onMounted, onBeforeUnmount } from 'vue'
-
-const menuOpen = ref(false)
-const menuRef = ref(null)
-
-const toggleMenu = () => {
-  menuOpen.value = !menuOpen.value
-}
-
-const handleClickOutside = (event) => {
-  if (menuRef.value && !menuRef.value.contains(event.target)) {
-    menuOpen.value = false
-  }
-}
-
-onMounted(() => {
-  document.addEventListener('click', handleClickOutside)
-})
-
-onBeforeUnmount(() => {
-  document.removeEventListener('click', handleClickOutside)
-})
-  
 </script>
