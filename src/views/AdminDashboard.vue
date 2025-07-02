@@ -361,4 +361,10 @@ const getSmartPages = computed(() => {
   return pages
 })
 
+  const menuOpen = ref(false)
+
+  const toggleMenu = () => {
+    menuOpen.value = !menuOpen.value
+  }
+
 </script>
