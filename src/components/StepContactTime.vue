@@ -64,9 +64,6 @@ import '@vuepic/vue-datepicker/dist/main.css'
 
 const formData = inject('formData')
 
-const selectedDate = ref(null)
-const contactTime = ref('')
-
 const availableTimes = [
   '09:00', '09:15', '09:30', '09:45',
   '10:00', '10:15', '10:30', '10:45',
@@ -78,13 +75,17 @@ const availableTimes = [
   '16:00', '16:15', '16:30', '16:45'
 ]
 
-// Disable weekends (0 = Sunday, 6 = Saturday)
+// Refs initialized from formData if available
+const selectedDate = ref(formData.contactDay ? new Date(formData.contactDay) : null)
+const contactTime = ref(formData.contactTime || '')
+
+// Disable weekends
 const disableWeekends = (date) => {
   const day = date.getDay()
   return day === 0 || day === 6
 }
 
-// Write selected values into formData
+// Write changes back into formData
 watch([selectedDate, contactTime], () => {
   formData.contactDay = selectedDate.value
     ? selectedDate.value.toISOString().split('T')[0]
