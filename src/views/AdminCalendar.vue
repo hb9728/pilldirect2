@@ -82,12 +82,12 @@ export default {
       showModal.value = false
     }
     
-    const goToPMR = () => {
-      if (!selectedEvent.value?.submission?.email) return
-      const email = selectedEvent.value.submission.email.trim().toLowerCase()
-      const hash = sha256(email).toString()
-      router.push(`/admin/patient/${hash}?open=${selectedEvent.value.submission.responseId}`)
-    }
+const goToPMR = () => {
+  if (!selectedEvent.value?.email) return
+  const email = selectedEvent.value.email.trim().toLowerCase()
+  const hash = sha256(email).toString()
+  router.push(`/admin/patient/${hash}?open=${selectedEvent.value.responseId}`)
+}
     
     const calendarOptions = ref({
       plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
@@ -114,10 +114,10 @@ export default {
         }
       },
       events: [], // populated on mount
-      eventClick: (info) => {
-selectedEvent.value = info.event.extendedProps
-        showModal.value = true
-      }
+eventClick: (info) => {
+  selectedEvent.value = info.event.extendedProps.submission
+  showModal.value = true
+}
     })
 
     const fetchEvents = async () => {
