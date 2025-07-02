@@ -156,7 +156,7 @@ const goToPMR = () => {
       eventTextColor: '#fff',
       eventContent: function (arg) {
         return {
-          html: `<div class="px-1 text-xs truncate">${arg.timeText} – ${arg.event.title}</div>`
+          html: `<div class="px-1 text-xs truncate cursor-pointer">${arg.timeText} – ${arg.event.title}</div>`
         }
       },
       events: [], // populated on mount
