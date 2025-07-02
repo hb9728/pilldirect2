@@ -1,5 +1,5 @@
 <!--
-  <div class="min-h-screen bg-gray-50 p-6">
+  
     <div class="flex justify-between items-center mb-6">
       <h2 class="text-2xl font-semibold">PillDirect.co.uk Submissions Dashboard</h2>
       <button @click="logout" class="text-red-600 hover:underline">Logout</button>
@@ -9,7 +9,7 @@
 
 
     <template>
-
+<div class="min-h-screen bg-gray-50 p-6">
     <div class="flex justify-between items-center mb-6">
   <h2 class="text-2xl font-semibold">PillDirect.co.uk Submissions Dashboard</h2>
 
