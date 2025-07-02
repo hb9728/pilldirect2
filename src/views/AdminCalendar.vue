@@ -19,20 +19,24 @@
     </div>
 
     <FullCalendar
-      style="min-height: 600px;"
       class="bg-white rounded shadow w-full"
+      style="min-height: 600px;"
       :plugins="[dayGridPlugin, timeGridPlugin]"
       initial-view="timeGridWeek"
       :events="events"
       :slot-min-time="'09:00:00'"
       :slot-max-time="'17:00:00'"
       :all-day-slot="false"
-      :eventTimeFormat="{ hour: '2-digit', minute: '2-digit', hour12: false }"
+      :event-time-format="{ hour: '2-digit', minute: '2-digit', hour12: false }"
     />
   </div>
 </template>
 
 <script setup>
+import '@fullcalendar/core/index.css'
+import '@fullcalendar/daygrid/index.css'
+import '@fullcalendar/timegrid/index.css'
+
 import FullCalendar from '@fullcalendar/vue3'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
