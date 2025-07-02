@@ -64,6 +64,7 @@ export default {
         minute: '2-digit',
         hour12: false
       },
+      eventClassNames: ['rounded-md', 'px-2', 'py-1', 'text-sm', 'shadow-sm', 'hover:shadow-md', 'transition'],
       eventDisplay: 'block',
       eventTextColor: '#fff',
       eventContent: function (arg) {
@@ -85,21 +86,21 @@ export default {
       }
 
       const bookings = data
-        .filter(sub => sub.contactDay && sub.contactTime)
-        .map(sub => {
-          const start = `${sub.contactDay}T${sub.contactTime}`
-          return {
-            title: `${sub.firstName} ${sub.lastName}`,
-            start,
-            end: new Date(new Date(start).getTime() + 15 * 60000).toISOString(),
-            color:
-              sub.status === 'Complete'
-                ? '#16a34a'
-                : sub.status === 'Rejected'
-                ? '#dc2626'
-                : '#2563eb'
-          }
-        })
+  .filter(sub => sub.contactDay && sub.contactTime)
+  .map(sub => {
+    const start = `${sub.contactDay}T${sub.contactTime}`
+    return {
+      title: `${sub.firstName} ${sub.lastName}`,
+      start,
+      end: new Date(new Date(start).getTime() + 15 * 60000).toISOString(),
+      color:
+        sub.status === 'Complete'
+          ? '#22c55e'   // Tailwind green-500
+          : sub.status === 'Rejected'
+          ? '#ef4444'   // Tailwind red-500
+          : '#facc15'   // Tailwind yellow-400 (Pending)
+    }
+  })
 
       calendarOptions.value.events = bookings
     }
@@ -124,12 +125,21 @@ export default {
   font-family: 'Inter', sans-serif;
   font-size: 0.875rem; /* Tailwind text-sm */
 }
+
+/* Tighter rows */
 .fc-timegrid-slot {
   min-height: 24px !important;
 }
+
+/* Compact event title display */
 .fc-event-title {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+/* Optional: Soften the background grid lines */
+.fc-timegrid-slot, .fc-scrollgrid {
+  border-color: #e5e7eb !important; /* Tailwind gray-200 */
 }
 </style>
