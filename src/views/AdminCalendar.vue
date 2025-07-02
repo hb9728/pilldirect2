@@ -22,7 +22,7 @@ import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from '@fullcalendar/interaction'
 import { useRouter } from 'vue-router'
-import { supabase } from '@/supabase' // adjust path if needed
+import { supabase } from '../supabase'
 
 export default {
   components: {
