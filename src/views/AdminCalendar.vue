@@ -119,3 +119,18 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.fc {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.875rem; /* Tailwind text-sm */
+}
+.fc-timegrid-slot {
+  min-height: 24px !important;
+}
+.fc-event-title {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+</style>
