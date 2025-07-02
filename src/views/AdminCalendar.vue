@@ -28,8 +28,6 @@
       :slot-max-time="'17:00:00'"
       :all-day-slot="false"
       :eventTimeFormat="{ hour: '2-digit', minute: '2-digit', hour12: false }"
-      height="auto"
-      class="bg-white rounded shadow"
     />
   </div>
 </template>
