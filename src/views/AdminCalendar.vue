@@ -304,16 +304,22 @@ return {
   cursor: pointer;
 }
 
+</style>
+
+<style>
+/* Calendar event status colors */
 .event-complete {
   background-color: #22c55e !important; /* green-500 */
   border-color: #22c55e !important;
   color: white !important;
 }
+
 .event-rejected {
   background-color: #ef4444 !important; /* red-500 */
   border-color: #ef4444 !important;
   color: white !important;
 }
+
 .event-pending {
   background-color: #facc15 !important; /* yellow-400 */
   border-color: #facc15 !important;
