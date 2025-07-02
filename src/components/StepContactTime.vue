@@ -1,5 +1,6 @@
 <template>
   <div class="space-y-6">
+        <h2 class="text-xl font-semibold mb-4">Contact Date and Time</h2>
     <div>
       <label for="contactDay" class="block text-sm font-medium text-gray-700 mb-1">
         Choose a day for us to call you
