@@ -4,12 +4,14 @@ import AdminDashboard from '../views/AdminDashboard.vue'
 import FormView from '../views/FormView.vue'
 import PatientPMR from '../views/PatientPMR.vue'
 import { supabase } from '../supabase'
+import AdminCalendar from '../views/AdminCalendar.vue'
 
 const routes = [
   { path: '/', component: FormView },
   { path: '/admin/login', component: AdminLogin },
   { path: '/admin/dashboard', component: AdminDashboard, meta: { requiresAuth: true } },
   { path: '/admin/patient/:patientId', component: PatientPMR, props: true, meta: { requiresAuth: true } }
+  { path: '/admin/calendar', name: 'AdminCalendar', component: AdminCalendar }
 ]
 
 const router = createRouter({
