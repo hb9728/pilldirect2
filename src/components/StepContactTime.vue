@@ -53,26 +53,6 @@
         Next
       </button>
     </div>
-
-    <div>
-      <label for="contactTime" class="block text-sm font-medium text-gray-700 mb-1">
-        Choose a time (between 9am and 4:30pm)
-      </label>
-      <select
-        id="contactTime"
-        v-model="contactTime"
-        class="border rounded px-3 py-2 w-full"
-      >
-        <option disabled value="">Select time</option>
-        <option
-          v-for="time in availableTimes"
-          :key="time"
-          :value="time"
-        >
-          {{ time }}
-        </option>
-      </select>
-    </div>
   </div>
 </template>
 
