@@ -33,7 +33,7 @@
 </template>
 
 <script setup>
-import '@fullcalendar/core/vdom' // fix for vue3 + Vite HMR
+// import '@fullcalendar/core/vdom' // fix for vue3 + Vite HMR
 import '@fullcalendar/common/main.css'
 import '@fullcalendar/daygrid/main.css'
 import '@fullcalendar/timegrid/main.css'
