@@ -14,7 +14,7 @@
 
     <!-- Calendar Card -->
     <div class="bg-white p-4 rounded-lg shadow border border-gray-200 text-sm">
-      <FullCalendar ref="fullCalendar" :options="calendarOptions" />
+      <FullCalendar ref="calendarRef" :options="calendarOptions" />
     </div>
 
 
@@ -118,6 +118,7 @@ export default {
     FullCalendar
   },
   setup() {
+    const calendarRef = ref(null)
     const router = useRouter()
 
     const selectedEvent = ref(null)
