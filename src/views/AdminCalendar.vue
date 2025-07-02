@@ -1,3 +1,22 @@
+this is the code from the admincalendar.vue file
+
+<template>
+  <div class="p-6">
+    <div class="flex justify-between items-center mb-4">
+      <h1 class="text-xl font-semibold">Booking Calendar</h1>
+      <div class="flex space-x-2">
+        <RouterLink to="/admin/dashboard">
+          <button class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300">← Back to Dashboard</button>
+        </RouterLink>
+        <button @click="logout" class="text-red-600 hover:underline">Logout</button>
+      </div>
+    </div>
+
+    <!-- Calendar -->
+    <FullCalendar ref="fullCalendar" :options="calendarOptions" />
+  </div>
+</template>
+
 <script>
 import { ref, onMounted } from 'vue'
 import FullCalendar from '@fullcalendar/vue3'
