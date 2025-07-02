@@ -1,22 +1,3 @@
-<template>
-  <div class="p-6">
-    <div class="flex justify-between items-center mb-4">
-      <h1 class="text-xl font-semibold">Booking Calendar</h1>
-      <div class="flex space-x-2">
-        <RouterLink to="/admin/dashboard">
-<button class="px-4 py-2 bg-gray-800 text-white rounded hover:bg-gray-700">
-  ← Back to Dashboard
-</button>
-        </RouterLink>
-        <button @click="logout" class="text-red-600 hover:underline">Logout</button>
-      </div>
-    </div>
-
-    <!-- Calendar -->
-    <FullCalendar ref="fullCalendar" :options="calendarOptions" />
-  </div>
-</template>
-
 <script>
 import { ref, onMounted } from 'vue'
 import FullCalendar from '@fullcalendar/vue3'
@@ -33,28 +14,20 @@ export default {
   setup() {
     const router = useRouter()
 
-const calendarOptions = ref({
-  plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
-  initialView: 'timeGridWeek',
-  slotMinTime: '09:00:00',
-  slotMaxTime: '17:00:00',
-  allDaySlot: false,
-  height: 'auto',
-  eventTimeFormat: {
-    hour: '2-digit',
-    minute: '2-digit',
-    hour12: false
-  },
-  events: events.value, // from Supabase
-  eventClassNames() {
-    return ['bg-blue-600', 'text-white', 'rounded', 'px-1', 'py-0.5', 'text-xs', 'font-medium', 'overflow-hidden']
-  },
-  eventContent(arg) {
-    return {
-      html: `<div>${arg.timeText} – ${arg.event.title}</div>`
-    }
-  }
-})
+    const calendarOptions = ref({
+      plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
+      initialView: 'timeGridWeek',
+      slotMinTime: '09:00:00',
+      slotMaxTime: '17:00:00',
+      allDaySlot: false,
+      height: 'auto',
+      eventTimeFormat: {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false
+      },
+      events: [] // initially empty
+    })
 
     const fetchEvents = async () => {
       const { data, error } = await supabase
