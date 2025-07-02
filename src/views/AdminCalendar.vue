@@ -19,6 +19,8 @@
     </div>
 
     <FullCalendar
+      style="min-height: 600px;"
+      class="bg-white rounded shadow w-full"
       :plugins="[dayGridPlugin, timeGridPlugin]"
       initial-view="timeGridWeek"
       :events="events"
