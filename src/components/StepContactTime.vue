@@ -1,6 +1,7 @@
 <template>
   <div class="space-y-6">
-        <h2 class="text-xl font-semibold mb-4">Contact Date and Time</h2>
+    <h2 class="text-xl font-semibold mb-4">Contact Date and Time</h2>
+
     <div>
       <label for="contactDay" class="block text-sm font-medium text-gray-700 mb-1">
         Choose a day for us to call you
@@ -16,7 +17,6 @@
       />
     </div>
 
-    
     <div>
       <label for="contactTime" class="block text-sm font-medium text-gray-700 mb-1">
         Choose a time (between 9am and 4:45pm)
@@ -58,12 +58,11 @@
 </template>
 
 <script setup>
-import { ref, watch } from 'vue'
+import { ref, watch, inject } from 'vue'
 import Datepicker from '@vuepic/vue-datepicker'
 import '@vuepic/vue-datepicker/dist/main.css'
 
-const props = defineProps(['modelValue'])
-const emit = defineEmits(['update:modelValue'])
+const formData = inject('formData')
 
 const selectedDate = ref(null)
 const contactTime = ref('')
@@ -85,11 +84,11 @@ const disableWeekends = (date) => {
   return day === 0 || day === 6
 }
 
-// Emit changes to parent form when values change
+// Write selected values into formData
 watch([selectedDate, contactTime], () => {
-  emit('update:modelValue', {
-    contactDay: selectedDate.value ? selectedDate.value.toISOString().split('T')[0] : '',
-    contactTime: contactTime.value
-  })
+  formData.contactDay = selectedDate.value
+    ? selectedDate.value.toISOString().split('T')[0]
+    : ''
+  formData.contactTime = contactTime.value
 })
 </script>
