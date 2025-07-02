@@ -88,7 +88,16 @@ onMounted(async () => {
   const today = DateTime.now().setZone('Europe/London')
   const nextWeekStart = today.startOf('week').plus({ weeks: 1 })
 
-  events.value = data
+events.value = [
+  {
+    id: 'test1',
+    title: 'Demo Event',
+    start: DateTime.now().set({ hour: 10, minute: 0 }).toISO(),
+    end: DateTime.now().set({ hour: 10, minute: 15 }).toISO(),
+    backgroundColor: '#facc15',
+    borderColor: '#facc15'
+  }
+]
     .filter(row => row.contactDay && row.contactTime && dayMap[row.contactDay])
     .map(row => {
       const dayNum = dayMap[row.contactDay]
