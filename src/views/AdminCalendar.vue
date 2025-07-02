@@ -22,21 +22,48 @@
   v-if="showModal"
   class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50"
 >
-  <div class="bg-white p-6 rounded shadow-md w-full max-w-md relative">
-    <button @click="closeModal" class="absolute top-2 right-2 text-gray-400 hover:text-black">×</button>
-    <h2 class="text-lg font-bold mb-2">Booking Details</h2>
+  <div class="bg-white p-6 rounded shadow-md w-full max-w-4xl relative">
+    <button @click="closeModal" class="absolute top-2 right-2 text-gray-400 hover:text-black text-2xl">×</button>
 
-    <p><strong>Name:</strong> {{ selectedEvent.firstName }} {{ selectedEvent.lastName }}</p>
-    <p><strong>Email:</strong> {{ selectedEvent.email }}</p>
-    <p><strong>Status:</strong> {{ selectedEvent.status }}</p>
-
-    <div class="mt-4">
+    <div class="flex justify-between items-center mb-4">
+      <h2 class="text-lg font-bold">Submission Details</h2>
       <button
         @click="goToPMR"
-        class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+        class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 text-sm"
       >
-        View Full PMR →
+        Open Full PMR →
       </button>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm text-gray-800">
+      <div><strong>Name:</strong> {{ selectedEvent.firstName }} {{ selectedEvent.lastName }}</div>
+      <div><strong>DOB:</strong> {{ selectedEvent.dob || '—' }}</div>
+      <div><strong>Email:</strong> {{ selectedEvent.email }}</div>
+      <div><strong>Phone:</strong> {{ selectedEvent.phone || '—' }}</div>
+      <div><strong>Address:</strong> {{ selectedEvent.address1 || '' }} {{ selectedEvent.address2 || '' }}, {{ selectedEvent.city || '' }}, {{ selectedEvent.postcode || '' }}</div>
+      <div><strong>Sex:</strong> {{ selectedEvent.sex || '—' }}</div>
+      <div><strong>Submitted:</strong> {{ formatDateTime(selectedEvent.created_at) }}</div>
+      <div><strong>Response ID:</strong> {{ selectedEvent.responseId }}</div>
+      <div><strong>Preferred Contact Day:</strong> {{ selectedEvent.contactDay || '—' }}</div>
+      <div><strong>Preferred Contact Time:</strong> {{ selectedEvent.contactTime || '—' }}</div>
+
+      <div>
+        <label class="block text-sm font-semibold text-gray-700 mb-1">Submission Status</label>
+        <select
+          v-model="selectedEvent.status"
+          @change="updateStatus(selectedEvent)"
+          :class="[
+            'border rounded px-3 py-2 shadow-sm transition-colors',
+            selectedEvent.status === 'Pending' ? 'bg-yellow-100 text-yellow-800 border-yellow-400' :
+            selectedEvent.status === 'Complete' ? 'bg-green-100 text-green-800 border-green-400' :
+            selectedEvent.status === 'Rejected' ? 'bg-red-100 text-red-800 border-red-400' : ''
+          ]"
+        >
+          <option>Pending</option>
+          <option>Complete</option>
+          <option>Rejected</option>
+        </select>
+      </div>
     </div>
   </div>
 </div>
@@ -65,6 +92,7 @@ import interactionPlugin from '@fullcalendar/interaction'
 import { useRouter } from 'vue-router'
 import { supabase } from '../supabase'
 import sha256 from 'crypto-js/sha256'
+import { DateTime } from 'luxon'
 
 export default {
   components: {
@@ -155,15 +183,34 @@ eventClick: (info) => {
       router.push('/admin/login')
     }
 
+    const formatDateTime = (isoString) => {
+  if (!isoString) return ''
+  return DateTime.fromISO(isoString, { zone: 'utc' }).setZone('Europe/London').toFormat('dd LLL yyyy, HH:mm')
+}
+
+const updateStatus = async (entry) => {
+  const { error } = await supabase
+    .from('submissions')
+    .update({ status: entry.status })
+    .eq('responseId', entry.responseId)
+  if (error) {
+    console.error('Error updating status:', error.message)
+  } else {
+    await fetchEvents()
+  }
+}
+
     onMounted(fetchEvents)
 
-   return {
+return {
   calendarOptions,
   logout,
   selectedEvent,
   showModal,
   closeModal,
-  goToPMR
+  goToPMR,
+  formatDateTime,
+  updateStatus
 }
 
   }
