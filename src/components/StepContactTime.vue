@@ -38,7 +38,8 @@
 
 <script setup>
 import { ref, watch } from 'vue'
-import Datepicker from 'vue3-datepicker'
+import Datepicker from '@vuepic/vue-datepicker'
+import '@vuepic/vue-datepicker/dist/main.css'
 
 const props = defineProps(['modelValue'])
 const emit = defineEmits(['update:modelValue'])
