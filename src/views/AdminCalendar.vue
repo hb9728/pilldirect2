@@ -22,7 +22,7 @@
     <FullCalendar
       class="bg-white rounded shadow w-full"
       :plugins="[dayGridPlugin, timeGridPlugin]"
-      initial-view="timeGridWeek"
+      initial-view="dayGridWeek"
       :events="events"
       :slot-min-time="'09:00:00'"
       :slot-max-time="'17:00:00'"
