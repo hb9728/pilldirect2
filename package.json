@@ -14,7 +14,11 @@
     "crypto-js": "^4.1.1",
     "html2pdf.js": "^0.10.1",
     "luxon": "^3.4.4",
-    "@vuepic/vue-datepicker": "11.0.2"
+    "@vuepic/vue-datepicker": "11.0.2",
+    "@fullcalendar/core": "^6.1.11",
+    "@fullcalendar/daygrid": "^6.1.11",
+    "@fullcalendar/timegrid": "^6.1.11",
+    "@fullcalendar/vue3": "^6.1.11"
   },
   "devDependencies": {
     "vite": "^5.0.0",
