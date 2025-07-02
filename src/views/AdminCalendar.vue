@@ -18,18 +18,17 @@
       </div>
     </div>
 
-    <div class="bg-white rounded shadow w-full overflow-auto">
-      <FullCalendar
-        :plugins="[dayGridPlugin, timeGridPlugin]"
-        initial-view="timeGridWeek"
-        :events="events"
-        :slot-min-time="'09:00:00'"
-        :slot-max-time="'17:00:00'"
-        :all-day-slot="false"
-        :event-time-format="{ hour: '2-digit', minute: '2-digit', hour12: false }"
-        :height="700"
-      />
-    </div>
+    <FullCalendar
+      class="bg-white rounded shadow w-full"
+      :plugins="[dayGridPlugin, timeGridPlugin]"
+      initial-view="timeGridWeek"
+      :events="events"
+      :slot-min-time="'09:00:00'"
+      :slot-max-time="'17:00:00'"
+      :all-day-slot="false"
+      :eventTimeFormat="{ hour: '2-digit', minute: '2-digit', hour12: false }"
+      style="min-height: 600px;"
+    />
   </div>
 </template>
 
@@ -37,9 +36,7 @@
 import FullCalendar from '@fullcalendar/vue3'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
-
-// ✅ Correct CSS for FullCalendar v6+
-import '@fullcalendar/common/main.css'
+import '@fullcalendar/core/main.css'
 import '@fullcalendar/daygrid/main.css'
 import '@fullcalendar/timegrid/main.css'
 
@@ -69,7 +66,7 @@ onMounted(async () => {
     .select('firstName, lastName, contactDay, contactTime, status, responseId')
 
   if (error) {
-    console.error('Error fetching events:', error)
+    console.error('❌ Error fetching events:', error)
     return
   }
 
@@ -84,16 +81,7 @@ onMounted(async () => {
   const today = DateTime.now().setZone('Europe/London')
   const nextWeekStart = today.startOf('week').plus({ weeks: 1 })
 
-events.value = [
-  {
-    id: 'test-event',
-    title: 'Test Booking',
-    start: DateTime.now().set({ hour: 10, minute: 0 }).toISO(),
-    end: DateTime.now().set({ hour: 10, minute: 15 }).toISO(),
-    backgroundColor: '#3b82f6',
-    borderColor: '#3b82f6'
-  }
-]
+  events.value = data
     .filter(row => row.contactDay && row.contactTime && dayMap[row.contactDay])
     .map(row => {
       const dayNum = dayMap[row.contactDay]
@@ -102,7 +90,7 @@ events.value = [
       const start = eventDate.set({ hour: +hour, minute: +minute })
       const end = start.plus({ minutes: 15 })
 
-      let color = '#facc15' // Pending
+      let color = '#facc15' // yellow for Pending
       if (row.status === 'Complete') color = '#4ade80'
       if (row.status === 'Rejected') color = '#f87171'
 
@@ -116,6 +104,6 @@ events.value = [
       }
     })
 
-  console.log('📅 Loaded events:', events.value)
+  console.log('📅 Events loaded:', events.value)
 })
 </script>
