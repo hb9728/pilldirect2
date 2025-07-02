@@ -193,25 +193,25 @@ eventClick: (info) => {
         return
       }
 
-      const bookings = data
+const bookings = data
   .filter(sub => sub.contactDay && sub.contactTime)
   .map(sub => {
-  const start = `${sub.contactDay}T${sub.contactTime}`
-return {
-  title: `${sub.firstName} ${sub.lastName}`,
-  start,
-  end: new Date(new Date(start).getTime() + 15 * 60000).toISOString(),
-  classNames: [
-    'text-white',
-    sub.status === 'Complete'
-      ? 'bg-green-500'
-      : sub.status === 'Rejected'
-      ? 'bg-red-500'
-      : 'bg-yellow-400'
-  ],
-  submission: sub
-}
-})
+    const start = `${sub.contactDay}T${sub.contactTime}`;
+    const statusClass =
+      sub.status === 'Complete'
+        ? 'event-complete'
+        : sub.status === 'Rejected'
+        ? 'event-rejected'
+        : 'event-pending';
+
+    return {
+      title: `${sub.firstName} ${sub.lastName}`,
+      start,
+      end: new Date(new Date(start).getTime() + 15 * 60000).toISOString(),
+      classNames: [statusClass],
+      submission: sub
+    };
+  });
 
       calendarOptions.value.events = bookings
     }
@@ -245,29 +245,17 @@ const updateStatus = async () => {
   );
 
   if (event) {
-    // Get current data
-    const { start, end, title, extendedProps } = event;
-    
-    // Remove old event
-    event.remove();
+    const newClass =
+      newStatus === 'Complete'
+        ? 'event-complete'
+        : newStatus === 'Rejected'
+        ? 'event-rejected'
+        : 'event-pending';
 
-    // Add updated event
-    calendarApi.addEvent({
-      title,
-      start,
-      end,
-      submission: {
-        ...extendedProps.submission,
-        status: newStatus
-      },
-      classNames: [
-        'text-white',
-        newStatus === 'Complete'
-          ? 'bg-green-500'
-          : newStatus === 'Rejected'
-          ? 'bg-red-500'
-          : 'bg-yellow-400'
-      ]
+    event.setProp('classNames', [newClass]);
+    event.setExtendedProp('submission', {
+      ...event.extendedProps.submission,
+      status: newStatus
     });
   }
 };
@@ -314,5 +302,21 @@ return {
 
 .fc-event {
   cursor: pointer;
+}
+
+.event-complete {
+  background-color: #22c55e !important; /* green-500 */
+  border-color: #22c55e !important;
+  color: white !important;
+}
+.event-rejected {
+  background-color: #ef4444 !important; /* red-500 */
+  border-color: #ef4444 !important;
+  color: white !important;
+}
+.event-pending {
+  background-color: #facc15 !important; /* yellow-400 */
+  border-color: #facc15 !important;
+  color: black !important;
 }
 </style>
