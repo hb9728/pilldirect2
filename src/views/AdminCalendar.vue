@@ -1,17 +1,20 @@
 <template>
-  <div class="p-6">
-    <div class="flex justify-between items-center mb-4">
-      <h1 class="text-xl font-semibold">Booking Calendar</h1>
+  <div class="min-h-screen bg-gray-50 p-6">
+    <div class="flex justify-between items-center mb-6">
+      <h2 class="text-2xl font-semibold">PillDirect.co.uk Booking Calendar</h2>
       <div class="flex space-x-2">
         <RouterLink to="/admin/dashboard">
-          <button class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300">← Back to Dashboard</button>
+          <button class="bg-gray-100 hover:bg-gray-200 text-gray-800 px-4 py-2 rounded text-sm border">
+            ← Back to Dashboard
+          </button>
         </RouterLink>
-        <button @click="logout" class="text-red-600 hover:underline">Logout</button>
+        <button @click="logout" class="text-red-600 hover:underline text-sm">Logout</button>
       </div>
     </div>
 
-    <!-- Calendar -->
-    <FullCalendar ref="fullCalendar" :options="calendarOptions" />
+    <div class="bg-white rounded-lg shadow border border-gray-200 p-4">
+      <FullCalendar ref="fullCalendar" :options="calendarOptions" />
+    </div>
   </div>
 </template>
 
