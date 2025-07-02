@@ -18,6 +18,7 @@
       </div>
     </div>
 
+    <div style="height: 700px;">
     <FullCalendar
       class="bg-white rounded shadow w-full"
       :plugins="[dayGridPlugin, timeGridPlugin]"
@@ -29,6 +30,12 @@
       :eventTimeFormat="{ hour: '2-digit', minute: '2-digit', hour12: false }"
       style="min-height: 600px;"
     />
+    </div>
+
+    <pre class="mt-4 bg-gray-100 p-2 rounded text-sm text-gray-800">
+  {{ events }}
+</pre>
+    
   </div>
 </template>
 
