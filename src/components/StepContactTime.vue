@@ -18,7 +18,7 @@
     
     <div>
       <label for="contactTime" class="block text-sm font-medium text-gray-700 mb-1">
-        Choose a time (between 9am and 4:30pm)
+        Choose a time (between 9am and 4:45pm)
       </label>
       <select
         id="contactTime"
