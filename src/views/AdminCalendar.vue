@@ -74,6 +74,21 @@ export default {
   setup() {
     const router = useRouter()
 
+    const selectedEvent = ref(null)
+    const showModal = ref(false)
+    
+    const closeModal = () => {
+      selectedEvent.value = null
+      showModal.value = false
+    }
+    
+    const goToPMR = () => {
+      if (!selectedEvent.value?.submission?.email) return
+      const email = selectedEvent.value.submission.email.trim().toLowerCase()
+      const hash = sha256(email).toString()
+      router.push(`/admin/patient/${hash}?open=${selectedEvent.value.submission.responseId}`)
+    }
+    
     const calendarOptions = ref({
       plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
       initialView: 'timeGridWeek',
@@ -143,21 +158,6 @@ export default {
 
     onMounted(fetchEvents)
 
-        const selectedEvent = ref(null)
-    const showModal = ref(false)
-    
-    const closeModal = () => {
-      selectedEvent.value = null
-      showModal.value = false
-    }
-    
-    const goToPMR = () => {
-      if (!selectedEvent.value?.submission?.email) return
-      const email = selectedEvent.value.submission.email.trim().toLowerCase()
-      const hash = sha256(email).toString()
-      router.push(`/admin/patient/${hash}?open=${selectedEvent.value.submission.responseId}`)
-    }
-
    return {
   calendarOptions,
   logout,
@@ -192,5 +192,9 @@ export default {
 /* Optional: Soften the background grid lines */
 .fc-timegrid-slot, .fc-scrollgrid {
   border-color: #e5e7eb !important; /* Tailwind gray-200 */
+}
+
+.fc-event {
+  cursor: pointer;
 }
 </style>
