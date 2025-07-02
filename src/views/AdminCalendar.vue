@@ -17,18 +17,18 @@
       <FullCalendar ref="fullCalendar" :options="calendarOptions" />
     </div>
 
-    <!-- Legend -->
-    <div class="mt-4 text-sm flex gap-4 text-gray-700">
-      <div class="flex items-center gap-2">
-        <span class="w-3 h-3 bg-blue-500 rounded-full"></span> Pending
-      </div>
-      <div class="flex items-center gap-2">
-        <span class="w-3 h-3 bg-green-600 rounded-full"></span> Complete
-      </div>
-      <div class="flex items-center gap-2">
-        <span class="w-3 h-3 bg-red-500 rounded-full"></span> Rejected
-      </div>
-    </div>
+  <!-- Legend -->
+<div class="mt-4 text-sm flex gap-4 text-gray-700">
+  <div class="flex items-center gap-2">
+    <span class="w-3 h-3 bg-yellow-400 rounded-full"></span> Pending
+  </div>
+  <div class="flex items-center gap-2">
+    <span class="w-3 h-3 bg-green-500 rounded-full"></span> Complete
+  </div>
+  <div class="flex items-center gap-2">
+    <span class="w-3 h-3 bg-red-500 rounded-full"></span> Rejected
+  </div>
+</div>
   </div>
 </template>
 
