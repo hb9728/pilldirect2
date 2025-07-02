@@ -143,12 +143,7 @@ export default {
 
     onMounted(fetchEvents)
 
-    return {
-      calendarOptions,
-      logout
-    }
-
-    const selectedEvent = ref(null)
+        const selectedEvent = ref(null)
     const showModal = ref(false)
     
     const closeModal = () => {
@@ -162,6 +157,16 @@ export default {
       const hash = sha256(email).toString()
       router.push(`/admin/patient/${hash}?open=${selectedEvent.value.submission.responseId}`)
     }
+
+   return {
+  calendarOptions,
+  logout,
+  selectedEvent,
+  showModal,
+  closeModal,
+  goToPMR
+}
+
   }
 }
 </script>
