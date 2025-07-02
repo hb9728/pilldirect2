@@ -1,11 +1,10 @@
 <template>
-  <div class="p-6">
-    <!-- Header -->
-    <div class="flex justify-between items-center mb-4">
-      <h1 class="text-xl font-semibold">PillDirect.co.uk Booking Calendar</h1>
+  <div class="min-h-screen bg-gray-50 p-6">
+    <div class="flex justify-between items-center mb-6">
+      <h2 class="text-2xl font-semibold">PillDirect.co.uk Booking Calendar</h2>
       <div class="flex space-x-2">
         <RouterLink to="/admin/dashboard">
-          <button class="px-4 py-2 bg-gray-100 hover:bg-gray-200 border border-gray-300 rounded text-sm">
+          <button class="bg-gray-100 hover:bg-gray-200 text-gray-800 px-4 py-2 rounded text-sm border">
             ← Back to Dashboard
           </button>
         </RouterLink>
