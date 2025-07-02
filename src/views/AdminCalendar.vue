@@ -16,12 +16,13 @@
 </template>
 
 <script>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import FullCalendar from '@fullcalendar/vue3'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from '@fullcalendar/interaction'
 import { useRouter } from 'vue-router'
+import { supabase } from '@/supabase' // adjust path if needed
 
 export default {
   components: {
@@ -42,16 +43,48 @@ export default {
         minute: '2-digit',
         hour12: false
       },
-      events: [
-        // Simple test event to confirm it's working
-        { title: 'Test Event', start: new Date().toISOString().slice(0, 10) }
-      ]
+      events: [] // initially empty
     })
+
+    const fetchEvents = async () => {
+      const { data, error } = await supabase
+        .from('submissions')
+        .select('firstName, lastName, contactDay, contactTime, status')
+
+      if (error) {
+        console.error('Error fetching bookings:', error)
+        return
+      }
+
+      // Convert to FullCalendar format
+      const bookings = data
+        .filter(sub => sub.contactDay && sub.contactTime)
+        .map(sub => {
+          const start = `${sub.contactDay}T${sub.contactTime}`
+          return {
+            title: `${sub.firstName} ${sub.lastName}`,
+            start,
+            end: new Date(new Date(start).getTime() + 15 * 60000).toISOString(), // 15 min slot
+            color:
+              sub.status === 'Complete'
+                ? '#16a34a'
+                : sub.status === 'Rejected'
+                ? '#dc2626'
+                : '#2563eb'
+          }
+        })
+
+      calendarOptions.value.events = bookings
+    }
 
     const logout = () => {
       localStorage.removeItem('accessToken')
       router.push('/admin/login')
     }
+
+    onMounted(() => {
+      fetchEvents()
+    })
 
     return {
       calendarOptions,
