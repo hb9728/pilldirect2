@@ -197,18 +197,20 @@ eventClick: (info) => {
   .filter(sub => sub.contactDay && sub.contactTime)
   .map(sub => {
   const start = `${sub.contactDay}T${sub.contactTime}`
-  return {
-    title: `${sub.firstName} ${sub.lastName}`,
-    start,
-    end: new Date(new Date(start).getTime() + 15 * 60000).toISOString(),
-    color:
-      sub.status === 'Complete'
-        ? '#22c55e'
-        : sub.status === 'Rejected'
-        ? '#ef4444'
-        : '#facc15', // yellow-400 for Pending
-    submission: sub // <- add full data
-  }
+return {
+  title: `${sub.firstName} ${sub.lastName}`,
+  start,
+  end: new Date(new Date(start).getTime() + 15 * 60000).toISOString(),
+  classNames: [
+    'text-white',
+    sub.status === 'Complete'
+      ? 'bg-green-500'
+      : sub.status === 'Rejected'
+      ? 'bg-red-500'
+      : 'bg-yellow-400'
+  ],
+  submission: sub
+}
 })
 
       calendarOptions.value.events = bookings
@@ -249,8 +251,14 @@ const updateStatus = async () => {
           ? '#ef4444'
           : '#facc15'
 
-      event.setProp('backgroundColor', color)
-      event.setProp('borderColor', color)
+      const newClass =
+  newStatus === 'Complete'
+    ? 'bg-green-500'
+    : newStatus === 'Rejected'
+    ? 'bg-red-500'
+    : 'bg-yellow-400'
+
+event.setProp('classNames', ['text-white', newClass])
 
       // Also update the status inside the submission for consistency
       event.setExtendedProp('submission', {
