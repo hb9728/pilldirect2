@@ -33,8 +33,8 @@
 </template>
 
 <script setup>
-import '@fullcalendar/daygrid/index.css'
-import '@fullcalendar/timegrid/index.css'
+import '@fullcalendar/daygrid/main.css'
+import '@fullcalendar/timegrid/main.css'
 
 import FullCalendar from '@fullcalendar/vue3'
 import dayGridPlugin from '@fullcalendar/daygrid'
