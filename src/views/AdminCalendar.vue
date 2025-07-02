@@ -167,7 +167,7 @@ eventClick: (info) => {
     const fetchEvents = async () => {
       const { data, error } = await supabase
         .from('submissions')
-        .select('
+        .select(`
           firstName,
           lastName,
           email,
@@ -183,7 +183,7 @@ eventClick: (info) => {
           contactTime,
           responseId,
           status
-        ')
+        `)
 
       if (error) {
         console.error('Error fetching bookings:', error)
