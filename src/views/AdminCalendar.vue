@@ -224,15 +224,39 @@ eventClick: (info) => {
 }
 
 const updateStatus = async () => {
+  const newStatus = selectedEvent.value.status
+
   const { error } = await supabase
     .from('submissions')
-    .update({ status: selectedEvent.value.status })
+    .update({ status: newStatus })
     .eq('responseId', selectedEvent.value.responseId)
 
   if (error) {
     console.error('Error updating status:', error.message)
   } else {
-    // ✅ Don't close modal or re-fetch immediately — just let it be
+    // ✅ Find and update the event in calendar manually
+    const calendarApi = calendarRef.value.getApi()
+    const event = calendarApi.getEvents().find(
+      (e) => e.extendedProps.submission.responseId === selectedEvent.value.responseId
+    )
+
+    if (event) {
+      const color =
+        newStatus === 'Complete'
+          ? '#22c55e'
+          : newStatus === 'Rejected'
+          ? '#ef4444'
+          : '#facc15'
+
+      event.setProp('backgroundColor', color)
+      event.setProp('borderColor', color)
+
+      // Also update the status inside the submission for consistency
+      event.setExtendedProp('submission', {
+        ...event.extendedProps.submission,
+        status: newStatus
+      })
+    }
   }
 }
 
