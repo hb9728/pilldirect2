@@ -26,7 +26,7 @@ import StepContact from '../components/StepContact.vue'
 import StepPillHistory from '../components/StepPillHistory.vue'
 import StepVitals from '../components/StepVitals.vue'
 import StepMedicalHistory from '../components/StepMedicalHistory.vue'
-import StepContactTime from './components/StepContactTime.vue'
+import StepContactTime from '../components/StepContactTime.vue'
 import StepFinalConsent from '../components/StepFinalConsent.vue'
 import StepThankYou from '../components/StepThankYou.vue'
 
