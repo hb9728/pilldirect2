@@ -26,6 +26,7 @@ import StepContact from '../components/StepContact.vue'
 import StepPillHistory from '../components/StepPillHistory.vue'
 import StepVitals from '../components/StepVitals.vue'
 import StepMedicalHistory from '../components/StepMedicalHistory.vue'
+import StepContactTime from './components/StepContactTime.vue'
 import StepFinalConsent from '../components/StepFinalConsent.vue'
 import StepThankYou from '../components/StepThankYou.vue'
 
@@ -152,7 +153,9 @@ const formData = ref({
   promoConsent: false,
   shareConsent: false,
   updateConsent: false,
-  responseId: ''
+  responseId: '',
+  contactDay: '',
+  contactTime: '',
 })
   provide('formData', formData.value)
 
@@ -163,6 +166,7 @@ const steps = [
   StepPillHistory,
   StepVitals,
   StepMedicalHistory,
+  StepContactTime,
   StepFinalConsent,
   StepThankYou
 ]
@@ -271,6 +275,15 @@ if (formData.value.imperialMetric === 'Imperial') {
 
   return true
   }
+
+  // Contact Time (Step 6)
+if (stepIndex === 6) {
+  if (!formData.value.contactDay || !formData.value.contactTime) {
+    validationError.value = 'Please choose a contact day and time for a follow-up call.'
+    return false
+  }
+  return true
+}
   
   // Final Consent
   if (stepIndex === 6) {
