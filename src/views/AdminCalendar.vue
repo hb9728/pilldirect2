@@ -26,10 +26,9 @@
     <button @click="closeModal" class="absolute top-2 right-2 text-gray-400 hover:text-black">×</button>
     <h2 class="text-lg font-bold mb-2">Booking Details</h2>
 
-    <p><strong>Name:</strong> {{ selectedEvent.submission.firstName }} {{ selectedEvent.submission.lastName }}</p>
-    <p><strong>Email:</strong> {{ selectedEvent.submission.email }}</p>
-    <p><strong>Time:</strong> {{ selectedEvent.start.slice(11, 16) }}</p>
-    <p><strong>Status:</strong> {{ selectedEvent.submission.status }}</p>
+    <p><strong>Name:</strong> {{ selectedEvent.firstName }} {{ selectedEvent.lastName }}</p>
+    <p><strong>Email:</strong> {{ selectedEvent.email }}</p>
+    <p><strong>Status:</strong> {{ selectedEvent.status }}</p>
 
     <div class="mt-4">
       <button
