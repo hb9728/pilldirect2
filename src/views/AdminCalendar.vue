@@ -17,6 +17,31 @@
       <FullCalendar ref="fullCalendar" :options="calendarOptions" />
     </div>
 
+<!-- Modal -->
+<div
+  v-if="showModal"
+  class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50"
+>
+  <div class="bg-white p-6 rounded shadow-md w-full max-w-md relative">
+    <button @click="closeModal" class="absolute top-2 right-2 text-gray-400 hover:text-black">×</button>
+    <h2 class="text-lg font-bold mb-2">Booking Details</h2>
+
+    <p><strong>Name:</strong> {{ selectedEvent.submission.firstName }} {{ selectedEvent.submission.lastName }}</p>
+    <p><strong>Email:</strong> {{ selectedEvent.submission.email }}</p>
+    <p><strong>Time:</strong> {{ selectedEvent.start.slice(11, 16) }}</p>
+    <p><strong>Status:</strong> {{ selectedEvent.submission.status }}</p>
+
+    <div class="mt-4">
+      <button
+        @click="goToPMR"
+        class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+      >
+        View Full PMR →
+      </button>
+    </div>
+  </div>
+</div>
+
 <!-- Pill-Style Legend -->
 <div class="mt-4 flex gap-3 text-sm">
   <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-yellow-100 text-yellow-800">
@@ -40,6 +65,7 @@ import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from '@fullcalendar/interaction'
 import { useRouter } from 'vue-router'
 import { supabase } from '../supabase'
+import sha256 from 'crypto-js/sha256'
 
 export default {
   components: {
@@ -72,7 +98,11 @@ export default {
           html: `<div class="px-1 text-xs truncate">${arg.timeText} – ${arg.event.title}</div>`
         }
       },
-      events: [] // populated on mount
+      events: [], // populated on mount
+      eventClick: (info) => {
+        selectedEvent.value = info.event.extendedProps.submission
+        showModal.value = true
+      }
     })
 
     const fetchEvents = async () => {
@@ -88,19 +118,20 @@ export default {
       const bookings = data
   .filter(sub => sub.contactDay && sub.contactTime)
   .map(sub => {
-    const start = `${sub.contactDay}T${sub.contactTime}`
-    return {
-      title: `${sub.firstName} ${sub.lastName}`,
-      start,
-      end: new Date(new Date(start).getTime() + 15 * 60000).toISOString(),
-      color:
-        sub.status === 'Complete'
-          ? '#22c55e'   // Tailwind green-500
-          : sub.status === 'Rejected'
-          ? '#ef4444'   // Tailwind red-500
-          : '#facc15'   // Tailwind yellow-400 (Pending)
-    }
-  })
+  const start = `${sub.contactDay}T${sub.contactTime}`
+  return {
+    title: `${sub.firstName} ${sub.lastName}`,
+    start,
+    end: new Date(new Date(start).getTime() + 15 * 60000).toISOString(),
+    color:
+      sub.status === 'Complete'
+        ? '#22c55e'
+        : sub.status === 'Rejected'
+        ? '#ef4444'
+        : '#facc15', // yellow-400 for Pending
+    submission: sub // <- add full data
+  }
+})
 
       calendarOptions.value.events = bookings
     }
@@ -115,6 +146,21 @@ export default {
     return {
       calendarOptions,
       logout
+    }
+
+    const selectedEvent = ref(null)
+    const showModal = ref(false)
+    
+    const closeModal = () => {
+      selectedEvent.value = null
+      showModal.value = false
+    }
+    
+    const goToPMR = () => {
+      if (!selectedEvent.value?.submission?.email) return
+      const email = selectedEvent.value.submission.email.trim().toLowerCase()
+      const hash = sha256(email).toString()
+      router.push(`/admin/patient/${hash}?open=${selectedEvent.value.submission.responseId}`)
     }
   }
 }
