@@ -38,13 +38,13 @@
     >
       Open Full PMR →
     </button>
-    <button
-      @click="closeModal"
-      class="ml-2 p-1.5 rounded-full hover:bg-gray-100 text-gray-600"
-      title="Close"
-    >
-      ×
-    </button>
+<button
+  @click="closeModal"
+  class="ml-2 w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 text-gray-600"
+  title="Close"
+>
+  ×
+</button>
   </div>
 </div>
 
