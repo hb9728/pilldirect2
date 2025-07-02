@@ -1,9 +1,51 @@
+<!--
 <template>
   <div class="min-h-screen bg-gray-50 p-6">
     <div class="flex justify-between items-center mb-6">
       <h2 class="text-2xl font-semibold">PillDirect.co.uk Submissions Dashboard</h2>
       <button @click="logout" class="text-red-600 hover:underline">Logout</button>
     </div>
+-->
+
+
+
+    
+
+    <div class="flex justify-between items-center mb-6">
+  <h2 class="text-2xl font-semibold">PillDirect.co.uk Submissions Dashboard</h2>
+
+  <div class="relative">
+    <button
+      @click="toggleMenu"
+      class="bg-gray-100 hover:bg-gray-200 text-gray-800 px-4 py-2 rounded text-sm border"
+    >
+      Menu ▾
+    </button>
+
+    <div
+      v-if="menuOpen"
+      class="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded shadow-md z-10"
+    >
+      <button
+        class="w-full text-left px-4 py-2 hover:bg-gray-100 text-sm"
+        @click="goToCalendar"
+      >
+        📅 View Calendar
+      </button>
+      <!-- Future items go here -->
+    </div>
+  </div>
+
+  <button @click="logout" class="ml-4 text-red-600 hover:underline text-sm">Logout</button>
+</div>
+
+
+
+
+
+
+
+    
 
     <input
       v-model="searchQuery"
