@@ -345,4 +345,9 @@ const getSmartPages = computed(() => {
   pages.push(total)
   return pages
 })
+
+
+const goToCalendar = () => {
+  router.push('/admin/calendar')
+}
 </script>
