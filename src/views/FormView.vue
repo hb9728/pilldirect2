@@ -88,7 +88,9 @@ const handleSubmit = async (data) => {
     promoConsent: data.promoConsent,
     shareConsent: data.shareConsent,
     updateConsent: data.updateConsent,
-    responseId: data.responseId
+    responseId: data.responseId,
+    contactDay: data.contactDay,
+    contactTime: data.contactTime,
   }
 
   // Final cleanup: convert all "" to null
