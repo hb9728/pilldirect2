@@ -288,7 +288,7 @@ if (stepIndex === 6) {
 }
   
   // Final Consent
-  if (stepIndex === 6) {
+  if (stepIndex === 7) {
     if (!formData.value.shareConsent || !formData.value.updateConsent) {
       return false
     }
