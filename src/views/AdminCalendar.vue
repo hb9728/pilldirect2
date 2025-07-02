@@ -227,47 +227,50 @@ return {
 }
 
 const updateStatus = async () => {
-  const newStatus = selectedEvent.value.status
+  const newStatus = selectedEvent.value.status;
 
   const { error } = await supabase
     .from('submissions')
     .update({ status: newStatus })
-    .eq('responseId', selectedEvent.value.responseId)
+    .eq('responseId', selectedEvent.value.responseId);
 
   if (error) {
-    console.error('Error updating status:', error.message)
-  } else {
-    // ✅ Find and update the event in calendar manually
-    const calendarApi = calendarRef.value.getApi()
-    const event = calendarApi.getEvents().find(
-      (e) => e.extendedProps.submission.responseId === selectedEvent.value.responseId
-    )
-
-    if (event) {
-      const color =
-        newStatus === 'Complete'
-          ? '#22c55e'
-          : newStatus === 'Rejected'
-          ? '#ef4444'
-          : '#facc15'
-
-      const newClass =
-  newStatus === 'Complete'
-    ? 'bg-green-500'
-    : newStatus === 'Rejected'
-    ? 'bg-red-500'
-    : 'bg-yellow-400'
-
-event.setProp('classNames', ['text-white', newClass])
-
-      // Also update the status inside the submission for consistency
-      event.setExtendedProp('submission', {
-        ...event.extendedProps.submission,
-        status: newStatus
-      })
-    }
+    console.error('Error updating status:', error.message);
+    return;
   }
-}
+
+  const calendarApi = calendarRef.value.getApi();
+  const event = calendarApi.getEvents().find(
+    (e) => e.extendedProps.submission.responseId === selectedEvent.value.responseId
+  );
+
+  if (event) {
+    // Get current data
+    const { start, end, title, extendedProps } = event;
+    
+    // Remove old event
+    event.remove();
+
+    // Add updated event
+    calendarApi.addEvent({
+      title,
+      start,
+      end,
+      submission: {
+        ...extendedProps.submission,
+        status: newStatus
+      },
+      classNames: [
+        'text-white',
+        newStatus === 'Complete'
+          ? 'bg-green-500'
+          : newStatus === 'Rejected'
+          ? 'bg-red-500'
+          : 'bg-yellow-400'
+      ]
+    });
+  }
+};
 
     onMounted(fetchEvents)
 
