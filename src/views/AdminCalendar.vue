@@ -28,12 +28,6 @@
   <div class="bg-white p-6 rounded shadow-md w-full max-w-2xl relative">
     
 <!-- Modal -->
-<div
-  v-if="showModal"
-  class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50"
->
-  <div class="bg-white p-6 rounded shadow-md w-full max-w-4xl relative">
-
 
 <div class="flex justify-between items-start mb-4">
   <h2 class="text-lg font-bold">Submission Details</h2>
@@ -87,9 +81,6 @@
       </div>
     </div>
   </div>
-</div>
-
-      </div>
 </div>
 
 <!-- Pill-Style Legend -->
