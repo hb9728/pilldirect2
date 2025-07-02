@@ -1,16 +1,22 @@
 <template>
   <div class="p-6">
-<!-- Header with title and logout -->
-<div class="flex justify-between items-center mb-4">
-  <h2 class="text-2xl font-bold">PillDirect.co.uk miniPMR®</h2>
-  <button @click="logout" class="text-red-600 hover:underline">Logout</button>
-</div>
-
-<!-- Back button row -->
-<div class="mb-4">
-  <button @click="router.push('/admin/dashboard')" class="text-blue-600 hover:underline">
-    ← Back to Dashboard
-  </button>
+<!-- Unified Header with Back & Logout Buttons -->
+<div class="flex justify-between items-center mb-6">
+  <h2 class="text-2xl font-semibold">PillDirect.co.uk miniPMR®</h2>
+  <div class="flex space-x-2">
+    <button
+      @click="router.push('/admin/dashboard')"
+      class="bg-gray-100 hover:bg-gray-200 text-gray-800 px-4 py-2 rounded text-sm border"
+    >
+      ← Back to Dashboard
+    </button>
+    <button
+      @click="logout"
+      class="text-red-600 hover:underline text-sm"
+    >
+      Logout
+    </button>
+  </div>
 </div>
     
 
