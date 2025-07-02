@@ -214,6 +214,22 @@
     <p><strong>Extra Info:</strong> {{ selectedSubmission.extraInfo || '—' }}</p>
   </div>
 
+
+
+  <hr class="my-4 border-gray-200" />
+
+  <!-- Callback Timing -->
+  <div>
+    <h4 class="font-semibold text-gray-700 mb-2">Callback Timing</h4>
+    <p><strong>Preferred Day:</strong> {{ selectedSubmission.contactDay || '—' }}</p>
+    <p><strong>Preferred Time:</strong> {{ selectedSubmission.contactTime || '—' }}</p>
+  </div>
+
+
+
+
+
+  
   <hr class="my-4 border-gray-200" />
 
   <!-- Consents -->
