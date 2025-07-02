@@ -18,13 +18,14 @@
     </div>
 
 
+<!-- Outer overlay -->
 <div
   v-if="showModal"
   class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50"
   @click.self="closeModal"
 >
-  <div class="bg-white p-6 rounded shadow-md w-full max-w-4xl relative">
-    
+  <!-- Inner content (modal) -->
+  <div class="bg-white p-6 rounded shadow-md w-full max-w-2xl relative">
     
 <!-- Modal -->
 <div
@@ -32,22 +33,26 @@
   class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50"
 >
   <div class="bg-white p-6 rounded shadow-md w-full max-w-4xl relative">
-    <button
-  @click="closeModal"
-  class="text-gray-500 hover:text-black text-lg px-2 py-1 rounded absolute top-4 right-4 bg-gray-100 hover:bg-gray-200"
->
-  &times;
-</button>
 
-    <div class="flex justify-between items-center mb-4">
-      <h2 class="text-lg font-bold">Submission Details</h2>
-      <button
-        @click="goToPMR"
-        class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 text-sm"
-      >
-        Open Full PMR →
-      </button>
-    </div>
+
+<div class="flex justify-between items-start mb-4">
+  <h2 class="text-lg font-bold">Submission Details</h2>
+  <div class="flex gap-2">
+    <button
+      @click="goToPMR"
+      class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 text-sm"
+    >
+      Open Full PMR →
+    </button>
+    <button
+      @click="closeModal"
+      class="ml-2 p-1.5 rounded-full hover:bg-gray-100 text-gray-600"
+      title="Close"
+    >
+      ×
+    </button>
+  </div>
+</div>
 
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm text-gray-800">
       <div><strong>Name:</strong> {{ selectedEvent.firstName }} {{ selectedEvent.lastName }}</div>
@@ -63,6 +68,7 @@
 
       <div>
         <label class="block text-sm font-semibold text-gray-700 mb-1">Submission Status</label>
+        <!--
         <select
           v-model="selectedEvent.status"
           @change="updateStatus(selectedEvent)"
@@ -77,6 +83,16 @@
           <option>Complete</option>
           <option>Rejected</option>
         </select>
+        -->
+        <select
+  v-model="selectedEvent.status"
+  @change="updateStatus"
+  class="mt-1 border rounded px-3 py-2 text-sm"
+>
+  <option value="Pending">Pending</option>
+  <option value="Complete">Complete</option>
+  <option value="Rejected">Rejected</option>
+</select>
       </div>
     </div>
   </div>
@@ -221,17 +237,16 @@ eventClick: (info) => {
   return DateTime.fromISO(isoString, { zone: 'utc' }).setZone('Europe/London').toFormat('dd LLL yyyy, HH:mm')
 }
 
-const updateStatus = async (entry) => {
+const updateStatus = async () => {
   const { error } = await supabase
     .from('submissions')
-    .update({ status: entry.status })
-    .eq('responseId', entry.responseId)
+    .update({ status: selectedEvent.value.status })
+    .eq('responseId', selectedEvent.value.responseId)
 
   if (error) {
     console.error('Error updating status:', error.message)
   } else {
-    await fetchEvents()
-    showModal.value = false // Optional: close modal on update
+    // ✅ Don't close modal or re-fetch immediately — just let it be
   }
 }
 
