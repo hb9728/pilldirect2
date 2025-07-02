@@ -17,13 +17,27 @@
       <FullCalendar ref="fullCalendar" :options="calendarOptions" />
     </div>
 
+
+<div
+  v-if="showModal"
+  class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50"
+  @click.self="closeModal"
+>
+  <div class="bg-white p-6 rounded shadow-md w-full max-w-4xl relative">
+    
+    
 <!-- Modal -->
 <div
   v-if="showModal"
   class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50"
 >
   <div class="bg-white p-6 rounded shadow-md w-full max-w-4xl relative">
-    <button @click="closeModal" class="absolute top-2 right-2 text-gray-400 hover:text-black text-2xl">×</button>
+    <button
+  @click="closeModal"
+  class="text-gray-500 hover:text-black text-lg px-2 py-1 rounded absolute top-4 right-4 bg-gray-100 hover:bg-gray-200"
+>
+  &times;
+</button>
 
     <div class="flex justify-between items-center mb-4">
       <h2 class="text-lg font-bold">Submission Details</h2>
@@ -66,6 +80,9 @@
       </div>
     </div>
   </div>
+</div>
+
+      </div>
 </div>
 
 <!-- Pill-Style Legend -->
@@ -150,7 +167,23 @@ eventClick: (info) => {
     const fetchEvents = async () => {
       const { data, error } = await supabase
         .from('submissions')
-        .select('firstName, lastName, contactDay, contactTime, status')
+        .select('
+          firstName,
+          lastName,
+          email,
+          phone,
+          dob,
+          sex,
+          address1,
+          address2,
+          city,
+          postcode,
+          created_at,
+          contactDay,
+          contactTime,
+          responseId,
+          status
+        ')
 
       if (error) {
         console.error('Error fetching bookings:', error)
@@ -193,10 +226,12 @@ const updateStatus = async (entry) => {
     .from('submissions')
     .update({ status: entry.status })
     .eq('responseId', entry.responseId)
+
   if (error) {
     console.error('Error updating status:', error.message)
   } else {
     await fetchEvents()
+    showModal.value = false // Optional: close modal on update
   }
 }
 
