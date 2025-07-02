@@ -18,27 +18,29 @@
       </div>
     </div>
 
-    <FullCalendar
-      class="bg-white rounded shadow w-full"
-      style="min-height: 600px;"
-      :plugins="[dayGridPlugin, timeGridPlugin]"
-      initial-view="timeGridWeek"
-      :events="events"
-      :slot-min-time="'09:00:00'"
-      :slot-max-time="'17:00:00'"
-      :all-day-slot="false"
-      :event-time-format="{ hour: '2-digit', minute: '2-digit', hour12: false }"
-    />
+    <div class="bg-white rounded shadow w-full overflow-auto">
+      <FullCalendar
+        :plugins="[dayGridPlugin, timeGridPlugin]"
+        initial-view="timeGridWeek"
+        :events="events"
+        :slot-min-time="'09:00:00'"
+        :slot-max-time="'17:00:00'"
+        :all-day-slot="false"
+        :event-time-format="{ hour: '2-digit', minute: '2-digit', hour12: false }"
+        :height="700"
+      />
+    </div>
   </div>
 </template>
 
 <script setup>
-import '@fullcalendar/daygrid/main.css'
-import '@fullcalendar/timegrid/main.css'
-
 import FullCalendar from '@fullcalendar/vue3'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
+import '@fullcalendar/core/main.css'
+import '@fullcalendar/daygrid/main.css'
+import '@fullcalendar/timegrid/main.css'
+
 import { ref, onMounted } from 'vue'
 import { supabase } from '../supabase'
 import { DateTime } from 'luxon'
@@ -102,5 +104,7 @@ onMounted(async () => {
         borderColor: color
       }
     })
+
+  console.log('📅 Loaded events:', events.value)
 })
 </script>
