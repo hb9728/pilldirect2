@@ -6,7 +6,6 @@ import router from './router'
 import './style.css'
 
 // ✅ FullCalendar styles — ensure these are loaded globally
-import '@fullcalendar/core/main.css'
 import '@fullcalendar/daygrid/main.css'
 import '@fullcalendar/timegrid/main.css'
 
