@@ -1,6 +1,23 @@
 <template>
-  <div class="p-6">
-    <h1 class="text-2xl font-semibold mb-4">Booking Calendar</h1>
+  <div class="min-h-screen bg-gray-50 p-6">
+    <div class="flex justify-between items-center mb-6">
+      <h1 class="text-2xl font-semibold">Booking Calendar</h1>
+      <div class="flex items-center gap-4">
+        <button
+          @click="router.push('/admin/dashboard')"
+          class="bg-gray-100 hover:bg-gray-200 text-sm px-4 py-2 rounded border"
+        >
+          ← Back to Dashboard
+        </button>
+        <button
+          @click="logout"
+          class="text-red-600 text-sm hover:underline"
+        >
+          Logout
+        </button>
+      </div>
+    </div>
+
     <FullCalendar
       :plugins="[dayGridPlugin, timeGridPlugin]"
       initial-view="timeGridWeek"
@@ -10,11 +27,17 @@
       :all-day-slot="false"
       :eventTimeFormat="{ hour: '2-digit', minute: '2-digit', hour12: false }"
       height="auto"
+      class="bg-white rounded shadow"
     />
   </div>
 </template>
 
 <script setup>
+import '@fullcalendar/core/vdom' // fix for vue3 + Vite HMR
+import '@fullcalendar/common/main.css'
+import '@fullcalendar/daygrid/main.css'
+import '@fullcalendar/timegrid/main.css'
+
 import FullCalendar from '@fullcalendar/vue3'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
@@ -25,6 +48,12 @@ import { useRouter } from 'vue-router'
 
 const router = useRouter()
 const events = ref([])
+
+const logout = async () => {
+  await supabase.auth.signOut()
+  router.replace('/admin/login')
+  location.reload()
+}
 
 onMounted(async () => {
   const { data: { session } } = await supabase.auth.getSession()
@@ -51,7 +80,7 @@ onMounted(async () => {
   }
 
   const today = DateTime.now().setZone('Europe/London')
-  const nextWeekStart = today.startOf('week').plus({ weeks: 1 }) // upcoming Monday
+  const nextWeekStart = today.startOf('week').plus({ weeks: 1 })
 
   events.value = data
     .filter(row => row.contactDay && row.contactTime && dayMap[row.contactDay])
@@ -63,8 +92,8 @@ onMounted(async () => {
       const end = start.plus({ minutes: 15 })
 
       let color = '#facc15' // yellow for Pending
-      if (row.status === 'Complete') color = '#4ade80' // green
-      if (row.status === 'Rejected') color = '#f87171' // red
+      if (row.status === 'Complete') color = '#4ade80'
+      if (row.status === 'Rejected') color = '#f87171'
 
       return {
         id: row.responseId,
@@ -77,7 +106,3 @@ onMounted(async () => {
     })
 })
 </script>
-
-<style scoped>
-/* Optional: tweak calendar UI here if needed */
-</style>
