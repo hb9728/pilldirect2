@@ -4,12 +4,12 @@
 
     
     
- <div class="flex justify-between items-center mb-6">
-  <!-- Title (Left) -->
+<div class="flex justify-between items-center mb-6">
+  <!-- LEFT: Title -->
   <h2 class="text-2xl font-semibold">PillDirect.co.uk Booking Calendar</h2>
 
-  <!-- Buttons (Right) -->
-  <div class="flex items-center gap-4">
+  <!-- RIGHT: Back + Menu Dropdown -->
+  <div class="flex items-center gap-4 relative" ref="menuRef">
     <button
       v-if="showBackButton"
       @click="$router.back()"
@@ -17,12 +17,31 @@
     >
       ← Back
     </button>
+
     <button
-      @click="logout"
-      class="text-red-600 hover:underline text-sm"
+      @click="toggleMenu"
+      class="bg-gray-100 hover:bg-gray-200 text-gray-800 px-4 py-2 rounded text-sm border"
     >
-      Logout
+      Menu ▾
     </button>
+
+    <div
+      v-if="menuOpen"
+      class="absolute right-0 mt-12 w-48 bg-white border border-gray-200 rounded shadow-md z-10"
+    >
+      <button
+        class="w-full text-left px-4 py-2 hover:bg-gray-100 text-sm"
+        @click="goToDashboard"
+      >
+        View Dashboard
+      </button>
+      <button
+        class="w-full text-left px-4 py-2 hover:bg-gray-100 text-sm text-red-600"
+        @click="logout"
+      >
+        Logout
+      </button>
+    </div>
   </div>
 </div>
 
@@ -186,7 +205,7 @@
 import Datepicker from '@vuepic/vue-datepicker'
 import '@vuepic/vue-datepicker/dist/main.css'
   
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, onBeforeUnmount } from 'vue'
 import FullCalendar from '@fullcalendar/vue3'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
@@ -218,9 +237,31 @@ export default {
       showModal.value = false
     }
 
+onBeforeUnmount(() => {
+  document.removeEventListener('click', handleClickOutside)
+})
+    
     const showBackButton = ref(false)
 
+    const menuOpen = ref(false)
+const menuRef = ref(null)
+
+const toggleMenu = () => {
+  menuOpen.value = !menuOpen.value
+}
+
+const handleClickOutside = (event) => {
+  if (menuRef.value && !menuRef.value.contains(event.target)) {
+    menuOpen.value = false
+  }
+}
+
+const goToDashboard = () => {
+  router.push('/admin/dashboard')
+}
+
 onMounted(() => {
+  document.addEventListener('click', handleClickOutside)
   showBackButton.value = window.history.length > 1
 })
     
@@ -400,6 +441,10 @@ return {
   availableTimes,
   editedContactDayObj,
   showBackButton,
+  menuOpen,
+  menuRef,
+  toggleMenu,
+  goToDashboard,
 }
 
   }
