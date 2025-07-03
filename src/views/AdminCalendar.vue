@@ -4,12 +4,12 @@
 
     
     
-<div class="flex justify-between items-center mb-6">
-  <!-- LEFT: Title -->
-  <h2 class="text-2xl font-semibold">PillDirect.co.uk Calendar</h2>
+ <div class="flex justify-between items-center mb-6">
+  <!-- Title (Left) -->
+  <h2 class="text-2xl font-semibold">PillDirect.co.uk Booking Calendar</h2>
 
-  <!-- RIGHT: Back + Menu -->
-  <div class="flex items-center gap-4 relative" ref="menuRef">
+  <!-- Buttons (Right) -->
+  <div class="flex items-center gap-4">
     <button
       v-if="showBackButton"
       @click="$router.back()"
@@ -17,31 +17,12 @@
     >
       ← Back
     </button>
-
     <button
-      @click="toggleMenu"
-      class="bg-gray-100 hover:bg-gray-200 text-gray-800 px-4 py-2 rounded text-sm border"
+      @click="logout"
+      class="text-red-600 hover:underline text-sm"
     >
-      Menu ▾
+      Logout
     </button>
-
-    <div
-      v-if="menuOpen"
-      class="absolute right-0 mt-12 w-48 bg-white border border-gray-200 rounded shadow-md z-10"
-    >
-      <button
-        class="w-full text-left px-4 py-2 hover:bg-gray-100 text-sm"
-        @click="goToDashboard"
-      >
-        View Dashboard
-      </button>
-      <button
-        class="w-full text-left px-4 py-2 hover:bg-gray-100 text-sm text-red-600"
-        @click="logout"
-      >
-        Logout
-      </button>
-    </div>
   </div>
 </div>
 
@@ -400,30 +381,6 @@ const availableTimes = [
 const disableWeekends = (date) => {
   const day = date.getDay()
   return day === 0 || day === 6
-}
-
-const menuOpen = ref(false)
-const menuRef = ref(null)
-
-const toggleMenu = () => {
-  menuOpen.value = !menuOpen.value
-}
-
-const handleClickOutside = (event) => {
-  if (menuRef.value && !menuRef.value.contains(event.target)) {
-    menuOpen.value = false
-  }
-}
-
-onMounted(() => {
-  document.addEventListener('click', handleClickOutside)
-})
-onBeforeUnmount(() => {
-  document.removeEventListener('click', handleClickOutside)
-})
-
-const goToDashboard = () => {
-  router.push('/admin/dashboard')
 }
 
 return {
