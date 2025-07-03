@@ -57,8 +57,53 @@
       <div><strong>Sex:</strong> {{ selectedEvent.sex || '—' }}</div>
       <div><strong>Submitted:</strong> {{ formatDateTime(selectedEvent.created_at) }}</div>
       <div><strong>Response ID:</strong> {{ selectedEvent.responseId }}</div>
-      <div><strong>Preferred Contact Day:</strong> {{ selectedEvent.contactDay || '—' }}</div>
-      <div><strong>Preferred Contact Time:</strong> {{ selectedEvent.contactTime || '—' }}</div>
+      <!-- Appointment Time Block -->
+<div class="col-span-2">
+  <label class="block text-sm font-semibold text-gray-700 mb-1">Preferred Appointment</label>
+  
+  <div v-if="!isEditingAppointment" class="flex items-center gap-4">
+    <div>
+      {{ selectedEvent.contactDay || '—' }} at {{ selectedEvent.contactTime || '—' }}
+    </div>
+    <button
+      @click="() => {
+        isEditingAppointment = true
+        editedContactDay = selectedEvent.contactDay
+        editedContactTime = selectedEvent.contactTime
+      }"
+      class="text-blue-600 hover:underline text-sm"
+    >
+      Edit Appointment
+    </button>
+  </div>
+
+  <div v-else class="flex flex-col sm:flex-row gap-3">
+    <input
+      type="date"
+      v-model="editedContactDay"
+      class="border px-3 py-2 rounded text-sm"
+    />
+    <input
+      type="time"
+      v-model="editedContactTime"
+      class="border px-3 py-2 rounded text-sm"
+    />
+    <div class="flex gap-2">
+      <button
+        @click="updateAppointment"
+        class="bg-green-600 text-white px-3 py-2 rounded hover:bg-green-700 text-sm"
+      >
+        Update
+      </button>
+      <button
+        @click="() => (isEditingAppointment = false)"
+        class="bg-gray-200 text-gray-800 px-3 py-2 rounded hover:bg-gray-300 text-sm"
+      >
+        Cancel
+      </button>
+    </div>
+  </div>
+</div>
 
       <div>
         <label class="block text-sm font-semibold text-gray-700 mb-1">Submission Status</label>
@@ -118,6 +163,11 @@ export default {
     FullCalendar
   },
   setup() {
+
+    const isEditingAppointment = ref(false)
+    const editedContactDay = ref('')
+    const editedContactTime = ref('')
+    
     const calendarRef = ref(null)
     const router = useRouter()
 
@@ -265,6 +315,28 @@ const updateStatus = async () => {
 
     onMounted(fetchEvents)
 
+const updateAppointment = async () => {
+  const { error } = await supabase
+    .from('submissions')
+    .update({
+      contactDay: editedContactDay.value,
+      contactTime: editedContactTime.value
+    })
+    .eq('responseId', selectedEvent.value.responseId)
+
+  if (error) {
+    console.error('Failed to update appointment time:', error.message)
+    return
+  }
+
+  selectedEvent.value.contactDay = editedContactDay.value
+  selectedEvent.value.contactTime = editedContactTime.value
+  isEditingAppointment.value = false
+
+  // Optionally refresh events on calendar
+  await fetchEvents()
+}
+
 return {
   calendarOptions,
   logout,
@@ -273,7 +345,11 @@ return {
   closeModal,
   goToPMR,
   formatDateTime,
-  updateStatus
+  updateStatus,
+  isEditingAppointment,
+  editedContactDay,
+  editedContactTime,
+  updateAppointment
 }
 
   }
