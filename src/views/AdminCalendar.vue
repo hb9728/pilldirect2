@@ -345,9 +345,9 @@ const updateAppointment = async () => {
     const minDate = DateTime.now().toISODate()
 
 const preventWeekend = () => {
-  const day = DateTime.fromISO(editedContactDay).weekday
+  const day = DateTime.fromISO(editedContactDay.value).weekday
   if (day === 6 || day === 7) {
-    editedContactDay = ''
+    editedContactDay.value = ''
     alert('Please select a weekday (Monday–Friday).')
   }
 }
@@ -364,7 +364,9 @@ return {
   isEditingAppointment,
   editedContactDay,
   editedContactTime,
-  updateAppointment
+  updateAppointment,
+  minDate,
+  preventWeekend
 }
 
   }
