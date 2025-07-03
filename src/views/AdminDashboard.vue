@@ -12,7 +12,9 @@
 <div class="min-h-screen bg-gray-50 p-6">
   
 <div class="flex justify-between items-center mb-6">
-  <div class="flex items-center gap-4">
+  <h2 class="text-2xl font-semibold text-right w-full">PillDirect.co.uk Submissions Dashboard</h2>
+
+  <div class="flex items-center gap-3 ml-4">
     <button
       v-if="showBackButton"
       @click="$router.back()"
@@ -20,33 +22,32 @@
     >
       ← Back
     </button>
-    <h2 class="text-2xl font-semibold">PillDirect.co.uk Submissions Dashboard</h2>
-  </div>
 
-  <div class="relative" ref="menuRef">
-    <button
-      @click="toggleMenu"
-      class="bg-gray-100 hover:bg-gray-200 text-gray-800 px-4 py-2 rounded text-sm border"
-    >
-      Menu ▾
-    </button>
+    <div class="relative" ref="menuRef">
+      <button
+        @click="toggleMenu"
+        class="bg-gray-100 hover:bg-gray-200 text-gray-800 px-4 py-2 rounded text-sm border"
+      >
+        Menu ▾
+      </button>
 
-    <div
-      v-if="menuOpen"
-      class="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded shadow-md z-10"
-    >
-      <button
-        class="w-full text-left px-4 py-2 hover:bg-gray-100 text-sm"
-        @click="goToCalendar"
+      <div
+        v-if="menuOpen"
+        class="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded shadow-md z-10"
       >
-        View Calendar
-      </button>
-      <button
-        class="w-full text-left px-4 py-2 hover:bg-gray-100 text-sm text-red-600"
-        @click="logout"
-      >
-        Logout
-      </button>
+        <button
+          class="w-full text-left px-4 py-2 hover:bg-gray-100 text-sm"
+          @click="goToCalendar"
+        >
+          View Calendar
+        </button>
+        <button
+          class="w-full text-left px-4 py-2 hover:bg-gray-100 text-sm text-red-600"
+          @click="logout"
+        >
+          Logout
+        </button>
+      </div>
     </div>
   </div>
 </div>
