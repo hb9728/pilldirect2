@@ -235,8 +235,6 @@ export default {
       showModal.value = false
     }
 
-    const showBackButton = ref(false)
-
 onMounted(() => {
   showBackButton.value = window.history.length > 1
 })
