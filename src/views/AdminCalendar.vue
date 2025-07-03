@@ -66,15 +66,11 @@
       {{ selectedEvent.contactDay || '—' }} at {{ selectedEvent.contactTime || '—' }}
     </div>
     <button
-      @click="() => {
-        isEditingAppointment.value = true
-        editedContactDay.value = selectedEvent.contactDay
-        editedContactTime.value = selectedEvent.contactTime
-      }"
-      class="text-blue-600 hover:underline text-sm"
-    >
-      Edit Appointment
-    </button>
+  @click="beginEditingAppointment"
+  class="text-blue-600 hover:underline text-sm"
+>
+  Edit Appointment
+</button>
   </div>
 
   <div v-else class="flex flex-col sm:flex-row gap-3">
@@ -350,6 +346,12 @@ const preventWeekend = () => {
     editedContactDay.value = ''
     alert('Please select a weekday (Monday–Friday).')
   }
+}
+
+    const beginEditingAppointment = () => {
+  isEditingAppointment.value = true
+  editedContactDay.value = selectedEvent.value.contactDay
+  editedContactTime.value = selectedEvent.value.contactTime
 }
 
 return {
