@@ -70,6 +70,7 @@
         isEditingAppointment = true
         editedContactDay = selectedEvent.contactDay
         editedContactTime = selectedEvent.contactTime
+        editedContactDayObj = selectedEvent.contactDay ? new Date(selectedEvent.contactDay) : null
       }"
       class="text-blue-600 hover:underline text-sm"
     >
@@ -78,16 +79,29 @@
   </div>
 
   <div v-else class="flex flex-col sm:flex-row gap-3">
-    <input
-      type="date"
-      v-model="editedContactDay"
-      class="border px-3 py-2 rounded text-sm"
-    />
-    <input
-      type="time"
-      v-model="editedContactTime"
-      class="border px-3 py-2 rounded text-sm"
-    />
+    <Datepicker
+  v-model="editedContactDayObj"
+  :disabled-dates="disableWeekends"
+  :min-date="new Date()"
+  input-class="border rounded px-3 py-2 text-sm w-full"
+  :clearable="false"
+  :inline="false"
+  :enable-time-picker="false"
+/>
+
+<select
+  v-model="editedContactTime"
+  class="border rounded px-3 py-2 text-sm w-full"
+>
+  <option disabled value="">Select time</option>
+  <option
+    v-for="time in availableTimes"
+    :key="time"
+    :value="time"
+  >
+    {{ time }}
+  </option>
+</select>
     <div class="flex gap-2">
       <button
         @click="updateAppointment"
@@ -148,6 +162,10 @@
 </template>
 
 <script>
+
+import Datepicker from '@vuepic/vue-datepicker'
+import '@vuepic/vue-datepicker/dist/main.css'
+  
 import { ref, onMounted } from 'vue'
 import FullCalendar from '@fullcalendar/vue3'
 import dayGridPlugin from '@fullcalendar/daygrid'
@@ -160,7 +178,8 @@ import { DateTime } from 'luxon'
 
 export default {
   components: {
-    FullCalendar
+    FullCalendar,
+    Datepicker
   },
   setup() {
 
@@ -316,10 +335,14 @@ const updateStatus = async () => {
     onMounted(fetchEvents)
 
 const updateAppointment = async () => {
+  const contactDayString = editedContactDayObj.value
+    ? editedContactDayObj.value.toISOString().split('T')[0]
+    : ''
+
   const { error } = await supabase
     .from('submissions')
     .update({
-      contactDay: editedContactDay.value,
+      contactDay: contactDayString,
       contactTime: editedContactTime.value
     })
     .eq('responseId', selectedEvent.value.responseId)
@@ -329,12 +352,30 @@ const updateAppointment = async () => {
     return
   }
 
-  selectedEvent.value.contactDay = editedContactDay.value
+  selectedEvent.value.contactDay = contactDayString
   selectedEvent.value.contactTime = editedContactTime.value
   isEditingAppointment.value = false
 
   // Optionally refresh events on calendar
   await fetchEvents()
+}
+
+    const editedContactDayObj = ref(null)
+
+const availableTimes = [
+  '09:00', '09:15', '09:30', '09:45',
+  '10:00', '10:15', '10:30', '10:45',
+  '11:00', '11:15', '11:30', '11:45',
+  '12:00', '12:15', '12:30', '12:45',
+  '13:00', '13:15', '13:30', '13:45',
+  '14:00', '14:15', '14:30', '14:45',
+  '15:00', '15:15', '15:30', '15:45',
+  '16:00', '16:15', '16:30', '16:45'
+]
+
+const disableWeekends = (date) => {
+  const day = date.getDay()
+  return day === 0 || day === 6
 }
 
 return {
@@ -349,7 +390,10 @@ return {
   isEditingAppointment,
   editedContactDay,
   editedContactTime,
-  updateAppointment
+  updateAppointment,
+  disableWeekends,
+  availableTimes,
+  editedContactDayObj,
 }
 
   }
