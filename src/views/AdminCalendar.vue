@@ -308,29 +308,8 @@ const updateStatus = async () => {
     return;
   }
 
-  const calendarApi = calendarRef.value.getApi();
-  const event = calendarApi.getEvents().find(
-    (e) => e.extendedProps.submission.responseId === selectedEvent.value.responseId
-  );
-
-  if (event) {
-    const newClass =
-      newStatus === 'Complete'
-        ? 'event-complete'
-        : newStatus === 'Rejected'
-        ? 'event-rejected'
-        : 'event-pending';
-
-    event.setProp('classNames', [newClass]);
-    event.setExtendedProp('submission', {
-      ...event.extendedProps.submission,
-      status: newStatus
-    });
-
-    // 🔁 Force reactivity
-    calendarOptions.value.events = [...calendarOptions.value.events];
-  }
-};
+  await fetchEvents(); // 🔁 refresh entire event list to get fresh color + status
+}
 
     onMounted(fetchEvents)
 
