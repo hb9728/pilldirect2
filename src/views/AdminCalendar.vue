@@ -67,9 +67,9 @@
     </div>
     <button
       @click="() => {
-        isEditingAppointment = true
-        editedContactDay = selectedEvent.contactDay
-        editedContactTime = selectedEvent.contactTime
+        isEditingAppointment.value = true
+        editedContactDay.value = selectedEvent.contactDay
+        editedContactTime.value = selectedEvent.contactTime
       }"
       class="text-blue-600 hover:underline text-sm"
     >
