@@ -257,6 +257,9 @@ const updateStatus = async () => {
       ...event.extendedProps.submission,
       status: newStatus
     });
+
+    // 🔁 Force reactivity
+    calendarOptions.value.events = [...calendarOptions.value.events];
   }
 };
 
