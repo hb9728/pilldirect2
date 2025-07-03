@@ -247,7 +247,7 @@
         Update
       </button>
       <button
-        @click="() => (isEditingAppointment.value = false)"
+        @click="isEditingAppointment = false"
         class="bg-gray-200 text-gray-800 px-3 py-2 rounded hover:bg-gray-300 text-sm"
       >
         Cancel
