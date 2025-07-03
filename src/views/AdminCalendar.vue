@@ -399,6 +399,7 @@ return {
   disableWeekends,
   availableTimes,
   editedContactDayObj,
+  showBackButton,
 }
 
   }
