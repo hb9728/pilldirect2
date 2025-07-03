@@ -78,16 +78,21 @@
   </div>
 
   <div v-else class="flex flex-col sm:flex-row gap-3">
+   <input
+  type="date"
+  v-model="editedContactDay"
+  :min="minDate"
+  class="border px-3 py-2 rounded text-sm"
+  @change="preventWeekend"
+/>
     <input
-      type="date"
-      v-model="editedContactDay"
-      class="border px-3 py-2 rounded text-sm"
-    />
-    <input
-      type="time"
-      v-model="editedContactTime"
-      class="border px-3 py-2 rounded text-sm"
-    />
+  type="time"
+  v-model="editedContactTime"
+  min="09:00"
+  max="16:45"
+  step="900"  <!-- 15-minute steps -->
+  class="border px-3 py-2 rounded text-sm"
+/>
     <div class="flex gap-2">
       <button
         @click="updateAppointment"
@@ -335,6 +340,16 @@ const updateAppointment = async () => {
 
   // Optionally refresh events on calendar
   await fetchEvents()
+}
+
+    const minDate = DateTime.now().toISODate()
+
+const preventWeekend = () => {
+  const day = DateTime.fromISO(editedContactDay).weekday
+  if (day === 6 || day === 7) {
+    editedContactDay = ''
+    alert('Please select a weekday (Monday–Friday).')
+  }
 }
 
 return {
