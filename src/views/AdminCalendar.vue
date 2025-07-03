@@ -17,81 +17,88 @@
       <FullCalendar ref="calendarRef" :options="calendarOptions" />
     </div>
 
-    <!-- Modal -->
-    <div
-      v-if="showModal"
-      class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50"
-      @click.self="closeModal"
+
+<!-- Outer overlay -->
+<div
+  v-if="showModal"
+  class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50"
+  @click.self="closeModal"
+>
+  <!-- Inner content (modal) -->
+  <div class="bg-white p-6 rounded shadow-md w-full max-w-2xl relative">
+    
+<!-- Modal -->
+
+<div class="flex justify-between items-start mb-4">
+  <h2 class="text-lg font-bold">Submission Details</h2>
+  <div class="flex gap-2">
+    <button
+      @click="goToPMR"
+      class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 text-sm"
     >
-      <div class="bg-white p-6 rounded shadow-md w-full max-w-2xl relative">
-        <div class="flex justify-between items-start mb-4">
-          <h2 class="text-lg font-bold">Submission Details</h2>
-          <div class="flex gap-2">
-            <button
-              @click="goToPMR"
-              class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 text-sm"
-            >
-              Open Full PMR →
-            </button>
-            <button
-              @click="closeModal"
-              class="ml-2 w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 text-gray-600"
-              title="Close"
-            >
-              ×
-            </button>
-          </div>
-        </div>
+      Open Full PMR →
+    </button>
+<button
+  @click="closeModal"
+  class="ml-2 w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 text-gray-600"
+  title="Close"
+>
+  ×
+</button>
+  </div>
+</div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm text-gray-800">
-          <div><strong>Name:</strong> {{ selectedEvent.firstName }} {{ selectedEvent.lastName }}</div>
-          <div><strong>DOB:</strong> {{ selectedEvent.dob || '—' }}</div>
-          <div><strong>Email:</strong> {{ selectedEvent.email }}</div>
-          <div><strong>Phone:</strong> {{ selectedEvent.phone || '—' }}</div>
-          <div><strong>Address:</strong> {{ selectedEvent.address1 || '' }} {{ selectedEvent.address2 || '' }}, {{ selectedEvent.city || '' }}, {{ selectedEvent.postcode || '' }}</div>
-          <div><strong>Sex:</strong> {{ selectedEvent.sex || '—' }}</div>
-          <div><strong>Submitted:</strong> {{ formatDateTime(selectedEvent.created_at) }}</div>
-          <div><strong>Response ID:</strong> {{ selectedEvent.responseId }}</div>
-          <div><strong>Preferred Contact Day:</strong> {{ selectedEvent.contactDay || '—' }}</div>
-          <div><strong>Preferred Contact Time:</strong> {{ selectedEvent.contactTime || '—' }}</div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm text-gray-800">
+      <div><strong>Name:</strong> {{ selectedEvent.firstName }} {{ selectedEvent.lastName }}</div>
+      <div><strong>DOB:</strong> {{ selectedEvent.dob || '—' }}</div>
+      <div><strong>Email:</strong> {{ selectedEvent.email }}</div>
+      <div><strong>Phone:</strong> {{ selectedEvent.phone || '—' }}</div>
+      <div><strong>Address:</strong> {{ selectedEvent.address1 || '' }} {{ selectedEvent.address2 || '' }}, {{ selectedEvent.city || '' }}, {{ selectedEvent.postcode || '' }}</div>
+      <div><strong>Sex:</strong> {{ selectedEvent.sex || '—' }}</div>
+      <div><strong>Submitted:</strong> {{ formatDateTime(selectedEvent.created_at) }}</div>
+      <div><strong>Response ID:</strong> {{ selectedEvent.responseId }}</div>
+      <div><strong>Preferred Contact Day:</strong> {{ selectedEvent.contactDay || '—' }}</div>
+      <div><strong>Preferred Contact Time:</strong> {{ selectedEvent.contactTime || '—' }}</div>
 
-          <div>
-            <label class="block text-sm font-semibold text-gray-700 mb-1">Submission Status</label>
-            <select
-              v-model="selectedEvent.status"
-              @change="updateStatus"
-              :class="[
-                'mt-1 border rounded px-3 py-2 text-sm shadow-sm transition-colors',
-                selectedEvent.status === 'Pending'
-                  ? 'bg-yellow-100 text-yellow-800 border-yellow-400'
-                  : selectedEvent.status === 'Complete'
-                  ? 'bg-green-100 text-green-800 border-green-400'
-                  : selectedEvent.status === 'Rejected'
-                  ? 'bg-red-100 text-red-800 border-red-400'
-                  : ''
-              ]"
-            >
-              <option value="Pending">Pending</option>
-              <option value="Complete">Complete</option>
-              <option value="Rejected">Rejected</option>
-            </select>
-          </div>
-        </div>
+      <div>
+        <label class="block text-sm font-semibold text-gray-700 mb-1">Submission Status</label>
+
+<select
+  v-model="selectedEvent.status"
+  @change="updateStatus"
+  :class="[
+    'mt-1 border rounded px-3 py-2 text-sm shadow-sm transition-colors',
+    selectedEvent.status === 'Pending'
+      ? 'bg-yellow-100 text-yellow-800 border-yellow-400'
+      : selectedEvent.status === 'Complete'
+      ? 'bg-green-100 text-green-800 border-green-400'
+      : selectedEvent.status === 'Rejected'
+      ? 'bg-red-100 text-red-800 border-red-400'
+      : ''
+  ]"
+>
+  <option value="Pending">Pending</option>
+  <option value="Complete">Complete</option>
+  <option value="Rejected">Rejected</option>
+</select>
+
       </div>
     </div>
+  </div>
+</div>
 
-    <!-- Pill Legend -->
-    <div class="mt-4 flex gap-3 text-sm">
-      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-yellow-100 text-yellow-800">
-        <span class="w-2 h-2 rounded-full bg-yellow-500"></span> Pending
-      </div>
-      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-green-100 text-green-800">
-        <span class="w-2 h-2 rounded-full bg-green-500"></span> Complete
-      </div>
-      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-100 text-red-800">
-        <span class="w-2 h-2 rounded-full bg-red-500"></span> Rejected
-      </div>
-    </div>
+<!-- Pill-Style Legend -->
+<div class="mt-4 flex gap-3 text-sm">
+  <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-yellow-100 text-yellow-800">
+    <span class="w-2 h-2 rounded-full bg-yellow-500"></span> Pending
+  </div>
+  <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-green-100 text-green-800">
+    <span class="w-2 h-2 rounded-full bg-green-500"></span> Complete
+  </div>
+  <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-100 text-red-800">
+    <span class="w-2 h-2 rounded-full bg-red-500"></span> Rejected
+  </div>
+</div>
   </div>
 </template>
 
@@ -107,99 +114,78 @@ import sha256 from 'crypto-js/sha256'
 import { DateTime } from 'luxon'
 
 export default {
-  components: { FullCalendar },
+  components: {
+    FullCalendar
+  },
   setup() {
     const calendarRef = ref(null)
     const router = useRouter()
+
     const selectedEvent = ref(null)
     const showModal = ref(false)
-
+    
     const closeModal = () => {
       selectedEvent.value = null
       showModal.value = false
     }
-
-    const goToPMR = () => {
-      if (!selectedEvent.value?.email) return
-      const email = selectedEvent.value.email.trim().toLowerCase()
-      const hash = sha256(email).toString()
-      router.push(`/admin/patient/${hash}?open=${selectedEvent.value.responseId}`)
-    }
-
-    const formatDateTime = (isoString) => {
-      if (!isoString) return ''
-      return DateTime.fromISO(isoString, { zone: 'utc' }).setZone('Europe/London').toFormat('dd LLL yyyy, HH:mm')
-    }
-
-    const updateStatus = async () => {
-      const newStatus = selectedEvent.value.status
-
-      const { error } = await supabase
-        .from('submissions')
-        .update({ status: newStatus })
-        .eq('responseId', selectedEvent.value.responseId)
-
-      if (error) {
-        console.error('Error updating status:', error.message)
-        return
-      }
-
-      const calendarApi = calendarRef.value.getApi()
-      const event = calendarApi.getEvents().find(
-        (e) => e.extendedProps.submission.responseId === selectedEvent.value.responseId
-      )
-
-      if (event) {
-        const newClass =
-          newStatus === 'Complete'
-            ? 'event-complete'
-            : newStatus === 'Rejected'
-            ? 'event-rejected'
-            : 'event-pending'
-
-        event.setProp('classNames', [newClass])
-        event.setExtendedProp('submission', {
-          ...event.extendedProps.submission,
-          status: newStatus
-        })
-
-        // Force re-render (workaround)
-        const originalTitle = event.title
-        event.setProp('title', originalTitle + ' ')
-        setTimeout(() => event.setProp('title', originalTitle), 10)
-      }
-    }
-
+    
+const goToPMR = () => {
+  if (!selectedEvent.value?.email) return
+  const email = selectedEvent.value.email.trim().toLowerCase()
+  const hash = sha256(email).toString()
+  router.push(`/admin/patient/${hash}?open=${selectedEvent.value.responseId}`)
+}
+    
     const calendarOptions = ref({
       plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
       initialView: 'timeGridWeek',
       slotMinTime: '09:00:00',
       slotMaxTime: '17:00:00',
       slotDuration: '00:15:00',
+      slotLabelInterval: '01:00',
+      slotLabelFormat: { hour: 'numeric', minute: '2-digit', hour12: true },
       allDaySlot: false,
+      height: 'auto',
       nowIndicator: true,
-      eventColor: undefined, // prevent override to blue
-      eventTextColor: '#fff',
+      eventTimeFormat: {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false
+      },
+      eventClassNames: ['rounded-md', 'px-2', 'py-1', 'text-sm', 'shadow-sm', 'hover:shadow-md', 'transition'],
       eventDisplay: 'block',
-      eventClassNames: ['rounded-md', 'px-2', 'py-1', 'text-sm', 'shadow-sm', 'hover:shadow-md'],
-      eventContent(arg) {
+      eventTextColor: '#fff',
+      eventContent: function (arg) {
         return {
           html: `<div class="px-1 text-xs truncate cursor-pointer">${arg.timeText} – ${arg.event.title}</div>`
         }
       },
-      events: [],
-      eventClick(info) {
-        selectedEvent.value = info.event.extendedProps.submission
-        showModal.value = true
-      }
+      events: [], // populated on mount
+eventClick: (info) => {
+  selectedEvent.value = info.event.extendedProps.submission
+  showModal.value = true
+}
     })
 
     const fetchEvents = async () => {
       const { data, error } = await supabase
         .from('submissions')
         .select(`
-          firstName, lastName, email, phone, dob, sex, address1, address2, city, postcode,
-          created_at, contactDay, contactTime, responseId, status
+          firstName,
+          lastName,
+          email,
+          phone,
+          dob,
+          sex,
+          address1,
+          address2,
+          city,
+          postcode,
+          created_at,
+          contactDay,
+          contactTime,
+          responseId,
+          status
         `)
 
       if (error) {
@@ -207,41 +193,86 @@ export default {
         return
       }
 
-      const bookings = data
-        .filter(sub => sub.contactDay && sub.contactTime)
-        .map(sub => {
-          const start = `${sub.contactDay}T${sub.contactTime}`
-          const statusClass =
-            sub.status === 'Complete'
-              ? 'event-complete'
-              : sub.status === 'Rejected'
-              ? 'event-rejected'
-              : 'event-pending'
+const bookings = data
+  .filter(sub => sub.contactDay && sub.contactTime)
+  .map(sub => {
+    const start = `${sub.contactDay}T${sub.contactTime}`;
+    const statusClass =
+      sub.status === 'Complete'
+        ? 'event-complete'
+        : sub.status === 'Rejected'
+        ? 'event-rejected'
+        : 'event-pending';
 
-          return {
-            title: `${sub.firstName} ${sub.lastName}`,
-            start,
-            end: new Date(new Date(start).getTime() + 15 * 60000).toISOString(),
-            classNames: [statusClass],
-            submission: sub
-          }
-        })
+    return {
+      title: `${sub.firstName} ${sub.lastName}`,
+      start,
+      end: new Date(new Date(start).getTime() + 15 * 60000).toISOString(),
+      classNames: [statusClass],
+      submission: sub
+    };
+  });
 
       calendarOptions.value.events = bookings
     }
 
+    const logout = () => {
+      localStorage.removeItem('accessToken')
+      router.push('/admin/login')
+    }
+
+    const formatDateTime = (isoString) => {
+  if (!isoString) return ''
+  return DateTime.fromISO(isoString, { zone: 'utc' }).setZone('Europe/London').toFormat('dd LLL yyyy, HH:mm')
+}
+
+const updateStatus = async () => {
+  const newStatus = selectedEvent.value.status;
+
+  const { error } = await supabase
+    .from('submissions')
+    .update({ status: newStatus })
+    .eq('responseId', selectedEvent.value.responseId);
+
+  if (error) {
+    console.error('Error updating status:', error.message);
+    return;
+  }
+
+  const calendarApi = calendarRef.value.getApi();
+  const event = calendarApi.getEvents().find(
+    (e) => e.extendedProps.submission.responseId === selectedEvent.value.responseId
+  );
+
+  if (event) {
+    const newClass =
+      newStatus === 'Complete'
+        ? 'event-complete'
+        : newStatus === 'Rejected'
+        ? 'event-rejected'
+        : 'event-pending';
+
+    event.setProp('classNames', [newClass]);
+    event.setExtendedProp('submission', {
+      ...event.extendedProps.submission,
+      status: newStatus
+    });
+  }
+};
+
     onMounted(fetchEvents)
 
-    return {
-      calendarOptions,
-      logout,
-      selectedEvent,
-      showModal,
-      closeModal,
-      goToPMR,
-      formatDateTime,
-      updateStatus
-    }
+return {
+  calendarOptions,
+  logout,
+  selectedEvent,
+  showModal,
+  closeModal,
+  goToPMR,
+  formatDateTime,
+  updateStatus
+}
+
   }
 }
 </script>
@@ -249,38 +280,48 @@ export default {
 <style scoped>
 .fc {
   font-family: 'Inter', sans-serif;
-  font-size: 0.875rem;
+  font-size: 0.875rem; /* Tailwind text-sm */
 }
+
+/* Tighter rows */
 .fc-timegrid-slot {
   min-height: 24px !important;
 }
+
+/* Compact event title display */
 .fc-event-title {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.fc-timegrid-slot,
-.fc-scrollgrid {
-  border-color: #e5e7eb !important;
+
+/* Optional: Soften the background grid lines */
+.fc-timegrid-slot, .fc-scrollgrid {
+  border-color: #e5e7eb !important; /* Tailwind gray-200 */
 }
+
 .fc-event {
   cursor: pointer;
 }
+
 </style>
 
 <style>
+/* Calendar event status colors */
 .event-complete {
-  background-color: #22c55e !important;
+  background-color: #22c55e !important; /* green-500 */
   border-color: #22c55e !important;
   color: white !important;
 }
+
 .event-rejected {
-  background-color: #ef4444 !important;
+  background-color: #ef4444 !important; /* red-500 */
   border-color: #ef4444 !important;
   color: white !important;
 }
+
 .event-pending {
-  background-color: #facc15 !important;
+  background-color: #facc15 !important; /* yellow-400 */
   border-color: #facc15 !important;
   color: black !important;
 }
