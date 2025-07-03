@@ -78,16 +78,23 @@
   </div>
 
   <div v-else class="flex flex-col sm:flex-row gap-3">
-    <input
-      type="date"
-      v-model="editedContactDay"
-      class="border px-3 py-2 rounded text-sm"
-    />
-    <input
-      type="time"
-      v-model="editedContactTime"
-      class="border px-3 py-2 rounded text-sm"
-    />
+<input
+  type="date"
+  v-model="editedContactDay"
+  class="border px-3 py-2 rounded text-sm"
+  :min="minDate"
+  :max="maxDate"
+  @input="preventWeekends"
+/>
+
+<input
+  type="time"
+  v-model="editedContactTime"
+  class="border px-3 py-2 rounded text-sm"
+  min="09:00"
+  max="16:45"
+  step="900"
+/>
     <div class="flex gap-2">
       <button
         @click="updateAppointment"
