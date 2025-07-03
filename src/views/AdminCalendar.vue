@@ -368,7 +368,10 @@ return {
   isEditingAppointment,
   editedContactDay,
   editedContactTime,
-  updateAppointment
+  updateAppointment,
+  minDate,
+  maxDate,
+  preventWeekends,
 }
 
   }
