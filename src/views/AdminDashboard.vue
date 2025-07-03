@@ -197,15 +197,15 @@
       {{ selectedSubmission.contactDay || '—' }} at {{ selectedSubmission.contactTime || '—' }}
     </div>
     <button
-      @click="() => {
-        isEditingAppointment.value = true
-        editedContactDayObj.value = selectedSubmission.contactDay ? new Date(selectedSubmission.contactDay) : null
-        editedContactTime.value = selectedSubmission.contactTime || ''
-      }"
-      class="text-blue-600 hover:underline text-sm"
-    >
-      Edit Appointment
-    </button>
+  @click="() => {
+    isEditingAppointment = true
+    editedContactDayObj = selectedSubmission.contactDay ? new Date(selectedSubmission.contactDay) : null
+    editedContactTime = selectedSubmission.contactTime || ''
+  }"
+  class="text-blue-600 hover:underline text-sm"
+>
+  Edit Appointment
+</button>
   </div>
 
   <div v-else class="flex flex-col sm:flex-row gap-3 mt-2">
