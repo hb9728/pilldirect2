@@ -8,41 +8,23 @@
   <!-- Title (Left) -->
   <h2 class="text-2xl font-semibold">PillDirect.co.uk Booking Calendar</h2>
 
-<!-- Buttons (Right) -->
-<div class="flex items-center gap-4 relative" ref="menuRef">
-  <button
-    v-if="showBackButton"
-    @click="$router.back()"
-    class="text-blue-600 hover:underline text-sm"
-  >
-    ← Back
-  </button>
-  <button
-    @click="toggleMenu"
-    class="bg-gray-100 hover:bg-gray-200 text-gray-800 px-4 py-2 rounded text-sm border"
-  >
-    Menu ▾
-  </button>
-
-  <div
-    v-if="menuOpen"
-    class="absolute right-0 mt-12 w-48 bg-white border border-gray-200 rounded shadow-md z-10"
-  >
+  <!-- Buttons (Right) -->
+  <div class="flex items-center gap-4">
     <button
-      class="w-full text-left px-4 py-2 hover:bg-gray-100 text-sm"
-      @click="goToDashboard"
+      v-if="showBackButton"
+      @click="$router.back()"
+      class="text-blue-600 hover:underline text-sm"
     >
-      View Dashboard
+      ← Back
     </button>
     <button
-      class="w-full text-left px-4 py-2 hover:bg-gray-100 text-sm text-red-600"
       @click="logout"
+      class="text-red-600 hover:underline text-sm"
     >
       Logout
     </button>
   </div>
 </div>
-   </div>
 
 
 
@@ -235,37 +217,12 @@ export default {
       selectedEvent.value = null
       showModal.value = false
     }
-const showBackButton = ref(false)
-    
-onMounted(() => {
-  showBackButton.value = window.history.length > 1
-})
 
-const menuOpen = ref(false)
-const menuRef = ref(null)
+    const showBackButton = ref(false)
 
 onMounted(() => {
   showBackButton.value = window.history.length > 1
-  document.addEventListener('click', handleClickOutside)
 })
-
-onBeforeUnmount(() => {
-  document.removeEventListener('click', handleClickOutside)
-})
-
-const toggleMenu = () => {
-  menuOpen.value = !menuOpen.value
-}
-
-const handleClickOutside = (event) => {
-  if (menuRef.value && !menuRef.value.contains(event.target)) {
-    menuOpen.value = false
-  }
-}
-
-const goToDashboard = () => {
-  router.push('/admin/dashboard')
-}
     
 const goToPMR = () => {
   if (!selectedEvent.value?.email) return
