@@ -393,7 +393,16 @@ return {
   closeModal,
   goToPMR,
   formatDateTime,
-  updateStatus
+  updateStatus,
+  isEditingAppointment,
+  editedDay,
+  editedTime,
+  minDate,
+  maxDate,
+  preventWeekends,
+  startEditingAppointment,
+  cancelAppointmentEdit,
+  submitAppointmentEdit
 }
 
   }
