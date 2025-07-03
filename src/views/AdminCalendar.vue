@@ -57,38 +57,38 @@
       <div><strong>Sex:</strong> {{ selectedEvent.sex || '—' }}</div>
       <div><strong>Submitted:</strong> {{ formatDateTime(selectedEvent.created_at) }}</div>
       <div><strong>Response ID:</strong> {{ selectedEvent.responseId }}</div>
-      <!-- Appointment Time Block -->
+<!-- Appointment Time Block -->
 <div class="col-span-2">
   <label class="block text-sm font-semibold text-gray-700 mb-1">Preferred Appointment</label>
-  
-  <div v-if="!isEditingAppointment" class="flex items-center gap-4">
+
+  <div v-if="!isEditingAppointment.value" class="flex items-center gap-4">
     <div>
       {{ selectedEvent.contactDay || '—' }} at {{ selectedEvent.contactTime || '—' }}
     </div>
     <button
-  @click="beginEditingAppointment"
-  class="text-blue-600 hover:underline text-sm"
->
-  Edit Appointment
-</button>
+      @click="beginEditingAppointment"
+      class="text-blue-600 hover:underline text-sm"
+    >
+      Edit Appointment
+    </button>
   </div>
 
   <div v-else class="flex flex-col sm:flex-row gap-3">
-   <input
-  type="date"
-  v-model="editedContactDay"
-  :min="minDate"
-  class="border px-3 py-2 rounded text-sm"
-  @change="preventWeekend"
-/>
     <input
-  type="time"
-  v-model="editedContactTime"
-  min="09:00"
-  max="16:45"
-  step="900"  <!-- 15-minute steps -->
-  class="border px-3 py-2 rounded text-sm"
-/>
+      type="date"
+      v-model="editedContactDay"
+      :min="minDate"
+      class="border px-3 py-2 rounded text-sm"
+      @change="preventWeekend"
+    />
+    <input
+      type="time"
+      v-model="editedContactTime"
+      min="09:00"
+      max="16:45"
+      step="900"
+      class="border px-3 py-2 rounded text-sm"
+    />
     <div class="flex gap-2">
       <button
         @click="updateAppointment"
@@ -97,7 +97,7 @@
         Update
       </button>
       <button
-        @click="() => (isEditingAppointment = false)"
+        @click="() => (isEditingAppointment.value = false)"
         class="bg-gray-200 text-gray-800 px-3 py-2 rounded hover:bg-gray-300 text-sm"
       >
         Cancel
