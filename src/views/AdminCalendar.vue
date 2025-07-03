@@ -402,11 +402,6 @@ const disableWeekends = (date) => {
   return day === 0 || day === 6
 }
 
-    const showBackButton = ref(false)
-onMounted(() => {
-  showBackButton.value = window.history.length > 1
-})
-
 const menuOpen = ref(false)
 const menuRef = ref(null)
 
