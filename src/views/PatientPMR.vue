@@ -403,7 +403,7 @@
 </template>
 
 <script setup>
-import { onMounted, ref, computed, watch } from 'vue'
+import { onMounted, ref, computed, watch, onBeforeUnmount } from 'vue'
 import { useRoute } from 'vue-router'
 import { supabase } from '../supabase'
 import sha256 from 'crypto-js/sha256'
@@ -431,6 +431,33 @@ onMounted(async () => {
 onMounted(() => {
   showBackButton.value = window.history.length > 1
 })
+
+  
+const menuOpen = ref(false)
+const menuRef = ref(null)
+
+const toggleMenu = () => {
+  menuOpen.value = !menuOpen.value
+}
+
+const handleClickOutside = (event) => {
+  if (menuRef.value && !menuRef.value.contains(event.target)) {
+    menuOpen.value = false
+  }
+}
+onMounted(() => {
+  document.addEventListener('click', handleClickOutside)
+})
+onBeforeUnmount(() => {
+  document.removeEventListener('click', handleClickOutside)
+})
+
+const goToDashboard = () => {
+  router.push('/admin/dashboard')
+}
+const goToCalendar = () => {
+  router.push('/admin/calendar')
+}
 
 const changePage = (page) => {
   const max = totalPages.value
