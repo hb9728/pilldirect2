@@ -17,7 +17,6 @@
       <FullCalendar ref="calendarRef" :options="calendarOptions" />
     </div>
 
-
 <!-- Outer overlay -->
 <div
   v-if="showModal"
@@ -57,54 +56,8 @@
       <div><strong>Sex:</strong> {{ selectedEvent.sex || '—' }}</div>
       <div><strong>Submitted:</strong> {{ formatDateTime(selectedEvent.created_at) }}</div>
       <div><strong>Response ID:</strong> {{ selectedEvent.responseId }}</div>
-<!-- Appointment Time Block -->
-<div class="col-span-2">
-  <label class="block text-sm font-semibold text-gray-700 mb-1">Preferred Appointment</label>
-
-  <div v-if="!isEditingAppointment.value" class="flex items-center gap-4">
-    <div>
-      {{ selectedEvent.contactDay || '—' }} at {{ selectedEvent.contactTime || '—' }}
-    </div>
-    <button
-      @click="beginEditingAppointment"
-      class="text-blue-600 hover:underline text-sm"
-    >
-      Edit Appointment
-    </button>
-  </div>
-
-  <div v-else class="flex flex-col sm:flex-row gap-3">
-    <input
-      type="date"
-      v-model="editedContactDay"
-      :min="minDate"
-      class="border px-3 py-2 rounded text-sm"
-      @change="preventWeekend"
-    />
-    <input
-      type="time"
-      v-model="editedContactTime"
-      min="09:00"
-      max="16:45"
-      step="900"
-      class="border px-3 py-2 rounded text-sm"
-    />
-    <div class="flex gap-2">
-      <button
-        @click="updateAppointment"
-        class="bg-green-600 text-white px-3 py-2 rounded hover:bg-green-700 text-sm"
-      >
-        Update
-      </button>
-      <button
-        @click="() => (isEditingAppointment.value = false)"
-        class="bg-gray-200 text-gray-800 px-3 py-2 rounded hover:bg-gray-300 text-sm"
-      >
-        Cancel
-      </button>
-    </div>
-  </div>
-</div>
+      <div><strong>Preferred Contact Day:</strong> {{ selectedEvent.contactDay || '—' }}</div>
+      <div><strong>Preferred Contact Time:</strong> {{ selectedEvent.contactTime || '—' }}</div>
 
       <div>
         <label class="block text-sm font-semibold text-gray-700 mb-1">Submission Status</label>
@@ -164,11 +117,6 @@ export default {
     FullCalendar
   },
   setup() {
-
-    const isEditingAppointment = ref(false)
-    const editedContactDay = ref('')
-    const editedContactTime = ref('')
-    
     const calendarRef = ref(null)
     const router = useRouter()
 
@@ -184,7 +132,7 @@ const goToPMR = () => {
   if (!selectedEvent.value?.email) return
   const email = selectedEvent.value.email.trim().toLowerCase()
   const hash = sha256(email).toString()
-  router.push(`/admin/patient/${hash}?open=${selectedEvent.value.responseId}`)
+  router.push(/admin/patient/${hash}?open=${selectedEvent.value.responseId})
 }
     
     const calendarOptions = ref({
@@ -208,7 +156,7 @@ const goToPMR = () => {
       eventTextColor: '#fff',
       eventContent: function (arg) {
         return {
-          html: `<div class="px-1 text-xs truncate cursor-pointer">${arg.timeText} – ${arg.event.title}</div>`
+          html: <div class="px-1 text-xs truncate cursor-pointer">${arg.timeText} – ${arg.event.title}</div>
         }
       },
       events: [], // populated on mount
@@ -221,7 +169,7 @@ eventClick: (info) => {
     const fetchEvents = async () => {
       const { data, error } = await supabase
         .from('submissions')
-        .select(`
+        .select(
           firstName,
           lastName,
           email,
@@ -237,7 +185,7 @@ eventClick: (info) => {
           contactTime,
           responseId,
           status
-        `)
+        )
 
       if (error) {
         console.error('Error fetching bookings:', error)
@@ -247,7 +195,7 @@ eventClick: (info) => {
 const bookings = data
   .filter(sub => sub.contactDay && sub.contactTime)
   .map(sub => {
-    const start = `${sub.contactDay}T${sub.contactTime}`;
+    const start = ${sub.contactDay}T${sub.contactTime};
     const statusClass =
       sub.status === 'Complete'
         ? 'event-complete'
@@ -256,7 +204,7 @@ const bookings = data
         : 'event-pending';
 
     return {
-      title: `${sub.firstName} ${sub.lastName}`,
+      title: ${sub.firstName} ${sub.lastName},
       start,
       end: new Date(new Date(start).getTime() + 15 * 60000).toISOString(),
       classNames: [statusClass],
@@ -316,44 +264,6 @@ const updateStatus = async () => {
 
     onMounted(fetchEvents)
 
-const updateAppointment = async () => {
-  const { error } = await supabase
-    .from('submissions')
-    .update({
-      contactDay: editedContactDay.value,
-      contactTime: editedContactTime.value
-    })
-    .eq('responseId', selectedEvent.value.responseId)
-
-  if (error) {
-    console.error('Failed to update appointment time:', error.message)
-    return
-  }
-
-  selectedEvent.value.contactDay = editedContactDay.value
-  selectedEvent.value.contactTime = editedContactTime.value
-  isEditingAppointment.value = false
-
-  // Optionally refresh events on calendar
-  await fetchEvents()
-}
-
-    const minDate = DateTime.now().toISODate()
-
-const preventWeekend = () => {
-  const day = DateTime.fromISO(editedContactDay.value).weekday
-  if (day === 6 || day === 7) {
-    editedContactDay.value = ''
-    alert('Please select a weekday (Monday–Friday).')
-  }
-}
-
-    const beginEditingAppointment = () => {
-  isEditingAppointment.value = true
-  editedContactDay.value = selectedEvent.value.contactDay
-  editedContactTime.value = selectedEvent.value.contactTime
-}
-
 return {
   calendarOptions,
   logout,
@@ -362,14 +272,7 @@ return {
   closeModal,
   goToPMR,
   formatDateTime,
-  updateStatus,
-  isEditingAppointment,
-  editedContactDay,
-  editedContactTime,
-  updateAppointment,
-  minDate,
-  preventWeekend,
-  beginEditingAppointment
+  updateStatus
 }
 
   }
