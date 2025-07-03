@@ -426,12 +426,6 @@ const goToDashboard = () => {
   router.push('/admin/dashboard')
 }
 
-const logout = async () => {
-  await supabase.auth.signOut()
-  router.replace('/admin/login')
-  location.reload()
-}
-
 return {
   calendarOptions,
   logout,
