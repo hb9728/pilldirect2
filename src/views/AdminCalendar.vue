@@ -368,7 +368,8 @@ return {
   editedContactTime,
   updateAppointment,
   minDate,
-  preventWeekend
+  preventWeekend,
+  beginEditingAppointment
 }
 
   }
