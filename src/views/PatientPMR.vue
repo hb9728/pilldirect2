@@ -7,16 +7,30 @@
 <!-- Unified Header with Back & Logout Buttons -->
 <div class="flex justify-between items-center mb-6">
   <!-- Page Title -->
-  <h2 class="text-2xl font-semibold">PillDirect.co.uk miniPMR®</h2>
-
-  <!-- Back + Logout Buttons -->
-  <div class="flex items-center gap-4">
+  <div class="flex items-center space-x-3">
     <button
       v-if="showBackButton"
       @click="$router.back()"
       class="text-blue-600 hover:underline text-sm"
     >
       ← Back
+    </button>
+    <h2 class="text-2xl font-semibold">PillDirect.co.uk miniPMR®</h2>
+  </div>
+
+  <!-- Menu -->
+  <div class="flex items-center gap-3">
+    <button
+      @click="router.push('/admin/dashboard')"
+      class="text-sm text-gray-800 hover:underline"
+    >
+      Dashboard
+    </button>
+    <button
+      @click="router.push('/admin/calendar')"
+      class="text-sm text-gray-800 hover:underline"
+    >
+      Calendar
     </button>
     <button
       @click="logout"
