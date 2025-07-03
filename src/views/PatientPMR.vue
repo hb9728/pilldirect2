@@ -6,7 +6,7 @@
     
 <!-- Unified Header with Back & Logout Buttons -->
 <div class="flex justify-between items-center mb-6">
-  <!-- Page Title -->
+  <!-- LEFT: Page Title -->
   <div class="flex items-center space-x-3">
     <button
       v-if="showBackButton"
@@ -18,26 +18,38 @@
     <h2 class="text-2xl font-semibold">PillDirect.co.uk miniPMR®</h2>
   </div>
 
-  <!-- Menu -->
-  <div class="flex items-center gap-3">
+  <!-- RIGHT: Menu -->
+  <div class="flex items-center gap-4 relative" ref="menuRef">
     <button
-      @click="router.push('/admin/dashboard')"
-      class="text-sm text-gray-800 hover:underline"
+      @click="toggleMenu"
+      class="bg-gray-100 hover:bg-gray-200 text-gray-800 px-4 py-2 rounded text-sm border"
     >
-      Dashboard
+      Menu ▾
     </button>
-    <button
-      @click="router.push('/admin/calendar')"
-      class="text-sm text-gray-800 hover:underline"
+
+    <div
+      v-if="menuOpen"
+      class="absolute right-0 mt-12 w-48 bg-white border border-gray-200 rounded shadow-md z-10"
     >
-      Calendar
-    </button>
-    <button
-      @click="logout"
-      class="text-red-600 hover:underline text-sm"
-    >
-      Logout
-    </button>
+      <button
+        class="w-full text-left px-4 py-2 hover:bg-gray-100 text-sm"
+        @click="goToDashboard"
+      >
+        View Dashboard
+      </button>
+      <button
+        class="w-full text-left px-4 py-2 hover:bg-gray-100 text-sm"
+        @click="goToCalendar"
+      >
+        View Calendar
+      </button>
+      <button
+        class="w-full text-left px-4 py-2 hover:bg-gray-100 text-sm text-red-600"
+        @click="logout"
+      >
+        Logout
+      </button>
+    </div>
   </div>
 </div>
 
