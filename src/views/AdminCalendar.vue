@@ -1,16 +1,36 @@
 <template>
   <div class="min-h-screen bg-gray-50 p-6">
-    <div class="flex justify-between items-center mb-6">
-      <h2 class="text-2xl font-semibold">PillDirect.co.uk Booking Calendar</h2>
-      <div class="flex space-x-2">
-        <RouterLink to="/admin/dashboard">
-          <button class="bg-gray-100 hover:bg-gray-200 text-gray-800 px-4 py-2 rounded text-sm border">
-            ← Back to Dashboard
-          </button>
-        </RouterLink>
-        <button @click="logout" class="text-red-600 hover:underline text-sm">Logout</button>
-      </div>
-    </div>
+
+
+    
+    
+ <div class="flex justify-between items-center mb-6">
+  <!-- Title (Left) -->
+  <h2 class="text-2xl font-semibold">PillDirect.co.uk Booking Calendar</h2>
+
+  <!-- Buttons (Right) -->
+  <div class="flex items-center gap-4">
+    <button
+      v-if="showBackButton"
+      @click="$router.back()"
+      class="text-blue-600 hover:underline text-sm"
+    >
+      ← Back
+    </button>
+    <button
+      @click="logout"
+      class="text-red-600 hover:underline text-sm"
+    >
+      Logout
+    </button>
+  </div>
+</div>
+
+
+
+
+
+    
 
     <!-- Calendar Card -->
     <div class="bg-white p-4 rounded-lg shadow border border-gray-200 text-sm">
@@ -197,6 +217,12 @@ export default {
       selectedEvent.value = null
       showModal.value = false
     }
+
+    const showBackButton = ref(false)
+
+onMounted(() => {
+  showBackButton.value = window.history.length > 1
+})
     
 const goToPMR = () => {
   if (!selectedEvent.value?.email) return
