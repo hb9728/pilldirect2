@@ -6,8 +6,11 @@
     
 <!-- Unified Header with Back & Logout Buttons -->
 <div class="flex justify-between items-center mb-6">
-  <!-- LEFT: Page Title -->
-  <div class="flex items-center space-x-3">
+  <!-- LEFT: Title -->
+  <h2 class="text-2xl font-semibold">PillDirect.co.uk miniPMR®</h2>
+
+  <!-- RIGHT: Back + Menu -->
+  <div class="flex items-center gap-4 relative" ref="menuRef">
     <button
       v-if="showBackButton"
       @click="$router.back()"
@@ -15,11 +18,7 @@
     >
       ← Back
     </button>
-    <h2 class="text-2xl font-semibold">PillDirect.co.uk miniPMR®</h2>
-  </div>
 
-  <!-- RIGHT: Menu -->
-  <div class="flex items-center gap-4 relative" ref="menuRef">
     <button
       @click="toggleMenu"
       class="bg-gray-100 hover:bg-gray-200 text-gray-800 px-4 py-2 rounded text-sm border"
