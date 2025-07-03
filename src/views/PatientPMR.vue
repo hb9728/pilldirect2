@@ -1,14 +1,22 @@
 <template>
   <div class="p-6">
+
+
+
+    
 <!-- Unified Header with Back & Logout Buttons -->
 <div class="flex justify-between items-center mb-6">
+  <!-- Page Title -->
   <h2 class="text-2xl font-semibold">PillDirect.co.uk miniPMR®</h2>
-  <div class="flex space-x-2">
+
+  <!-- Back + Logout Buttons -->
+  <div class="flex items-center gap-4">
     <button
-      @click="router.push('/admin/dashboard')"
-      class="bg-gray-100 hover:bg-gray-200 text-gray-800 px-4 py-2 rounded text-sm border"
+      v-if="showBackButton"
+      @click="$router.back()"
+      class="text-blue-600 hover:underline text-sm"
     >
-      ← Back to Dashboard
+      ← Back
     </button>
     <button
       @click="logout"
@@ -18,6 +26,9 @@
     </button>
   </div>
 </div>
+
+
+    
     
 
 <!-- PMR Header -->
@@ -387,6 +398,12 @@ onMounted(async () => {
   if (!session) {
     router.push('/admin/login')
   }
+})
+
+  const showBackButton = ref(false)
+
+onMounted(() => {
+  showBackButton.value = window.history.length > 1
 })
 
 const changePage = (page) => {
