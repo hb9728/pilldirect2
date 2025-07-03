@@ -224,12 +224,62 @@
 
   <hr class="my-4 border-gray-200" />
 
-  <!-- Callback Timing -->
-  <div>
-    <h4 class="font-semibold text-gray-700 mb-2">Callback Timing</h4>
-    <p><strong>Preferred Day:</strong> {{ selectedSubmission.contactDay || '—' }}</p>
-    <p><strong>Preferred Time:</strong> {{ selectedSubmission.contactTime || '—' }}</p>
+<!-- Callback Timing with Editable Appointment -->
+<div>
+  <h4 class="font-semibold text-gray-700 mb-2">Callback Timing</h4>
+
+  <div v-if="!isEditingAppointment" class="flex items-center gap-4">
+    <p>
+      <strong>Preferred:</strong>
+      {{ selectedSubmission.contactDay || '—' }} at {{ selectedSubmission.contactTime || '—' }}
+    </p>
+    <button
+      @click="() => {
+        isEditingAppointment = true
+        editedContactDayObj = selectedSubmission.contactDay ? new Date(selectedSubmission.contactDay) : null
+        editedContactTime = selectedSubmission.contactTime || ''
+      }"
+      class="text-blue-600 hover:underline text-sm"
+    >
+      Edit Appointment
+    </button>
   </div>
+
+  <div v-else class="flex flex-col sm:flex-row gap-3 mt-2">
+    <Datepicker
+      v-model="editedContactDayObj"
+      :disabled-dates="disableWeekends"
+      :min-date="new Date()"
+      input-class="border rounded px-3 py-2 text-sm w-full"
+      :clearable="false"
+      :inline="false"
+      :enable-time-picker="false"
+    />
+
+    <select
+      v-model="editedContactTime"
+      class="border rounded px-3 py-2 text-sm w-full"
+    >
+      <option disabled value="">Select time</option>
+      <option v-for="time in availableTimes" :key="time" :value="time">{{ time }}</option>
+    </select>
+
+    <div class="flex gap-2">
+      <button
+        @click="updateAppointmentPMR"
+        class="bg-green-600 text-white px-3 py-2 rounded hover:bg-green-700 text-sm"
+      >
+        Update
+      </button>
+      <button
+        @click="() => (isEditingAppointment = false)"
+        class="bg-gray-200 text-gray-800 px-3 py-2 rounded hover:bg-gray-300 text-sm"
+      >
+        Cancel
+      </button>
+    </div>
+  </div>
+</div>
 
 
 
@@ -399,6 +449,29 @@ const updateStatus = async (entry) => {
   if (error) console.error('Status update failed:', error.message)
 }
 
+  const updateAppointmentPMR = async () => {
+  const contactDayString = editedContactDayObj.value
+    ? editedContactDayObj.value.toISOString().split('T')[0]
+    : ''
+
+  const { error } = await supabase
+    .from('submissions')
+    .update({
+      contactDay: contactDayString,
+      contactTime: editedContactTime.value
+    })
+    .eq('responseId', selectedSubmission.value.responseId)
+
+  if (error) {
+    console.error('❌ Failed to update appointment:', error.message)
+    return
+  }
+
+  selectedSubmission.value.contactDay = contactDayString
+  selectedSubmission.value.contactTime = editedContactTime.value
+  isEditingAppointment.value = false
+}
+
 const parsedMedicalHistory = computed(() => {
   const raw = selectedSubmission.value?.selectApplicable
   if (!raw) return []
@@ -553,4 +626,27 @@ const generateAINote = async () => {
 
 onMounted(fetchByHashedEmail)
 //hello
+
+  import Datepicker from '@vuepic/vue-datepicker'
+import '@vuepic/vue-datepicker/dist/main.css'
+
+const isEditingAppointment = ref(false)
+const editedContactDayObj = ref(null)
+const editedContactTime = ref('')
+
+const availableTimes = [
+  '09:00', '09:15', '09:30', '09:45',
+  '10:00', '10:15', '10:30', '10:45',
+  '11:00', '11:15', '11:30', '11:45',
+  '12:00', '12:15', '12:30', '12:45',
+  '13:00', '13:15', '13:30', '13:45',
+  '14:00', '14:15', '14:30', '14:45',
+  '15:00', '15:15', '15:30', '15:45',
+  '16:00', '16:15', '16:30', '16:45'
+]
+
+const disableWeekends = (date) => {
+  const day = date.getDay()
+  return day === 0 || day === 6
+}
 </script>
