@@ -17,6 +17,7 @@
       <FullCalendar ref="calendarRef" :options="calendarOptions" />
     </div>
 
+
 <!-- Outer overlay -->
 <div
   v-if="showModal"
@@ -132,7 +133,7 @@ const goToPMR = () => {
   if (!selectedEvent.value?.email) return
   const email = selectedEvent.value.email.trim().toLowerCase()
   const hash = sha256(email).toString()
-  router.push(/admin/patient/${hash}?open=${selectedEvent.value.responseId})
+  router.push(`/admin/patient/${hash}?open=${selectedEvent.value.responseId}`)
 }
     
     const calendarOptions = ref({
@@ -156,7 +157,7 @@ const goToPMR = () => {
       eventTextColor: '#fff',
       eventContent: function (arg) {
         return {
-          html: <div class="px-1 text-xs truncate cursor-pointer">${arg.timeText} – ${arg.event.title}</div>
+          html: `<div class="px-1 text-xs truncate cursor-pointer">${arg.timeText} – ${arg.event.title}</div>`
         }
       },
       events: [], // populated on mount
@@ -169,7 +170,7 @@ eventClick: (info) => {
     const fetchEvents = async () => {
       const { data, error } = await supabase
         .from('submissions')
-        .select(
+        .select(`
           firstName,
           lastName,
           email,
@@ -185,7 +186,7 @@ eventClick: (info) => {
           contactTime,
           responseId,
           status
-        )
+        `)
 
       if (error) {
         console.error('Error fetching bookings:', error)
@@ -195,7 +196,7 @@ eventClick: (info) => {
 const bookings = data
   .filter(sub => sub.contactDay && sub.contactTime)
   .map(sub => {
-    const start = ${sub.contactDay}T${sub.contactTime};
+    const start = `${sub.contactDay}T${sub.contactTime}`;
     const statusClass =
       sub.status === 'Complete'
         ? 'event-complete'
@@ -204,7 +205,7 @@ const bookings = data
         : 'event-pending';
 
     return {
-      title: ${sub.firstName} ${sub.lastName},
+      title: `${sub.firstName} ${sub.lastName}`,
       start,
       end: new Date(new Date(start).getTime() + 15 * 60000).toISOString(),
       classNames: [statusClass],
