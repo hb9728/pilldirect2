@@ -57,42 +57,57 @@
       <div><strong>Sex:</strong> {{ selectedEvent.sex || '—' }}</div>
       <div><strong>Submitted:</strong> {{ formatDateTime(selectedEvent.created_at) }}</div>
       <div><strong>Response ID:</strong> {{ selectedEvent.responseId }}</div>
-<div>
-  <strong>Preferred Contact Day:</strong>
-  <div v-if="!isEditingAppointment">{{ selectedEvent.contactDay || '—' }}</div>
-  <input
-    v-else
-    type="date"
-    v-model="editedDay"
-    class="border rounded px-2 py-1 mt-1 text-sm"
-    :min="minDate"
-    :max="maxDate"
-    :disabled="!isEditingAppointment"
-    :class="{ 'opacity-50': !isEditingAppointment }"
-    :style="{ cursor: isEditingAppointment ? 'pointer' : 'default' }"
-    :oninput="(e) => preventWeekends(e)"
-  />
-</div>
+      <!-- Appointment Time Block -->
+<div class="col-span-2">
+  <label class="block text-sm font-semibold text-gray-700 mb-1">Preferred Appointment</label>
+  
+  <div v-if="!isEditingAppointment" class="flex items-center gap-4">
+    <div>
+      {{ selectedEvent.contactDay || '—' }} at {{ selectedEvent.contactTime || '—' }}
+    </div>
+    <button
+      @click="() => {
+        isEditingAppointment = true
+        editedContactDay = selectedEvent.contactDay
+        editedContactTime = selectedEvent.contactTime
+      }"
+      class="text-blue-600 hover:underline text-sm"
+    >
+      Edit Appointment
+    </button>
+  </div>
 
-<div>
-  <strong>Preferred Contact Time:</strong>
-  <div v-if="!isEditingAppointment">{{ selectedEvent.contactTime || '—' }}</div>
-  <input
-    v-else
-    type="time"
-    v-model="editedTime"
-    class="border rounded px-2 py-1 mt-1 text-sm"
-    min="09:00"
-    max="16:45"
-    step="900"
-  />
+  <div v-else class="flex flex-col sm:flex-row gap-3">
+    <input
+      type="date"
+      v-model="editedContactDay"
+      class="border px-3 py-2 rounded text-sm"
+    />
+    <input
+      type="time"
+      v-model="editedContactTime"
+      class="border px-3 py-2 rounded text-sm"
+    />
+    <div class="flex gap-2">
+      <button
+        @click="updateAppointment"
+        class="bg-green-600 text-white px-3 py-2 rounded hover:bg-green-700 text-sm"
+      >
+        Update
+      </button>
+      <button
+        @click="() => (isEditingAppointment = false)"
+        class="bg-gray-200 text-gray-800 px-3 py-2 rounded hover:bg-gray-300 text-sm"
+      >
+        Cancel
+      </button>
+    </div>
+  </div>
 </div>
 
       <div>
         <label class="block text-sm font-semibold text-gray-700 mb-1">Submission Status</label>
 
-        
-        
 <select
   v-model="selectedEvent.status"
   @change="updateStatus"
@@ -111,31 +126,6 @@
   <option value="Complete">Complete</option>
   <option value="Rejected">Rejected</option>
 </select>
-
-        <div class="col-span-2 mt-4 flex gap-2">
-  <button
-    v-if="!isEditingAppointment"
-    @click="startEditingAppointment"
-    class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded text-sm"
-  >
-    Edit Appointment
-  </button>
-
-  <template v-else>
-    <button
-      @click="submitAppointmentEdit"
-      class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded text-sm"
-    >
-      Update
-    </button>
-    <button
-      @click="cancelAppointmentEdit"
-      class="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded text-sm"
-    >
-      Cancel
-    </button>
-  </template>
-</div>
 
       </div>
     </div>
@@ -175,8 +165,8 @@ export default {
   setup() {
 
     const isEditingAppointment = ref(false)
-    const editedDay = ref('')
-    const editedTime = ref('')
+    const editedContactDay = ref('')
+    const editedContactTime = ref('')
     
     const calendarRef = ref(null)
     const router = useRouter()
@@ -325,64 +315,26 @@ const updateStatus = async () => {
 
     onMounted(fetchEvents)
 
-    const minDate = DateTime.now().toISODate()
-const maxDate = DateTime.now().plus({ months: 6 }).toISODate()
-
-const preventWeekends = (e) => {
-  const day = new Date(e.target.value).getDay()
-  if (day === 0 || day === 6) e.target.value = ''
-}
-
-const startEditingAppointment = () => {
-  editedDay.value = selectedEvent.value.contactDay
-  editedTime.value = selectedEvent.value.contactTime
-  isEditingAppointment.value = true
-}
-
-const cancelAppointmentEdit = () => {
-  isEditingAppointment.value = false
-}
-
-const submitAppointmentEdit = async () => {
-  const responseId = selectedEvent.value.responseId
+const updateAppointment = async () => {
   const { error } = await supabase
     .from('submissions')
     .update({
-      contactDay: editedDay.value,
-      contactTime: editedTime.value
+      contactDay: editedContactDay.value,
+      contactTime: editedContactTime.value
     })
-    .eq('responseId', responseId)
+    .eq('responseId', selectedEvent.value.responseId)
 
   if (error) {
-    console.error('Error updating appointment:', error)
+    console.error('Failed to update appointment time:', error.message)
     return
   }
 
-  selectedEvent.value.contactDay = editedDay.value
-  selectedEvent.value.contactTime = editedTime.value
+  selectedEvent.value.contactDay = editedContactDay.value
+  selectedEvent.value.contactTime = editedContactTime.value
   isEditingAppointment.value = false
 
-  // Refresh event in calendar view
-  const calendarApi = calendarRef.value.getApi()
-  const event = calendarApi.getEvents().find(
-    e => e.extendedProps.submission.responseId === responseId
-  )
-
-  if (event) {
-    const newStart = `${editedDay.value}T${editedTime.value}`
-    const newEnd = new Date(new Date(newStart).getTime() + 15 * 60000).toISOString()
-
-    event.setStart(newStart)
-    event.setEnd(newEnd)
-    event.setExtendedProp('submission', {
-      ...event.extendedProps.submission,
-      contactDay: editedDay.value,
-      contactTime: editedTime.value
-    })
-
-    // 🔁 Force update
-    calendarOptions.value.events = [...calendarOptions.value.events]
-  }
+  // Optionally refresh events on calendar
+  await fetchEvents()
 }
 
 return {
@@ -395,14 +347,9 @@ return {
   formatDateTime,
   updateStatus,
   isEditingAppointment,
-  editedDay,
-  editedTime,
-  minDate,
-  maxDate,
-  preventWeekends,
-  startEditingAppointment,
-  cancelAppointmentEdit,
-  submitAppointmentEdit
+  editedContactDay,
+  editedContactTime,
+  updateAppointment
 }
 
   }
