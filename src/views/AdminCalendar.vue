@@ -234,12 +234,12 @@ export default {
       selectedEvent.value = null
       showModal.value = false
     }
-
+const showBackButton = ref(false)
+    
 onMounted(() => {
   showBackButton.value = window.history.length > 1
 })
 
-    const showBackButton = ref(false)
 const menuOpen = ref(false)
 const menuRef = ref(null)
 
