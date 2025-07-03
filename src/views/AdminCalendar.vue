@@ -344,6 +344,18 @@ const updateAppointment = async () => {
   await fetchEvents()
 }
 
+    const minDate = DateTime.now().toISODate()
+const maxDate = DateTime.now().plus({ months: 6 }).toISODate()
+
+const preventWeekends = (e) => {
+  const day = new Date(e.target.value).getDay()
+  if (day === 0 || day === 6) {
+    e.target.value = ''
+    editedContactDay.value = ''
+    alert('Weekends are not allowed. Please choose a weekday.')
+  }
+}
+
 return {
   calendarOptions,
   logout,
