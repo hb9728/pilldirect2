@@ -419,18 +419,6 @@ const goToPatientPMR = (email, responseId) => {
   menuOpen.value = false
 }
 
-  const route = useRoute()
-
-const patientId = computed(() => route.params.patientId || null)
-
-onMounted(() => {
-  if (!patientId.value) {
-    // Show a friendly message like: "Select a patient to view their record"
-    return
-  }
-
-  // Otherwise, load data as usual
-})
 
 const getSmartPages = computed(() => {
   const pages = []
