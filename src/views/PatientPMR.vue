@@ -89,7 +89,7 @@
   <div class="flex flex-col items-center justify-center h-[300px] w-full text-gray-500">
     
     <!-- Embossed Text in Bordered Capsule -->
-    <div class="px-6 py-3 rounded-md border border-gray-300 bg-white">
+    <div class="px-6 py-4 rounded-md border border-gray-300 bg-gray-100">
       <p class="text-lg font-semibold text-gray-500 relative leading-none">
         <span class="relative inline-block">
           <!-- Top-left inner dark shadow -->
