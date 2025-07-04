@@ -90,7 +90,7 @@
 
     <!-- ✅ Clean bordered capsule, no emboss -->
     <div class="px-6 py-3 rounded-md border border-gray-300 bg-white">
-      <p class="text-lg font-semibold text-gray-600 relative">
+      <p class="text-lg font-semibold text-gray-500 relative">
   <span class="relative">
     <!-- Top-left soft dark shadow -->
     <span
