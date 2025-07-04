@@ -93,9 +93,9 @@
       <p class="text-lg font-semibold text-gray-600 relative">
   <span class="relative">
     <span class="absolute left-0 top-0 text-white opacity-70 blur-sm" style="z-index: -1;">
-      PillDirect.co.uk miniPMR®
+      PillDirect.co.uk
     </span>
-    PillDirect.co.uk miniPMR®
+    PillDirect.co.uk
   </span>
 </p>
     </div>
