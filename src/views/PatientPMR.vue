@@ -56,27 +56,28 @@
 
 
 <!-- PMR Search Bar -->
-<div class="mb-4 relative w-full">
+<div ref="searchBoxRef" class="mb-4 relative w-full">
   <input
     v-model="searchTerm"
     placeholder="Search patients by name, DOB, ID, or email..."
     class="w-full border border-gray-300 rounded px-4 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-300"
+    @focus="showDropdown = true"
   />
   <div
-    v-if="searchTerm && filteredPatients.length"
+    v-if="searchTerm && filteredPatients.length && showDropdown"
     class="absolute top-full mt-1 w-full bg-white border border-gray-200 rounded shadow z-10 max-h-60 overflow-y-auto"
   >
-<button
-  v-for="(sub, idx) in filteredPatients.slice(0, 10)"
-  :key="idx"
-  @click="handlePatientSelect(sub.email)"
-  class="w-full text-left px-4 py-2 hover:bg-blue-50 text-sm"
->
-  {{ sub.firstName }} {{ sub.lastName }} — {{ sub.email }} — {{ sub.dob }} — {{ sub.responseId }}
-</button>
+    <button
+      v-for="(sub, idx) in filteredPatients.slice(0, 10)"
+      :key="idx"
+      @click="handlePatientSelect(sub.email); showDropdown = false"
+      class="w-full text-left px-4 py-2 hover:bg-blue-50 text-sm"
+    >
+      {{ sub.firstName }} {{ sub.lastName }} — {{ sub.email }} — {{ sub.dob }} — {{ sub.responseId }}
+    </button>
   </div>
   <div
-    v-else-if="searchTerm && !filteredPatients.length"
+    v-else-if="searchTerm && !filteredPatients.length && showDropdown"
     class="absolute top-full mt-1 w-full bg-white border border-gray-200 rounded shadow text-sm px-4 py-2 text-gray-500"
   >
     No matching patients.
@@ -541,6 +542,26 @@ onMounted(async () => {
 
 onMounted(() => {
   showBackButton.value = window.history.length > 1
+})
+
+
+  const searchBoxRef = ref(null)
+const showDropdown = ref(false)
+
+const handleClickOutsideSearch = (event) => {
+  if (
+    searchBoxRef.value &&
+    !searchBoxRef.value.contains(event.target)
+  ) {
+    showDropdown.value = false
+  }
+}
+
+onMounted(() => {
+  document.addEventListener('click', handleClickOutsideSearch)
+})
+onBeforeUnmount(() => {
+  document.removeEventListener('click', handleClickOutsideSearch)
 })
 
   
