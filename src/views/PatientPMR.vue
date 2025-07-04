@@ -70,7 +70,7 @@
     <button
       v-for="(sub, idx) in filteredPatients.slice(0, 10)"
       :key="idx"
-      @click="handlePatientSelect(sub.email); showDropdown = false"
+      @click="handlePatientSelect(sub.email)"
       class="w-full text-left px-4 py-2 hover:bg-blue-50 text-sm"
     >
       {{ sub.firstName }} {{ sub.lastName }} — {{ sub.email }} — {{ sub.dob }} — {{ sub.responseId }}
@@ -833,6 +833,7 @@ onMounted(fetchByHashedEmail)
   if (newId && newId !== oldId) {
     selectedSubmission.value = null
     currentPage.value = 1
+    
     await fetchByHashedEmail()
   }
 })
