@@ -87,6 +87,12 @@
     
 <div v-if="showBlankState" class="px-4">
   <div class="flex flex-col items-center justify-center h-[300px] w-full text-gray-500">
+
+
+        <!-- Subtext -->
+    <p class="text-sm mt-4 text-gray-400">
+      Search for a patient above to view their record.
+    </p>
     
     <!-- Embossed Text in Bordered Capsule -->
     <div class="px-6 py-4 rounded-md border border-gray-300 bg-gray-100">
@@ -116,10 +122,7 @@
       </p>
     </div>
 
-    <!-- Subtext -->
-    <p class="text-sm mt-4 text-gray-400">
-      Search for a patient above to view their record.
-    </p>
+
   </div>
 </div>
     
