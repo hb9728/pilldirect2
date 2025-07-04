@@ -84,6 +84,14 @@
   </div>
 </div>
 
+
+    <div v-if="showBlankState" class="px-4">
+  <div class="flex flex-col items-center justify-center h-[300px] w-full rounded border border-gray-200 bg-gray-50 shadow-inner text-gray-500">
+    <p class="text-lg font-medium">PillDirect.co.uk miniPMR®</p>
+    <p class="text-sm mt-2 text-gray-400">Search for a patient above to view their record.</p>
+  </div>
+</div>
+
     
     
 
@@ -567,14 +575,12 @@ const handlePatientSelect = (email) => {
 }
 
 const patientId = computed(() => route.params.patientId || null)
+const showBlankState = computed(() => !patientId.value)
+
 
 onMounted(() => {
-  if (!patientId.value) {
-    // Show a friendly message like: "Select a patient to view their record"
-    return
-  }
-
-  // Otherwise, load data as usual
+  if (!patientId.value) return
+  // Load patient data
 })
   
 //--------------------------------------------------------------------------------------------------
