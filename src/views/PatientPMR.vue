@@ -473,6 +473,17 @@ const fetchAllSubmissions = async () => {
   allSubmissions.value = data || []
 }
 
+  const handleDropdownSelect = (sub) => {
+  const hashed = sha256(sub.email.trim().toLowerCase()).toString()
+  const responseId = sub.responseId
+  if (route.params.patientId !== hashed || route.query.open !== responseId) {
+    router.push({ path: `/admin/patient/${hashed}`, query: { open: responseId } })
+  } else {
+    // Force refresh if already on this patient+submission
+    router.replace({ path: `/admin/patient/${hashed}`, query: { open: responseId, t: Date.now() } })
+  }
+}
+
 const debounceTimeout = ref(null)
 watch(searchTerm, (term) => {
   clearTimeout(debounceTimeout.value)
