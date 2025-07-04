@@ -439,11 +439,6 @@
 
   <div v-else class="text-gray-600">Loading submissions...</div>
 </div>
-
-    <!-- Empty State when no patientId in URL -->
-<div v-else class="flex justify-center items-center h-64 text-gray-400 text-3xl italic">
-  PillDirect.co.uk miniPMR®
-</div>
     
 </div>
 </template>
