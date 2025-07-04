@@ -7,7 +7,7 @@
 <!-- Unified Header with Back & Logout Buttons -->
 <div class="flex justify-between items-center mb-6">
   <!-- LEFT: Title -->
-  <h2 class="text-2xl font-semibold">PillDirect.co.uk miniPMR</h2>
+  <h2 class="text-2xl font-semibold">PillDirect.co.uk Patient Records</h2>
 
   <!-- RIGHT: Back + Menu -->
   <div class="flex items-center gap-4 relative" ref="menuRef">
