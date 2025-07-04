@@ -7,7 +7,7 @@
 <!-- Unified Header with Back & Logout Buttons -->
 <div class="flex justify-between items-center mb-6">
   <!-- LEFT: Title -->
-  <h2 class="text-2xl font-semibold">PillDirect.co.uk miniPMR®</h2>
+  <h2 class="text-2xl font-semibold">PillDirect.co.uk miniPMR</h2>
 
   <!-- RIGHT: Back + Menu -->
   <div class="flex items-center gap-4 relative" ref="menuRef">
@@ -90,7 +90,7 @@
 
     <!-- ✅ Clean bordered capsule, no emboss -->
     <div class="px-6 py-3 rounded-md border border-gray-300 bg-white">
-      <p class="text-lg font-semibold text-gray-600 relative">
+      <p class="text-lg font-semibold text-gray-500 relative">
   <span class="relative">
     <span class="absolute left-0 top-0 text-white opacity-70 blur-sm" style="z-index: -1;">
       PillDirect.co.uk
