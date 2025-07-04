@@ -37,6 +37,14 @@
       class="absolute right-0 mt-12 w-48 bg-white border border-gray-200 rounded shadow-md z-10"
     >
       <button
+  v-if="selectedSubmission"
+  class="w-full text-left px-4 py-2 hover:bg-gray-100 text-sm"
+  @click="goToPMRWithoutOpen(selectedSubmission.email)"
+>
+  Open Full PMR
+</button>
+      
+      <button
         class="w-full text-left px-4 py-2 hover:bg-gray-100 text-sm"
         @click="goToCalendar"
       >
@@ -400,6 +408,11 @@ const updateStatus = async (entry) => {
 const goToPatientPMR = (email, responseId) => {
   const hashed = sha256(email.trim().toLowerCase()).toString()
   router.push(`/admin/patient/${hashed}?open=${responseId}`)
+}
+
+  const goToPMRWithoutOpen = (email) => {
+  const hashed = sha256(email.trim().toLowerCase()).toString()
+  router.push(`/admin/patient/${hashed}`) // No ?open= query param
 }
 
 const getSmartPages = computed(() => {
