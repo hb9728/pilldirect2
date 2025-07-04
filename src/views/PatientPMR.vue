@@ -90,20 +90,20 @@
     
     <!-- Embossed Text in Bordered Capsule -->
     <div class="px-6 py-3 rounded-md border border-gray-300 bg-white">
-      <p class="text-lg font-semibold text-gray-500 relative leading-none">
+      <p class="text-lg font-semibold text-gray-600 relative leading-none">
         <span class="relative inline-block">
           <!-- Top-left inner dark shadow -->
           <span
-            class="absolute inset-0 text-black opacity-15 -translate-x-[0.8px] -translate-y-[0.8px] blur-[0.5px]"
+            class="absolute inset-0 text-black opacity-20 -translate-x-[1px] -translate-y-[1px] blur-[0.3px]"
             style="z-index: -1;"
             aria-hidden="true"
           >
             PillDirect.co.uk
           </span>
 
-          <!-- Bottom-right inner light highlight -->
+          <!-- Bottom-right inner white highlight -->
           <span
-            class="absolute inset-0 text-white opacity-70 translate-x-[0.6px] translate-y-[0.6px] blur-[0.5px]"
+            class="absolute inset-0 text-white opacity-80 translate-x-[1px] translate-y-[1px] blur-[0.3px]"
             style="z-index: -1;"
             aria-hidden="true"
           >
@@ -122,7 +122,6 @@
     </p>
   </div>
 </div>
-
     
     
 
