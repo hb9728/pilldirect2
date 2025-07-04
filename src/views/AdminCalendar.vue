@@ -457,6 +457,7 @@ return {
   menuRef,
   toggleMenu,
   goToDashboard,
+  goToBlankPMR
 }
 
   }
