@@ -53,11 +53,42 @@
 </div>
 
 
+
+
+<!-- PMR Search Bar -->
+<div class="mb-8 relative max-w-xl">
+  <input
+    v-model="searchTerm"
+    placeholder="Search patients by name, email, or DOB..."
+    class="w-full border border-gray-300 rounded px-4 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-300"
+  />
+  <div
+    v-if="searchTerm && filteredPatients.length"
+    class="absolute top-full mt-1 w-full bg-white border border-gray-200 rounded shadow z-10 max-h-60 overflow-y-auto"
+  >
+    <button
+      v-for="(sub, idx) in filteredPatients.slice(0, 10)"
+      :key="idx"
+      @click="goToPatientPMR(sub.email)"
+      class="w-full text-left px-4 py-2 hover:bg-blue-50 text-sm"
+    >
+      {{ sub.firstName }} {{ sub.lastName }} — {{ sub.email }}
+    </button>
+  </div>
+  <div
+    v-else-if="searchTerm && !filteredPatients.length"
+    class="absolute top-full mt-1 w-full bg-white border border-gray-200 rounded shadow text-sm px-4 py-2 text-gray-500"
+  >
+    No matching patients.
+  </div>
+</div>
+
     
     
 
 <!-- PMR Header -->
-<div v-if="submissions.length">
+<div v-if="route.params.patientId">
+  <div v-if="submissions.length">
   <div class="mb-6 bg-white p-4 rounded shadow border border-gray-200">
     <h3 class="text-lg font-semibold mb-2">Patient Record</h3>
     <p class="text-sm text-gray-700">
@@ -397,7 +428,14 @@
   
     </div>
 
-    <div v-else class="text-gray-600">Loading submissions...</div>
+  <div v-else class="text-gray-600">Loading submissions...</div>
+</div>
+
+    <!-- Empty State when no patientId in URL -->
+<div v-else class="flex justify-center items-center h-64 text-gray-400 text-3xl italic">
+  PillDirect.co.uk miniPMR®
+</div>
+    
 </div>
 </template>
 
@@ -418,11 +456,51 @@ const itemsPerPage = ref(5)
 
 const router = useRouter()
 
+--------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------
+const searchTerm = ref('')
+const allSubmissions = ref([])
+const filteredPatients = ref([])
+
+const fetchAllSubmissions = async () => {
+  const { data, error } = await supabase.from('submissions').select('*')
+  if (error) {
+    console.error('Failed to fetch all submissions:', error.message)
+    return
+  }
+
+  allSubmissions.value = data || []
+}
+
+const debounceTimeout = ref(null)
+watch(searchTerm, (term) => {
+  clearTimeout(debounceTimeout.value)
+  debounceTimeout.value = setTimeout(() => {
+    const lower = term.trim().toLowerCase()
+    filteredPatients.value = allSubmissions.value.filter(sub => {
+      return (
+        sub.firstName?.toLowerCase().includes(lower) ||
+        sub.lastName?.toLowerCase().includes(lower) ||
+        sub.email?.toLowerCase().includes(lower) ||
+        sub.dob?.toLowerCase().includes(lower)
+      )
+    })
+  }, 250)
+})
+
+const goToPatientPMR = (email) => {
+  const hashed = sha256(email.trim().toLowerCase()).toString()
+  router.push(`/admin/patient/${hashed}`)
+}
+--------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------
+
 onMounted(async () => {
   const { data: { session } } = await supabase.auth.getSession()
   if (!session) {
     router.push('/admin/login')
   }
+   await fetchAllSubmissions()
 })
 
   const showBackButton = ref(false)
