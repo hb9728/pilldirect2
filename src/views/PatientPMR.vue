@@ -56,7 +56,7 @@
 
 
 <!-- PMR Search Bar -->
-<div class="mb-8 relative max-w-xl">
+<div class="mb-4 relative w-full">
   <input
     v-model="searchTerm"
     placeholder="Search patients by name, email, or DOB..."
