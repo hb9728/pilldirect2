@@ -465,27 +465,29 @@ const filteredPatients = computed(() => {
   const term = searchTerm.value.toLowerCase().trim()
   const seenIds = new Set()
 
-  return allSubmissions.value.filter(sub => {
-    const firstName = sub.firstName?.toLowerCase() || ''
-    const lastName = sub.lastName?.toLowerCase() || ''
-    const email = sub.email?.toLowerCase() || ''
-    const dob = sub.dob || ''
-    const responseId = sub.responseId?.toLowerCase() || ''
+  return allSubmissions.value
+    .filter(sub => {
+      const firstName = sub.firstName?.toLowerCase() || ''
+      const lastName = sub.lastName?.toLowerCase() || ''
+      const email = sub.email?.toLowerCase() || ''
+      const dob = sub.dob || ''
+      const responseId = sub.responseId?.toLowerCase() || ''
 
-    const isMatch =
-      firstName.includes(term) ||
-      lastName.includes(term) ||
-      email.includes(term) ||
-      dob.includes(term) ||
-      responseId.includes(term)
+      const isMatch =
+        firstName.includes(term) ||
+        lastName.includes(term) ||
+        email.includes(term) ||
+        dob.includes(term) ||
+        responseId.includes(term)
 
-    if (isMatch && !seenIds.has(sub.responseId)) {
-      seenIds.add(sub.responseId)
-      return true
-    }
+      if (isMatch && !seenIds.has(sub.responseId)) {
+        seenIds.add(sub.responseId)
+        return true
+      }
 
-    return false
-  })
+      return false
+    })
+    .sort((a, b) => new Date(b.submitted) - new Date(a.submitted)) // 👈 Reverse chronological
 })
 
 const fetchAllSubmissions = async () => {
