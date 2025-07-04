@@ -29,6 +29,14 @@
       v-if="menuOpen"
       class="absolute right-0 mt-12 w-48 bg-white border border-gray-200 rounded shadow-md z-10"
     >
+
+      <button
+  class="w-full text-left px-4 py-2 hover:bg-gray-100 text-sm"
+  @click="goToBlankPMR"
+>
+  Open Full PMR
+</button>
+      
       <button
         class="w-full text-left px-4 py-2 hover:bg-gray-100 text-sm"
         @click="goToDashboard"
