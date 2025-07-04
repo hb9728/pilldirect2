@@ -68,7 +68,7 @@
     class="absolute top-full mt-1 w-full bg-white border border-gray-200 rounded shadow z-10 max-h-60 overflow-y-auto"
   >
     <button
-      v-for="(sub, idx) in filteredPatients.slice(0, 10)"
+      v-for="(sub, idx) in filteredPatients"
       :key="idx"
       @click="handleDropdownSelect(sub)"
       class="w-full text-left px-4 py-2 hover:bg-blue-50 text-sm"
@@ -461,7 +461,23 @@ const router = useRouter()
 //--------------------------------------------------------------------------------------------------
 const searchTerm = ref('')
 const allSubmissions = ref([])
-const filteredPatients = ref([])
+const filteredPatients = computed(() => {
+  const seen = new Set()
+  return allSubmissions.value.filter(sub => {
+    const match =
+      (sub.firstName?.toLowerCase() || '').includes(term) ||
+      (sub.lastName?.toLowerCase() || '').includes(term) ||
+      (sub.email?.toLowerCase() || '').includes(term) ||
+      (sub.dob || '').includes(term) ||
+      (sub.responseId?.toLowerCase() || '').includes(term)
+
+    if (match && !seen.has(sub.responseId)) {
+      seen.add(sub.responseId)
+      return true
+    }
+    return false
+  })
+})
 
 const fetchAllSubmissions = async () => {
   const { data, error } = await supabase.from('submissions').select('*')
