@@ -60,7 +60,7 @@
   <input
     v-model="searchTerm"
     placeholder="Search patients by name, DOB, ID, or email..."
-  class="w-full mb-4 p-2 border border-gray-300 rounded"
+  class="w-full p-2 border border-gray-300 rounded"
     @focus="showDropdown = true"
   />
   <div
