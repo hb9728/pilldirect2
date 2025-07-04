@@ -566,8 +566,6 @@ const handlePatientSelect = (email) => {
   }
 }
 
-    const route = useRoute()
-
 const patientId = computed(() => route.params.patientId || null)
 
 onMounted(() => {
