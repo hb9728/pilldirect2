@@ -487,7 +487,7 @@ const filteredPatients = computed(() => {
 
       return false
     })
-    .sort((a, b) => new Date(b.submitted) - new Date(a.submitted)) // 👈 Reverse chronological
+    .sort((a, b) => new Date(b.created_at) - new Date(a.created_at)) // 👈 Reverse chronological
 })
 
 const fetchAllSubmissions = async () => {
