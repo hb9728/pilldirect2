@@ -618,7 +618,7 @@ const fetchByHashedEmail = async () => {
     submissions.value = data
     const openId = route.query.open
     const match = data.find(s => s.responseId === openId)
-    selectedSubmission.value = match || data[1]
+    selectedSubmission.value = match || data[0]
   }
 }
 
@@ -807,6 +807,14 @@ const generateAINote = async () => {
 
 onMounted(fetchByHashedEmail)
 //hello
+
+  watch(() => route.params.patientId, async (newId, oldId) => {
+  if (newId && newId !== oldId) {
+    selectedSubmission.value = null
+    currentPage.value = 1
+    await fetchByHashedEmail()
+  }
+})
 
   import Datepicker from '@vuepic/vue-datepicker'
 import '@vuepic/vue-datepicker/dist/main.css'
