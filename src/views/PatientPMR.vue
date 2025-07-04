@@ -90,7 +90,7 @@
     
     <!-- Embossed Text in Bordered Capsule -->
     <div class="px-6 py-3 rounded-md border border-gray-300 bg-white">
-      <p class="text-lg font-semibold text-gray-600 relative leading-none">
+      <p class="text-lg font-semibold text-gray-500 relative leading-none">
         <span class="relative inline-block">
           <!-- Top-left inner dark shadow -->
           <span
