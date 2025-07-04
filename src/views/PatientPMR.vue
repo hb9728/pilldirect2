@@ -90,14 +90,14 @@
 
     <!-- ✅ Clean bordered capsule, no emboss -->
     <div class="px-6 py-3 rounded-md border border-gray-300 bg-white">
-      <p class="text-lg font-semibold text-gray-500 relative">
-        <span class="relative">
-          <span class="absolute left-0 top-0 text-white opacity-60 translate-x-px translate-y-px pointer-events-none select-none">
-            PillDirect.co.uk miniPMR®
-          </span>
-          PillDirect.co.uk miniPMR®
-        </span>
-      </p>
+      <p class="text-lg font-semibold text-gray-600 relative">
+  <span class="relative">
+    <span class="absolute left-0 top-0 text-white opacity-70 blur-sm" style="z-index: -1;">
+      PillDirect.co.uk miniPMR®
+    </span>
+    PillDirect.co.uk miniPMR®
+  </span>
+</p>
     </div>
 
     <!-- Subtext -->
