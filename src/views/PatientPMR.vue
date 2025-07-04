@@ -565,6 +565,20 @@ const handlePatientSelect = (email) => {
     router.replace({ path: `/admin/patient/${hashed}`, query: { t: Date.now() } })
   }
 }
+
+    const route = useRoute()
+
+const patientId = computed(() => route.params.patientId || null)
+
+onMounted(() => {
+  if (!patientId.value) {
+    // Show a friendly message like: "Select a patient to view their record"
+    return
+  }
+
+  // Otherwise, load data as usual
+})
+  
 //--------------------------------------------------------------------------------------------------
 //--------------------------------------------------------------------------------------------------
 
