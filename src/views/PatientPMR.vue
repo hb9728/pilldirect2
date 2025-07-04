@@ -477,14 +477,38 @@ watch(searchTerm, (term) => {
   clearTimeout(debounceTimeout.value)
   debounceTimeout.value = setTimeout(() => {
     const lower = term.trim().toLowerCase()
-    filteredPatients.value = allSubmissions.value.filter(sub => {
-      return (
-        `${sub.firstName ?? ''} ${sub.lastName ?? ''}`.toLowerCase().includes(lower) ||
-        (sub.email ?? '').toLowerCase().includes(lower) ||
-        (sub.dob ?? '').toLowerCase().includes(lower) ||
-        (sub.responseId ?? '').toLowerCase().includes(lower)
-      )
-    })
+
+      // Try to auto-navigate if exact response ID match
+    const exactMatch = allSubmissions.value.find(sub =>
+      (sub.responseId ?? '').toLowerCase() === lower
+    )
+    if (exactMatch) {
+      handlePatientSelect(exactMatch.email)
+      return
+    }
+    
+    filteredPatients.value = allSubmissions.value
+      .filter(sub => {
+        const name = `${sub.firstName ?? ''} ${sub.lastName ?? ''}`.toLowerCase()
+        const email = (sub.email ?? '').toLowerCase()
+        const dob = (sub.dob ?? '').toLowerCase()
+        const id = (sub.responseId ?? '').toLowerCase()
+    
+        return (
+          name.includes(lower) ||
+          email.includes(lower) ||
+          dob.includes(lower) ||
+          id.includes(lower)
+        )
+      })
+      // Optional: prioritize exact responseId matches at top
+      .sort((a, b) => {
+        const idA = (a.responseId ?? '').toLowerCase()
+        const idB = (b.responseId ?? '').toLowerCase()
+        if (idA === lower) return -1
+        if (idB === lower) return 1
+        return 0
+      })
   }, 250)
 })
 
