@@ -84,11 +84,26 @@
   </div>
 </div>
 
+    
+<div v-if="showBlankState" class="px-4">
+  <div class="flex flex-col items-center justify-center h-[300px] w-full text-gray-500">
 
-    <div v-if="showBlankState" class="px-4">
-  <div class="flex flex-col items-center justify-center h-[300px] w-full rounded border border-gray-200 bg-gray-50 shadow-inner text-gray-500">
-    <p class="text-lg font-medium">PillDirect.co.uk miniPMR®</p>
-    <p class="text-sm mt-2 text-gray-400">Search for a patient above to view their record.</p>
+    <!-- ✅ Clean bordered capsule, no emboss -->
+    <div class="px-6 py-3 rounded-md border border-gray-300 bg-white">
+      <p class="text-lg font-semibold text-gray-500 relative">
+        <span class="relative">
+          <span class="absolute left-0 top-0 text-white opacity-60 translate-x-px translate-y-px pointer-events-none select-none">
+            PillDirect.co.uk miniPMR®
+          </span>
+          PillDirect.co.uk miniPMR®
+        </span>
+      </p>
+    </div>
+
+    <!-- Subtext -->
+    <p class="text-sm mt-4 text-gray-400">
+      Search for a patient above to view their record.
+    </p>
   </div>
 </div>
 
