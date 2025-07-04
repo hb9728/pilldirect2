@@ -462,19 +462,28 @@ const router = useRouter()
 const searchTerm = ref('')
 const allSubmissions = ref([])
 const filteredPatients = computed(() => {
-  const seen = new Set()
-  return allSubmissions.value.filter(sub => {
-    const match =
-      (sub.firstName?.toLowerCase() || '').includes(term) ||
-      (sub.lastName?.toLowerCase() || '').includes(term) ||
-      (sub.email?.toLowerCase() || '').includes(term) ||
-      (sub.dob || '').includes(term) ||
-      (sub.responseId?.toLowerCase() || '').includes(term)
+  const term = searchTerm.value.toLowerCase().trim()
+  const seenIds = new Set()
 
-    if (match && !seen.has(sub.responseId)) {
-      seen.add(sub.responseId)
+  return allSubmissions.value.filter(sub => {
+    const firstName = sub.firstName?.toLowerCase() || ''
+    const lastName = sub.lastName?.toLowerCase() || ''
+    const email = sub.email?.toLowerCase() || ''
+    const dob = sub.dob || ''
+    const responseId = sub.responseId?.toLowerCase() || ''
+
+    const isMatch =
+      firstName.includes(term) ||
+      lastName.includes(term) ||
+      email.includes(term) ||
+      dob.includes(term) ||
+      responseId.includes(term)
+
+    if (isMatch && !seenIds.has(sub.responseId)) {
+      seenIds.add(sub.responseId)
       return true
     }
+
     return false
   })
 })
