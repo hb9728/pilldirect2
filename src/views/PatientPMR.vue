@@ -90,7 +90,7 @@
 
 
         <!-- Subtext -->
-    <p class="text-sm mt-4 text-gray-400">
+    <p class="text-sm mt-12 text-gray-400">
       Search for a patient above to view their record.
     </p>
     
