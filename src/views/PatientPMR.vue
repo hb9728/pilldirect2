@@ -87,31 +87,33 @@
     
 <div v-if="showBlankState" class="px-4">
   <div class="flex flex-col items-center justify-center h-[300px] w-full text-gray-500">
-
-    <!-- ✅ Clean bordered capsule, no emboss -->
+    
+    <!-- Embossed Text in Bordered Capsule -->
     <div class="px-6 py-3 rounded-md border border-gray-300 bg-white">
-      <p class="text-lg font-semibold text-gray-500 relative">
-  <span class="relative">
-    <!-- Top-left soft dark shadow -->
-    <span
-      class="absolute left-0 top-0 text-black opacity-10 blur-[1px] -translate-x-[0.5px] -translate-y-[0.5px]"
-      style="z-index: -1;"
-    >
-      PillDirect.co.uk
-    </span>
+      <p class="text-lg font-semibold text-gray-500 relative leading-none">
+        <span class="relative inline-block">
+          <!-- Top-left inner dark shadow -->
+          <span
+            class="absolute inset-0 text-black opacity-15 -translate-x-[0.8px] -translate-y-[0.8px] blur-[0.5px]"
+            style="z-index: -1;"
+            aria-hidden="true"
+          >
+            PillDirect.co.uk
+          </span>
 
-    <!-- Bottom-right soft white highlight -->
-    <span
-      class="absolute left-0 top-0 text-white opacity-60 blur-[0.5px] translate-x-[0.5px] translate-y-[0.5px]"
-      style="z-index: -1;"
-    >
-      PillDirect.co.uk
-    </span>
+          <!-- Bottom-right inner light highlight -->
+          <span
+            class="absolute inset-0 text-white opacity-70 translate-x-[0.6px] translate-y-[0.6px] blur-[0.5px]"
+            style="z-index: -1;"
+            aria-hidden="true"
+          >
+            PillDirect.co.uk
+          </span>
 
-    <!-- Main text -->
-    PillDirect.co.uk
-  </span>
-</p>
+          <!-- Actual text -->
+          PillDirect.co.uk
+        </span>
+      </p>
     </div>
 
     <!-- Subtext -->
