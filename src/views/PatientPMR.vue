@@ -59,7 +59,7 @@
 <div class="mb-4 relative w-full">
   <input
     v-model="searchTerm"
-    placeholder="Search patients by name, email, or DOB..."
+    placeholder="Search patients by name, DOB, ID, or email..."
     class="w-full border border-gray-300 rounded px-4 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-300"
   />
   <div
@@ -479,10 +479,10 @@ watch(searchTerm, (term) => {
     const lower = term.trim().toLowerCase()
     filteredPatients.value = allSubmissions.value.filter(sub => {
       return (
-        sub.firstName?.toLowerCase().includes(lower) ||
-        sub.lastName?.toLowerCase().includes(lower) ||
-        sub.email?.toLowerCase().includes(lower) ||
-        sub.dob?.toLowerCase().includes(lower)
+        `${sub.firstName ?? ''} ${sub.lastName ?? ''}`.toLowerCase().includes(lower) ||
+        (sub.email ?? '').toLowerCase().includes(lower) ||
+        (sub.dob ?? '').toLowerCase().includes(lower) ||
+        (sub.responseId ?? '').toLowerCase().includes(lower)
       )
     })
   }, 250)
