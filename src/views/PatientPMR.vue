@@ -849,6 +849,13 @@ onMounted(fetchByHashedEmail)
   }
 })
 
+  watch(() => route.query.open, async (newId) => {
+  if (newId && allSubmissions.value.length) {
+    const found = allSubmissions.value.find(s => s.responseId === newId)
+    if (found) selectedSubmission.value = found
+  }
+})
+
   import Datepicker from '@vuepic/vue-datepicker'
 import '@vuepic/vue-datepicker/dist/main.css'
 
