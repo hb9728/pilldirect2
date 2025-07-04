@@ -66,14 +66,14 @@
     v-if="searchTerm && filteredPatients.length"
     class="absolute top-full mt-1 w-full bg-white border border-gray-200 rounded shadow z-10 max-h-60 overflow-y-auto"
   >
-    <button
-      v-for="(sub, idx) in filteredPatients.slice(0, 10)"
-      :key="idx"
-      @click="goToPatientPMR(sub.email)"
-      class="w-full text-left px-4 py-2 hover:bg-blue-50 text-sm"
-    >
-      {{ sub.firstName }} {{ sub.lastName }} — {{ sub.email }}
-    </button>
+<button
+  v-for="(sub, idx) in filteredPatients.slice(0, 10)"
+  :key="idx"
+  @click="handlePatientSelect(sub.email)"
+  class="w-full text-left px-4 py-2 hover:bg-blue-50 text-sm"
+>
+  {{ sub.firstName }} {{ sub.lastName }} — {{ sub.email }} — {{ sub.dob }} — {{ sub.responseId }}
+</button>
   </div>
   <div
     v-else-if="searchTerm && !filteredPatients.length"
@@ -491,6 +491,16 @@ watch(searchTerm, (term) => {
 const goToPatientPMR = (email) => {
   const hashed = sha256(email.trim().toLowerCase()).toString()
   router.push(`/admin/patient/${hashed}`)
+}
+
+const handlePatientSelect = (email) => {
+  const hashed = sha256(email.trim().toLowerCase()).toString()
+  if (route.params.patientId !== hashed) {
+    router.push(`/admin/patient/${hashed}`)
+  } else {
+    // Force reload by replacing same route with new query param
+    router.replace({ path: `/admin/patient/${hashed}`, query: { t: Date.now() } })
+  }
 }
 //--------------------------------------------------------------------------------------------------
 //--------------------------------------------------------------------------------------------------
