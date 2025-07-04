@@ -268,6 +268,10 @@ const goToDashboard = () => {
   router.push('/admin/dashboard')
 }
 
+    const goToBlankPMR = () => {
+  router.push('/admin/patient')
+}
+
 onMounted(() => {
   document.addEventListener('click', handleClickOutside)
   showBackButton.value = window.history.length > 1
