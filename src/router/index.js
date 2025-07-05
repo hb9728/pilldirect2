@@ -32,4 +32,21 @@ router.beforeEach(async (to, from, next) => {
   }
 })
 
+router.beforeEach((to, from, next) => {
+  const host = window.location.host
+
+  // Force admin subdomain to only access /admin routes
+  if (host.startsWith('admin.') && !to.path.startsWith('/admin')) {
+    return next('/admin/dashboard')
+  }
+
+  // Prevent access to admin routes from non-admin subdomains
+  if (!host.startsWith('admin.') && to.path.startsWith('/admin')) {
+    return next('/') // or '/not-authorized' if you want a nicer error
+  }
+
+  // Otherwise allow normal navigation
+  next()
+})
+
 export default router
