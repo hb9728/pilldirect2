@@ -1,5 +1,26 @@
 {
-  "rewrites": [
-    { "source": "/(.*)", "destination": "/" }
+  "redirects": [
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "host",
+          "value": "pilldirect.co.uk"
+        }
+      ],
+      "destination": "https://pilldirect.wordpress.com",
+      "permanent": true
+    },
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.pilldirect.co.uk"
+        }
+      ],
+      "destination": "https://pilldirect.wordpress.com",
+      "permanent": true
+    }
   ]
 }
