@@ -3,10 +3,7 @@
     {
       "source": "/",
       "has": [
-        {
-          "type": "host",
-          "value": "pilldirect.co.uk"
-        }
+        { "type": "host", "value": "pilldirect.co.uk" }
       ],
       "destination": "https://pilldirect.wordpress.com",
       "permanent": true
@@ -14,13 +11,16 @@
     {
       "source": "/",
       "has": [
-        {
-          "type": "host",
-          "value": "www.pilldirect.co.uk"
-        }
+        { "type": "host", "value": "www.pilldirect.co.uk" }
       ],
       "destination": "https://pilldirect.wordpress.com",
       "permanent": true
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
     }
   ]
 }
