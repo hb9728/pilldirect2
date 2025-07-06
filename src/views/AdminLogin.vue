@@ -7,10 +7,12 @@
         Your session expired due to inactivity. Please log in again.
       </div>
 
-      <input v-model="email" type="email" placeholder="Email" class="input mb-3 w-full" />
-      <input v-model="password" type="password" placeholder="Password" class="input mb-4 w-full" />
-
-      <button @click="login" class="btn w-full">Login</button>
+<form @submit.prevent="login">
+  <input v-model="email" type="email" placeholder="Email" class="input mb-3 w-full" />
+  <input v-model="password" type="password" placeholder="Password" class="input mb-4 w-full" />
+  
+  <button type="submit" class="btn w-full">Login</button>
+</form>
       <p v-if="error" class="text-red-500 mt-2">{{ error }}</p>
     </div>
   </div>
