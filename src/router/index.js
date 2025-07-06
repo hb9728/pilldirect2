@@ -12,7 +12,7 @@ const routes = [
   { path: '/admin/dashboard', component: AdminDashboard, meta: { requiresAuth: true } },
   { path: '/admin/patient', component: PatientPMR, meta: { requiresAuth: true } },
   { path: '/admin/patient/:patientId', component: PatientPMR, props: true, meta: { requiresAuth: true } },
-  { path: '/admin/calendar', name: 'AdminCalendar', component: AdminCalendar }
+  { path: '/admin/calendar', name: 'AdminCalendar', component: AdminCalendar, meta: { requiresAuth: true } }
 ]
 
 const router = createRouter({
@@ -21,31 +21,28 @@ const router = createRouter({
 })
 
 router.beforeEach(async (to, from, next) => {
-  const {
-    data: { session }
-  } = await supabase.auth.getSession()
-
-  if (to.meta.requiresAuth && !session) {
-    next('/admin/login')
-  } else {
-    next()
-  }
-})
-
-router.beforeEach((to, from, next) => {
   const host = window.location.host
 
-  // Force admin subdomain to only access /admin routes
+  // Enforce subdomain routing
   if (host.startsWith('admin.') && !to.path.startsWith('/admin')) {
     return next('/admin/dashboard')
   }
 
-  // Prevent access to admin routes from non-admin subdomains
   if (!host.startsWith('admin.') && to.path.startsWith('/admin')) {
-    return next('/') // or '/not-authorized' if you want a nicer error
+    return next('/') // or redirect to a dedicated /not-authorized route
   }
 
-  // Otherwise allow normal navigation
+  // Enforce Supabase Auth on protected routes
+  if (to.meta.requiresAuth) {
+    const {
+      data: { session }
+    } = await supabase.auth.getSession()
+
+    if (!session) {
+      return next('/admin/login')
+    }
+  }
+
   next()
 })
 
