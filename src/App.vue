@@ -13,7 +13,7 @@ let idleTimer
 let logoutTimer
 
 const IDLE_LIMIT_MS = 15 * 60 * 1000 // 15 minutes
-const ABSOLUTE_LIMIT_MS = 8 * 60 * 60 * 1000 // 8 hours
+const ABSOLUTE_LIMIT_MS = 1 * 60 * 1000 // 8 hours
 
 const resetIdleTimer = () => {
   clearTimeout(idleTimer)
