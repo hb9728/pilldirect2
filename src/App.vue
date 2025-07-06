@@ -22,14 +22,14 @@ const resetIdleTimer = () => {
 
 const handleIdleLogout = async () => {
   await supabase.auth.signOut()
-  router.push('/admin/login')
+  router.push('/admin/login?expired=1')
   alert('You have been logged out due to inactivity.')
 }
 
 const startAbsoluteTimer = () => {
   logoutTimer = setTimeout(async () => {
     await supabase.auth.signOut()
-    router.push('/admin/login')
+    router.push('/admin/login?expired=1')
     alert('Your session has expired (8 hours).')
   }, ABSOLUTE_LIMIT_MS)
 }
