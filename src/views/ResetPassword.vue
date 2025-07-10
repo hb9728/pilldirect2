@@ -1,7 +1,7 @@
 <!-- src/views/ResetPassword.vue -->
 <script setup>
 import { ref, onMounted } from 'vue'
-import { supabase } from '@/supabase'
+import { supabase } from '../supabase'
 
 const newPassword = ref('')
 const success = ref(false)
