@@ -12,7 +12,9 @@ const routes = [
   { path: '/admin/dashboard', component: AdminDashboard, meta: { requiresAuth: true } },
   { path: '/admin/patient', component: PatientPMR, meta: { requiresAuth: true } },
   { path: '/admin/patient/:patientId', component: PatientPMR, props: true, meta: { requiresAuth: true } },
-  { path: '/admin/calendar', name: 'AdminCalendar', component: AdminCalendar, meta: { requiresAuth: true } }
+  { path: '/admin/calendar', name: 'AdminCalendar', component: AdminCalendar, meta: { requiresAuth: true } },
+  { path: '/reset-password', name: 'ResetPassword', component: ResetPassword },
+
 ]
 
 const router = createRouter({
