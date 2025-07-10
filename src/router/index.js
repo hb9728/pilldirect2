@@ -25,11 +25,20 @@ const router = createRouter({
 
 router.beforeEach(async (to, from, next) => {
   const host = window.location.host
-  
-  // Allow access to password reset route explicitly
+
+  // ✅ Intercept Supabase recovery redirect and forward it to /reset-password
+  if (
+    host.startsWith('admin.') &&
+    to.path === '/' &&
+    window.location.hash.includes('type=recovery')
+  ) {
+    return next('/reset-password' + window.location.hash)
+  }
+
+  // ✅ Allow /reset-password route explicitly
   if (to.path === '/reset-password') return next()
-  
-  // Enforce subdomain routing
+
+  // 🔐 Enforce subdomain routing
   if (
     host.startsWith('admin.') &&
     !to.path.startsWith('/admin') &&
@@ -38,12 +47,11 @@ router.beforeEach(async (to, from, next) => {
     return next('/admin/dashboard')
   }
 
-
   if (!host.startsWith('admin.') && to.path.startsWith('/admin')) {
-    return next('/') // or redirect to a dedicated /not-authorized route
+    return next('/')
   }
 
-  // Enforce Supabase Auth on protected routes
+  // 🔐 Supabase Auth check
   if (to.meta.requiresAuth) {
     const {
       data: { session }
@@ -56,5 +64,6 @@ router.beforeEach(async (to, from, next) => {
 
   next()
 })
+
 
 export default router
