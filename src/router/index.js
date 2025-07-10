@@ -27,9 +27,14 @@ router.beforeEach(async (to, from, next) => {
   const host = window.location.host
 
   // Enforce subdomain routing
-  if (host.startsWith('admin.') && !to.path.startsWith('/admin')) {
+  if (
+    host.startsWith('admin.') &&
+    !to.path.startsWith('/admin') &&
+    to.path !== '/reset-password'
+  ) {
     return next('/admin/dashboard')
   }
+
 
   if (!host.startsWith('admin.') && to.path.startsWith('/admin')) {
     return next('/') // or redirect to a dedicated /not-authorized route
