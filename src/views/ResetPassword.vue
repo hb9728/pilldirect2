@@ -1,34 +1,12 @@
 <!-- src/views/ResetPassword.vue -->
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref } from 'vue'
 import { supabase } from '../supabase'
 
 const newPassword = ref('')
 const success = ref(false)
 const error = ref('')
 const loading = ref(false)
-
-// Parse token from the URL fragment manually
-onMounted(async () => {
-  const hash = window.location.hash
-  const params = new URLSearchParams(hash.slice(1))
-  const access_token = params.get('access_token')
-  const refresh_token = params.get('refresh_token')
-  const type = params.get('type')
-
-  if (access_token && refresh_token && type === 'recovery') {
-    const { error: authError } = await supabase.auth.setSession({
-      access_token,
-      refresh_token
-    })
-
-    if (authError) {
-      error.value = 'Could not set session: ' + authError.message
-    }
-  } else {
-    error.value = 'Invalid or missing reset token.'
-  }
-})
 
 const updatePassword = async () => {
   loading.value = true
