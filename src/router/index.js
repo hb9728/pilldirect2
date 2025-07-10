@@ -25,7 +25,10 @@ const router = createRouter({
 
 router.beforeEach(async (to, from, next) => {
   const host = window.location.host
-
+  
+  // Allow access to password reset route explicitly
+  if (to.path === '/reset-password') return next()
+  
   // Enforce subdomain routing
   if (
     host.startsWith('admin.') &&
