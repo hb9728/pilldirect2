@@ -5,6 +5,7 @@ import FormView from '../views/FormView.vue'
 import PatientPMR from '../views/PatientPMR.vue'
 import { supabase } from '../supabase'
 import AdminCalendar from '../views/AdminCalendar.vue'
+import ResetPassword from '../views/ResetPassword.vue'
 
 const routes = [
   { path: '/', component: FormView },
