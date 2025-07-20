@@ -25,7 +25,36 @@
     </p>
 
     <div class="mt-6 flex justify-end">
-      <button @click="$emit('next')" class="btn">Next</button>
+      <template>
+  <button
+    @click="$emit('next')"
+    class="bg-gradient-to-b from-gray-100 to-gray-300 border border-gray-400 rounded-lg px-6 py-3 text-gray-800 font-semibold shadow-[inset_0_1px_0_#fff,0_3px_5px_rgba(0,0,0,0.3)] active:shadow-[inset_0_2px_4px_rgba(0,0,0,0.6)] active:translate-y-[2px] transition-all duration-150 ease-in-out hover:animate-pulse-smooth"
+  >
+    Next
+  </button>
+</template>
+
+<style scoped>
+@keyframes pulse-smooth {
+  0% {
+    transform: scale(1);
+    box-shadow: inset 0 1px 0 #fff, 0 3px 5px rgba(0, 0, 0, 0.3);
+  }
+  50% {
+    transform: scale(1.015);
+    box-shadow: inset 0 1px 0 #fff, 0 4px 7px rgba(0, 0, 0, 0.35);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: inset 0 1px 0 #fff, 0 3px 5px rgba(0, 0, 0, 0.3);
+  }
+}
+
+.hover\:animate-pulse-smooth:hover {
+  animation: pulse-smooth 1.8s ease-in-out infinite;
+}
+</style>
+
     </div>
   </div>
 </template>
