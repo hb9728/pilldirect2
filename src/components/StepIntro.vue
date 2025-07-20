@@ -25,22 +25,7 @@
     </p>
 
     <div class="mt-6 flex justify-end">
-      <button
-  @click="$emit('next')"
-  class="relative group inline-flex items-center justify-center px-6 py-3 text-white font-semibold bg-gradient-to-br from-blue-600 to-blue-700 rounded-lg shadow-md hover:shadow-lg active:translate-y-0.5 active:shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 transition-all duration-200"
->
-  <span class="mr-2 group-hover:scale-105 transform transition-transform duration-150">Next</span>
-  <svg
-    class="w-4 h-4 transition-transform transform group-hover:translate-x-0.5"
-    fill="none"
-    stroke="currentColor"
-    stroke-width="2"
-    viewBox="0 0 24 24"
-  >
-    <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
-  </svg>
-</button>
-
+      <button @click="$emit('next')" class="btn">Next</button>
     </div>
   </div>
 </template>
