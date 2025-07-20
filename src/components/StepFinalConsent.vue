@@ -10,12 +10,20 @@
 
       <label class="inline-flex items-start space-x-2">
         <input type="checkbox" v-model="formData.shareConsent" :disabled="submitted" class="mt-1" required />
-        <span>I consent to my information being securely shared with the dispensing pharmacy for the purpose of reviewing my consultation and safely supplying my medication.</span>
+        <span>
+          <strong class="text-red-600">*</strong>
+          I consent to my information being securely shared with the dispensing pharmacy for the purpose of reviewing my consultation and safely supplying my medication.
+          <span class="text-red-600 font-medium">(Required)</span>
+        </span>
       </label>
 
       <label class="inline-flex items-start space-x-2">
         <input type="checkbox" v-model="formData.updateConsent" :disabled="submitted" class="mt-1" required />
-        <span>I consent to being contacted via email or telephone with updates regarding the status of my contraceptive consultation, prescription, and delivery.</span>
+        <span>
+          <strong class="text-red-600">*</strong>
+          I consent to being contacted via email or telephone with updates regarding the status of my contraceptive consultation, prescription, and delivery.
+          <span class="text-red-600 font-medium">(Required)</span>
+        </span>
       </label>
     </div>
 
