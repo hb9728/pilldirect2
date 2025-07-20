@@ -49,6 +49,14 @@
       >
         View Calendar
       </button>
+
+      <button
+        class="w-full text-left px-4 py-2 hover:bg-gray-100 text-sm"
+        @click="goToAnalytics"
+        >
+        View Analytics
+      </button>
+      
       <button
         class="w-full text-left px-4 py-2 hover:bg-gray-100 text-sm text-red-600"
         @click="logout"
@@ -438,6 +446,10 @@ const getSmartPages = computed(() => {
 
 const goToCalendar = () => {
   router.push('/admin/calendar')
+}
+
+  const goToAnalytics = () => {
+  router.push('/admin/analytics')
 }
 
   import Datepicker from '@vuepic/vue-datepicker'
