@@ -13,7 +13,7 @@
       </select>
     </div>
 
-    <!-- Grid layout -->
+    <!-- Metric panels -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
       <div class="bg-white p-4 shadow rounded">
         <h2 class="text-lg font-bold mb-2">Total Submissions</h2>
@@ -48,23 +48,26 @@
 </template>
 
 <script setup>
-import { ref, watch, onMounted } from 'vue'
+import { ref, watch, onMounted, nextTick } from 'vue'
 import { createClient } from '@supabase/supabase-js'
 import Chart from 'chart.js/auto'
 
+// Supabase client
 const supabase = createClient(import.meta.env.VITE_SUPABASE_URL, import.meta.env.VITE_SUPABASE_KEY)
 
+// Reactive state
 const selectedRange = ref('past_week')
-const analytics = ref({
-  total: 0,
-  pending: 0,
-  completed: 0,
-  rejected: 0,
-})
+const analytics = ref({ total: 0, pending: 0, completed: 0, rejected: 0 })
 const timeSeries = ref([])
 
+// Chart instances
+let lineChart = null
+let pieChart = null
+
+// Fetch & group data
 const fetchAnalytics = async () => {
   const { startDate, endDate, interval } = getDateRange(selectedRange.value)
+
   const { data, error } = await supabase
     .from('submissions')
     .select('status, created_at')
@@ -76,18 +79,19 @@ const fetchAnalytics = async () => {
     return
   }
 
-  const grouped = {
+  // Group by status
+  analytics.value = {
     total: data.length,
     pending: data.filter(s => s.status === 'Pending').length,
     completed: data.filter(s => s.status === 'Complete').length,
     rejected: data.filter(s => s.status === 'Rejected').length,
   }
-  analytics.value = grouped
 
   timeSeries.value = getTimeSeriesData(data, startDate, endDate, interval)
-  renderCharts()
+  await renderCharts()
 }
 
+// Time range helper
 const getDateRange = (range) => {
   const now = new Date()
   const start = new Date()
@@ -116,19 +120,17 @@ const getDateRange = (range) => {
       break
   }
 
-  return {
-    startDate: start,
-    endDate: now,
-    interval,
-  }
+  return { startDate: start, endDate: now, interval }
 }
 
+// Time bucketing helper
 const getTimeSeriesData = (data, startDate, endDate, interval) => {
   const map = new Map()
 
-  data.forEach((row) => {
+  data.forEach(row => {
     const date = new Date(row.created_at)
     let key
+
     if (interval === 'hour') {
       key = date.toISOString().slice(0, 13) // YYYY-MM-DDTHH
     } else if (interval === 'day') {
@@ -142,7 +144,7 @@ const getTimeSeriesData = (data, startDate, endDate, interval) => {
   })
 
   const keys = Array.from(map.keys()).sort()
-  return keys.map((k) => ({ time: k, count: map.get(k) }))
+  return keys.map(k => ({ time: k, count: map.get(k) }))
 }
 
 const getWeekOfYear = (date) => {
@@ -151,11 +153,23 @@ const getWeekOfYear = (date) => {
   return Math.ceil((diff / (1000 * 60 * 60 * 24) + start.getDay() + 1) / 7)
 }
 
-const renderCharts = () => {
+// Chart rendering
+const renderCharts = async () => {
+  await nextTick()
+
   const line = document.getElementById('lineChart')
   const pie = document.getElementById('pieChart')
 
-  new Chart(line, {
+  if (!line || !pie) {
+    console.warn('Chart canvas not found.')
+    return
+  }
+
+  // Destroy old instances
+  lineChart?.destroy()
+  pieChart?.destroy()
+
+  lineChart = new Chart(line, {
     type: 'line',
     data: {
       labels: timeSeries.value.map(t => t.time),
@@ -163,24 +177,43 @@ const renderCharts = () => {
         label: 'Submissions',
         data: timeSeries.value.map(t => t.count),
         borderColor: '#3b82f6',
-        fill: false
+        fill: false,
       }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false
     }
   })
 
-  new Chart(pie, {
+  pieChart = new Chart(pie, {
     type: 'pie',
     data: {
       labels: ['Pending', 'Completed', 'Rejected'],
       datasets: [{
-        label: 'Status',
-        data: [analytics.value.pending, analytics.value.completed, analytics.value.rejected],
+        data: [
+          analytics.value.pending,
+          analytics.value.completed,
+          analytics.value.rejected
+        ],
         backgroundColor: ['#facc15', '#22c55e', '#ef4444']
       }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false
     }
   })
 }
 
+// Initial mount
 onMounted(fetchAnalytics)
 watch(selectedRange, fetchAnalytics)
 </script>
+
+<style scoped>
+canvas {
+  width: 100% !important;
+  height: 300px !important;
+}
+</style>
