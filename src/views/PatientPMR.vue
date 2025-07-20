@@ -719,7 +719,7 @@ const fetchByHashedEmail = async () => {
     const { data } = await supabase
       .from('submissions')
       .select('*')
-      .eq('email', target.email)
+      .ilike('email', target.email)
       .order('created_at', { ascending: false })
     submissions.value = data
     const openId = route.query.open
