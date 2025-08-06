@@ -288,7 +288,7 @@ const goToPMR = () => {
       plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
       initialView: 'timeGridWeek',
       slotMinTime: '09:00:00',
-      slotMaxTime: '17:00:00',
+      slotMaxTime: '21:00:00',
       slotDuration: '00:15:00',
       slotLabelInterval: '01:00',
       slotLabelFormat: { hour: 'numeric', minute: '2-digit', hour12: true },
