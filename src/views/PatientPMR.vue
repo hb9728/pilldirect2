@@ -947,10 +947,10 @@ const editedContactDayObj = ref(null)
 const editedContactTime = ref('')
 
 const availableTimes = Array.from({ length: 13 * 4 }, (_, i) => {
-  const h = 9 + Math.floor(i / 4)   // 09 → 20
-  const m = (i % 4) * 15            // 00/15/30/45
-  return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`
-})
+  const h = 9 + Math.floor(i / 4)   // 09 → 20:45
+  const m = (i % 4) * 15
+  return h === 21 ? null : `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`
+}).filter(Boolean)
 
 const disableWeekends = (date) => {
   const day = date.getDay()
