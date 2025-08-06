@@ -12,7 +12,7 @@
         <input type="checkbox" v-model="formData.shareConsent" :disabled="submitted" class="mt-1" required />
         <span>
           <strong class="text-red-600">*</strong>
-          I consent to my information being securely shared with the dispensing pharmacy for the purpose of reviewing my consultation and safely supplying my medication.
+            I consent to my information being securely shared with the dispensing pharmacy and to authorised healthcare professionals accessing my NHS Summary Care Record (SCR) if needed, solely for clinically verifying my details and safely supplying my medication.
           <span class="text-red-600 font-medium">(Required)</span>
         </span>
       </label>
