@@ -28,9 +28,14 @@ import StepThankYou from '../components/StepThankYou.vue'
 
 import { supabase } from '../supabase'
 
+/**
+ * =============================================================
+ *  HANDLE SUBMISSION
+ * =============================================================
+ */
 const handleSubmit = async (data) => {
   if (!validateStep()) {
-    alert("Please complete all required fields before submitting.")
+    alert('Please complete all required fields before submitting.')
     return
   }
 
@@ -40,18 +45,27 @@ const handleSubmit = async (data) => {
     return val
   }
 
-  // Build the submission object
   const submission = {
     firstName: data.firstName,
     lastName: data.lastName,
     dob: data.dob,
     sex: data.sex,
-    email: data.email,
-    phone: data.phone,
+
+    //  Delivery address
     address1: data.address1,
     address2: data.address2,
     city: data.city,
     postcode: data.postcode,
+
+    //  GP-registered address – NEW
+    gpAddress1: data.gpAddress1,
+    gpAddress2: data.gpAddress2,
+    gpCity: data.gpCity,
+    gpPostcode: data.gpPostcode,
+
+    email: data.email,
+    phone: data.phone,
+
     currentContraceptive: data.currentContraceptive,
     treatmentPreference: data.treatmentPreference,
     pillChoice: data.pillChoice,
@@ -78,7 +92,7 @@ const handleSubmit = async (data) => {
     contactTime: data.contactTime,
   }
 
-  // Final cleanup: convert all "" to null
+  // Convert empty strings to null so Supabase stores proper NULLs
   const filtered = Object.fromEntries(
     Object.entries(submission).map(([k, v]) => [k, v === '' ? null : v])
   )
@@ -94,26 +108,46 @@ const handleSubmit = async (data) => {
   console.log('✅ Submitted successfully to Supabase:', submission)
 }
 
+/**
+ * =============================================================
+ *  REACTIVE STATE
+ * =============================================================
+ */
 const submitted = ref(false)
 const validationError = ref('')
 
 const formData = ref({
+  /** Personal */
   firstName: '',
   lastName: '',
   sex: '',
   dob: '',
-  email: '',
-  phone: '',
+
+  /** Delivery address (pill will be shipped here) */
   address1: '',
   address2: '',
   city: '',
   postcode: '',
+
+  /** GP-registered address – NEW */
+  gpAddress1: '',
+  gpAddress2: '',
+  gpCity: '',
+  gpPostcode: '',
+
+  /** Contact */
+  email: '',
+  phone: '',
+
+  /** Clinical */
   currentContraceptive: '',
   treatmentPreference: '',
   pillChoice: '',
   otherPill: '',
   pillGap: '',
   extraMeds: '',
+
+  /** Vitals */
   imperialMetric: '',
   heightFt: '',
   heightIn: '',
@@ -124,40 +158,54 @@ const formData = ref({
   bpChecked: '',
   bpSystolic: '',
   bpDiastolic: '',
+
+  /** History */
   selectApplicable: [],
   extraInfo: '',
+
+  /** Consents */
   promoConsent: false,
   shareConsent: false,
   updateConsent: false,
+
+  /** Misc */
   responseId: '',
   contactDay: '',
   contactTime: '',
 })
 provide('formData', formData.value)
 
-// NEW STEP ORDER — personal-info screens now sit just before consent
+/**
+ * =============================================================
+ *  STEP CONFIGURATION – personal-info screens are near the end
+ * =============================================================
+ */
 const steps = [
   StepIntro,          // 0
   StepPillHistory,    // 1
   StepVitals,         // 2
   StepMedicalHistory, // 3
   StepContactTime,    // 4
-  StepScreening,      // 5 (name/DOB)
-  StepContact,        // 6 (address/email/phone)
+  StepScreening,      // 5 (name / DOB)
+  StepContact,        // 6 (addresses / email / phone)
   StepFinalConsent,   // 7
   StepThankYou        // 8
 ]
-
 const currentStep = ref(0)
 
+/**
+ * =============================================================
+ *  VALIDATION PER STEP
+ * =============================================================
+ */
 const validateStep = () => {
-  const stepIndex = currentStep.value
+  const i = currentStep.value
 
-  // Intro — always ok
-  if (stepIndex === 0) return true
+  // Intro always valid
+  if (i === 0) return true
 
-  // 1️⃣ Pill History
-  if (stepIndex === 1) {
+  // Pill History (1)
+  if (i === 1) {
     if (!formData.value.currentContraceptive) return false
     if (!formData.value.treatmentPreference) return false
     if (formData.value.treatmentPreference === 'Yes' && !formData.value.pillChoice) return false
@@ -167,19 +215,17 @@ const validateStep = () => {
     return true
   }
 
-  // 2️⃣ Pill Vitals
-  if (stepIndex === 2) {
+  // Vitals (2)
+  if (i === 2) {
     if (!formData.value.imperialMetric) return false
-
     if (formData.value.imperialMetric === 'Imperial') {
       const empty = (v) => v === '' || v === null || v === undefined
       const ft = Number(formData.value.heightFt)
-      const inches = Number(formData.value.heightIn)
+      const inc = Number(formData.value.heightIn)
       const st = Number(formData.value.weightSt)
       const lbs = Number(formData.value.weightLbs)
-
-      if (empty(ft) || empty(inches) || empty(st) || empty(lbs)) return false
-      if (ft === 0 && inches === 0) {
+      if (empty(ft) || empty(inc) || empty(st) || empty(lbs)) return false
+      if (ft === 0 && inc === 0) {
         validationError.value = 'Please enter a height in either feet or inches (cannot both be 0).'
         return false
       }
@@ -188,28 +234,25 @@ const validateStep = () => {
         return false
       }
     }
-
     if (formData.value.imperialMetric === 'Metric') {
       if (!formData.value.heightCm || !formData.value.weightKg) return false
     }
-
     if (formData.value.bpChecked === 'Yes') {
       if (!formData.value.bpSystolic || !formData.value.bpDiastolic) return false
     }
-
     return true
   }
 
-  // 3️⃣ Medical History
-  if (stepIndex === 3) {
-    const selected = formData.value.selectApplicable
+  // Medical History (3)
+  if (i === 3) {
+    const sel = formData.value.selectApplicable
     const notes = formData.value.extraInfo?.trim()
-    if ((!selected || selected.length === 0) && !notes) return false
+    if ((!sel || sel.length === 0) && !notes) return false
     return true
   }
 
-  // 4️⃣ Preferred Contact Time
-  if (stepIndex === 4) {
+  // Contact Time (4)
+  if (i === 4) {
     if (!formData.value.contactDay || !formData.value.contactTime) {
       validationError.value = 'Please choose a contact day and time for a follow-up call.'
       return false
@@ -217,31 +260,28 @@ const validateStep = () => {
     return true
   }
 
-  // 5️⃣ Screening (personal details)
-  if (stepIndex === 5) {
-    return !!formData.value.firstName &&
-           !!formData.value.lastName &&
-           !!formData.value.dob &&
-           formData.value.age >= 16
+  // Screening – personal details (5)
+  if (i === 5) {
+    return !!formData.value.firstName && !!formData.value.lastName && !!formData.value.dob && formData.value.age >= 16
   }
 
-  // 6️⃣ Contact Info (address/email/phone)
-  if (stepIndex === 6) {
-    return !!formData.value.email &&
-           !!formData.value.phone &&
-           !!formData.value.address1 &&
-           !!formData.value.city &&
-           !!formData.value.postcode
+  // Contact – addresses & comms (6)  NEW validation includes GP address
+  if (i === 6) {
+    const deliveryOk = !!formData.value.address1 && !!formData.value.city && !!formData.value.postcode
+    const gpOk = !!formData.value.gpAddress1 && !!formData.value.gpCity && !!formData.value.gpPostcode
+    const commsOk = !!formData.value.email && !!formData.value.phone
+    return deliveryOk && gpOk && commsOk
   }
 
-  // 7️⃣ Final Consent
-  if (stepIndex === 7) {
+  // Consent (7)
+  if (i === 7) {
     return formData.value.shareConsent && formData.value.updateConsent
   }
 
   return true
 }
 
+/** Navigation helpers */
 function nextStep() {
   if (!validateStep()) {
     if (validationError.value) {
@@ -254,11 +294,9 @@ function nextStep() {
   }
   if (currentStep.value < steps.length - 1) currentStep.value++
 }
-
 function prevStep() {
   if (currentStep.value > 0) currentStep.value--
 }
-
 function submitForm() {
   console.log('Submitted:', formData.value)
 }
