@@ -130,10 +130,10 @@ const formData = ref({
   postcode: '',
 
   /** GP-registered address – NEW */
-  gpAddress1: '',
-  gpAddress2: '',
-  gpCity: '',
-  gpPostcode: '',
+  gp_address1: '',
+  gp_address2: '',
+  gp_city: '',
+  gp_postcode: '',
 
   /** Contact */
   email: '',
