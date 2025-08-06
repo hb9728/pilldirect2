@@ -281,10 +281,19 @@
       <div>
         <p><strong>Email:</strong> {{ selectedSubmission.email || '—' }}</p>
         <p><strong>DOB:</strong> {{ selectedSubmission.dob || '—' }}</p>
-        <p><strong>Address:</strong> 
-          {{ selectedSubmission.address1 }} {{ selectedSubmission.address2 }},
-          {{ selectedSubmission.city }}, {{ selectedSubmission.postcode }}
-        </p>
+        <!-- GP address -->
+<p><strong>GP-registered address:</strong><br>
+  {{ selectedSubmission.gp_address1 || '' }} {{ selectedSubmission.gp_address2 || '' }}<span v-if="selectedSubmission.gp_address1 || selectedSubmission.gp_address2">,</span>
+  {{ selectedSubmission.gp_city || '' }}<span v-if="selectedSubmission.gp_city">,</span>
+  {{ selectedSubmission.gp_postcode || '' }}
+</p>
+
+<!-- Delivery address -->
+<p><strong>Delivery address:</strong><br>
+  {{ selectedSubmission.address1 || '' }} {{ selectedSubmission.address2 || '' }}<span v-if="selectedSubmission.address1 || selectedSubmission.address2">,</span>
+  {{ selectedSubmission.city || '' }}<span v-if="selectedSubmission.city">,</span>
+  {{ selectedSubmission.postcode || '' }}
+</p>
       </div>
     </div>
   </div>
