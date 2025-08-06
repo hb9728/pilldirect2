@@ -58,10 +58,10 @@ const handleSubmit = async (data) => {
     postcode: data.postcode,
 
     //  GP-registered address – NEW
-    gpAddress1: data.gpAddress1,
-    gpAddress2: data.gpAddress2,
-    gpCity: data.gpCity,
-    gpPostcode: data.gpPostcode,
+    gp_address1: data.gpAddress1,
+    gp_address2: data.gpAddress2,
+    gp_city: data.gpCity,
+    gp_postcode: data.gpPostcode,
 
     email: data.email,
     phone: data.phone,
