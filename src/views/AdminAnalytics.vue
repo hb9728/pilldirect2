@@ -1,43 +1,40 @@
 <template>
   <div class="min-h-screen bg-gray-50 p-4">
-    <!-- Header -->
+    <!-- Top Row: Back + Menu -->
     <div class="flex items-center justify-between mb-4">
-      <div class="flex items-center gap-2">
-        <button class="px-3 py-2 rounded border hover:bg-gray-100" @click="$router.back()">← Back</button>
-        <h1 class="text-2xl font-semibold">Analytics</h1>
-      </div>
-
-      <div class="flex items-center gap-2">
-        <select v-model="selectedRange" @change="fetchAnalytics" class="border p-2 rounded">
-          <option value="today">Today</option>
-          <option value="past_week">Past Week</option>
-          <option value="past_month">Past Month</option>
-          <option value="month_to_date">Month to Date</option>
-          <option value="year_to_date">Year to Date</option>
-          <option value="past_year">Past Year</option>
-        </select>
-
-        <button class="px-3 py-2 rounded border hover:bg-gray-100" @click="fetchAnalytics" :disabled="loading">
-          {{ loading ? 'Refreshing…' : 'Refresh' }}
-        </button>
-
-        <!-- Reusable menu -->
-        <HeaderMenu :items="menuItems" @navigate="onNavigate" @logout="onLogout" />
-      </div>
+      <button class="px-3 py-2 rounded border hover:bg-gray-100" @click="$router.back()">← Back</button>
+      <HeaderMenu :items="menuItems" @navigate="onNavigate" @logout="onLogout" />
     </div>
 
-    <!-- Meta / errors -->
+    <!-- Second Row: Filters + Refresh -->
+    <div class="flex items-center gap-2 mb-4">
+      <select v-model="selectedRange" @change="fetchAnalytics" class="border p-2 rounded">
+        <option value="today">Today</option>
+        <option value="past_week">Past Week</option>
+        <option value="past_month">Past Month</option>
+        <option value="month_to_date">Month to Date</option>
+        <option value="year_to_date">Year to Date</option>
+        <option value="past_year">Past Year</option>
+      </select>
+
+      <button class="px-3 py-2 rounded border hover:bg-gray-100" @click="fetchAnalytics" :disabled="loading">
+        {{ loading ? 'Refreshing…' : 'Refresh' }}
+      </button>
+    </div>
+
+    <!-- Meta info -->
     <div class="text-sm text-gray-500 mb-3" v-if="lastRefreshed">
       Showing: <span class="font-medium">{{ activeRangeLabel }}</span>
       <span class="mx-2">•</span> Last refreshed: {{ lastRefreshed }}
     </div>
+
+    <!-- Error -->
     <div v-if="errMsg" class="mb-3 p-3 bg-red-50 text-red-700 border border-red-200 rounded">
       {{ errMsg }}
     </div>
 
-    <!-- Loading / empty -->
+    <!-- Loading / Empty -->
     <div v-if="loading" class="text-gray-500">Loading analytics…</div>
-
     <div v-else>
       <div v-if="analytics.total === 0" class="text-gray-500">No submissions in this period.</div>
 
@@ -69,13 +66,13 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import HeaderMenu from '../components/HeaderMenu.vue' // or '../components/HeaderMenu.vue' if you don’t have @ alias
-import { supabase } from '../supabase'                // adjust path if needed
+import HeaderMenu from '@/components/HeaderMenu.vue'
+import { supabase } from '../supabase'
 
 const router = useRouter()
 const route = useRoute()
 
-// --- Menu items (reactive current state) ---
+// Menu items
 const menuItems = computed(() => ([
   { label: 'Dashboard', to: '/admin/dashboard', current: route.path === '/admin/dashboard' },
   { label: 'Calendar',  to: '/admin/calendar',  current: route.path === '/admin/calendar' },
@@ -89,11 +86,11 @@ async function onLogout() {
   router.push('/admin/login')
 }
 
-// --- Analytics state ---
+// Analytics
 const loading = ref(false)
 const errMsg = ref('')
 const lastRefreshed = ref('')
-const selectedRange = ref('today') // default same as your screenshot
+const selectedRange = ref('today')
 
 const analytics = ref({
   total: 0,
