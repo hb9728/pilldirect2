@@ -66,7 +66,7 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import HeaderMenu from '@/components/HeaderMenu.vue'
+import HeaderMenu from '../components/HeaderMenu.vue'
 import { supabase } from '../supabase'
 
 const router = useRouter()
