@@ -1,22 +1,22 @@
-<template>
-  <div class="min-h-screen bg-gray-50 p-6">
-    <!-- Top header -->
-    <div class="flex justify-between items-center mb-4">
-      <!-- Title on left -->
-      <h2 class="text-2xl font-semibold">PillDirect.co.uk Booking Calendar</h2>
+<!-- Top header -->
+<div class="flex justify-between items-center mb-6 px-4 py-3 bg-white shadow-sm rounded-lg border border-gray-200">
+  <!-- Title on left -->
+  <h2 class="text-lg font-semibold text-gray-800">
+    PillDirect.co.uk Booking Calendar
+  </h2>
 
-      <!-- Back + Menu on right -->
-      <div class="flex items-center gap-2">
-        <button
-          v-if="showBackButton"
-          @click="$router.back()"
-          class="px-3 py-2 rounded border bg-gray-100 hover:bg-gray-100 text-sm text-gray-800"
-        >
-          ← Back
-        </button>
-        <HeaderMenu :items="menuItems" @navigate="onNavigate" @logout="logout" />
-      </div>
-    </div>
+  <!-- Right side: Back + Menu -->
+  <div class="flex items-center gap-2">
+    <button
+      v-if="showBackButton"
+      @click="$router.back()"
+      class="px-3 py-1.5 text-sm rounded-md border border-gray-300 bg-gray-50 hover:bg-gray-100 text-gray-700"
+    >
+      ← Back
+    </button>
+    <HeaderMenu />
+  </div>
+</div>
 
     <!-- Calendar Card -->
     <div class="bg-white p-4 rounded-lg shadow border border-gray-200 text-sm">
