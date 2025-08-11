@@ -21,17 +21,8 @@
           {{ loading ? 'Refreshing…' : 'Refresh' }}
         </button>
 
-        <!-- Menu -->
-        <div class="relative" @keydown.escape="menuOpen = false">
-          <button class="px-3 py-2 rounded border hover:bg-gray-100" @click="menuOpen=!menuOpen">☰ Menu</button>
-          <div v-if="menuOpen" class="absolute right-0 mt-2 w-44 bg-white border rounded shadow z-10" @click="menuOpen=false">
-            <button class="w-full text-left px-4 py-2 hover:bg-gray-100 text-sm" @click="$router.push('/admin/dashboard')">Dashboard</button>
-            <button class="w-full text-left px-4 py-2 hover:bg-gray-100 text-sm" @click="$router.push('/admin/calendar')">Calendar</button>
-            <button class="w-full text-left px-4 py-2 hover:bg-gray-100 text-sm font-semibold" @click="$router.push('/admin/analytics')">Analytics</button>
-            <div class="h-px bg-gray-200 my-1"></div>
-            <button class="w-full text-left px-4 py-2 hover:bg-gray-100 text-sm text-red-600" @click="logout">Logout</button>
-          </div>
-        </div>
+        <!-- Reusable menu -->
+        <HeaderMenu :items="menuItems" @navigate="onNavigate" @logout="onLogout" />
       </div>
     </div>
 
@@ -40,7 +31,6 @@
       Showing: <span class="font-medium">{{ activeRangeLabel }}</span>
       <span class="mx-2">•</span> Last refreshed: {{ lastRefreshed }}
     </div>
-
     <div v-if="errMsg" class="mb-3 p-3 bg-red-50 text-red-700 border border-red-200 rounded">
       {{ errMsg }}
     </div>
@@ -78,14 +68,39 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
+import HeaderMenu from '@/components/HeaderMenu.vue' // or '../components/HeaderMenu.vue' if you don’t have @ alias
+import { supabase } from '../supabase'                // adjust path if needed
 
-const menuOpen = ref(false)
+const router = useRouter()
+const route = useRoute()
+
+// --- Menu items (reactive current state) ---
+const menuItems = computed(() => ([
+  { label: 'Dashboard', to: '/admin/dashboard', current: route.path === '/admin/dashboard' },
+  { label: 'Calendar',  to: '/admin/calendar',  current: route.path === '/admin/calendar' },
+  { label: 'Analytics', to: '/admin/analytics', current: route.path === '/admin/analytics' },
+]))
+function onNavigate(item) {
+  router.push(item.to)
+}
+async function onLogout() {
+  try { await supabase.auth.signOut() } catch {}
+  router.push('/admin/login')
+}
+
+// --- Analytics state ---
 const loading = ref(false)
 const errMsg = ref('')
 const lastRefreshed = ref('')
-const selectedRange = ref('past_week')
+const selectedRange = ref('today') // default same as your screenshot
 
-const analytics = ref({ total: 0, pending: 0, completed: 0, rejected: 0 })
+const analytics = ref({
+  total: 0,
+  pending: 0,
+  completed: 0,
+  rejected: 0,
+})
 
 const activeRangeLabel = computed(() => ({
   today: 'Today',
@@ -111,25 +126,10 @@ function getRangeDates(range) {
   return { startDate: start, endDate: end }
 }
 
-// 🔒 dynamic import so a bad path won’t blank the page
-async function getSupabaseSafe() {
-  const candidates = [
-    () => import('../supabase'),
-  ]
-  for (const loader of candidates) {
-    try {
-      const mod = await loader()
-      if (mod?.supabase) return mod.supabase
-    } catch (_) {}
-  }
-  throw new Error('Could not import supabase client (check path/export).')
-}
-
 async function fetchAnalytics() {
   loading.value = true
   errMsg.value = ''
   try {
-    const supabase = await getSupabaseSafe()
     const { startDate, endDate } = getRangeDates(selectedRange.value)
 
     const { data, error } = await supabase
@@ -146,22 +146,13 @@ async function fetchAnalytics() {
 
     analytics.value = { total: data.length, pending, completed, rejected }
     lastRefreshed.value = new Date().toLocaleString()
-    console.log('Analytics rows:', data.length, { startDate, endDate })
   } catch (e) {
     console.error(e)
-    errMsg.value = e.message || String(e)
+    errMsg.value = `Failed to load analytics: ${e.message || e}`
     analytics.value = { total: 0, pending: 0, completed: 0, rejected: 0 }
   } finally {
     loading.value = false
   }
-}
-
-async function logout() {
-  try {
-    const supabase = await getSupabaseSafe()
-    await supabase.auth.signOut()
-  } catch {}
-  window.location.href = '/admin/login'
 }
 
 onMounted(fetchAnalytics)
