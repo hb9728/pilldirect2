@@ -115,8 +115,6 @@ function getRangeDates(range) {
 async function getSupabaseSafe() {
   const candidates = [
     () => import('../supabase'),
-    () => import('@/supabase'),
-    () => import('../../supabase'),
   ]
   for (const loader of candidates) {
     try {
