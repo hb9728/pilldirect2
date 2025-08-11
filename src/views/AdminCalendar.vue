@@ -1,440 +1,497 @@
-<template>
-  <div class="min-h-screen bg-gray-50 p-4">
-    <!-- Top Bar: Title + Back/Menu -->
-    <div class="flex items-center justify-between mb-3">
-      <!-- Title on the left -->
-      <h1 class="text-2xl font-semibold">Calendar</h1>
-
-      <!-- Back + Menu on the right -->
-      <div class="flex items-center gap-2">
-        <button class="px-3 py-2 rounded border hover:bg-gray-100" @click="$router.back()">← Back</button>
-        <HeaderMenu :items="menuItems" @navigate="onNavigate" @logout="onLogout" />
-      </div>
+<!--
+  
+    <div class="flex justify-between items-center mb-6">
+      <h2 class="text-2xl font-semibold">PillDirect.co.uk Submissions Dashboard</h2>
+      <button @click="logout" class="text-red-600 hover:underline">Logout</button>
     </div>
+-->
 
-    <!-- Calendar Card -->
-    <div class="bg-white p-4 rounded-lg shadow border border-gray-200 text-sm">
-      <FullCalendar ref="calendarRef" :options="calendarOptions" />
-    </div>
 
-    <!-- Outer overlay -->
-    <div
-      v-if="showModal"
-      class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50"
-      @click.self="closeModal"
+
+    <template>
+<div class="min-h-screen bg-gray-50 p-6">
+  
+<div class="flex justify-between items-center mb-6">
+  <!-- LEFT: Title only -->
+  <h2 class="text-2xl font-semibold">PillDirect.co.uk Submissions Dashboard</h2>
+
+  <!-- RIGHT: Back button + Menu -->
+  <div class="flex items-center gap-4 relative" ref="menuRef">
+    <button
+      v-if="showBackButton"
+      @click="$router.back()"
+      class="text-blue-600 hover:underline text-sm"
     >
-      <!-- Inner content (modal) -->
-      <div class="bg-white p-6 rounded shadow-md w-full max-w-2xl relative">
-        <!-- Modal header -->
-        <div class="flex justify-between items-start mb-4">
-          <h2 class="text-lg font-bold">Submission Details</h2>
-          <div class="flex gap-2">
-            <button
-              @click="goToPMR"
-              class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 text-sm"
-            >
-              Open Full PMR →
-            </button>
-            <button
-              @click="closeModal"
-              class="ml-2 w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 text-gray-600"
-              title="Close"
-            >
-              ×
-            </button>
-          </div>
-        </div>
+      ← Back
+    </button>
 
-        <!-- Modal body -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm text-gray-800">
-          <div><strong>Name:</strong> {{ selectedEvent.firstName }} {{ selectedEvent.lastName }}</div>
-          <div><strong>DOB:</strong> {{ selectedEvent.dob || '—' }}</div>
-          <div><strong>Email:</strong> {{ selectedEvent.email }}</div>
-          <div><strong>Phone:</strong> {{ selectedEvent.phone || '—' }}</div>
-          <div><strong>Address:</strong> {{ selectedEvent.address1 || '' }} {{ selectedEvent.address2 || '' }}, {{ selectedEvent.city || '' }}, {{ selectedEvent.postcode || '' }}</div>
-          <div><strong>Sex:</strong> {{ selectedEvent.sex || '—' }}</div>
-          <div><strong>Submitted:</strong> {{ formatDateTime(selectedEvent.created_at) }}</div>
-          <div><strong>Response ID:</strong> {{ selectedEvent.responseId }}</div>
+    <button
+      @click="toggleMenu"
+      class="bg-gray-100 hover:bg-gray-200 text-gray-800 px-4 py-2 rounded text-sm border"
+    >
+      Menu ▾
+    </button>
 
-          <!-- Appointment Time Block -->
-          <div class="col-span-2">
-            <label class="block text-sm font-semibold text-gray-700 mb-1">Preferred Appointment</label>
+    <div
+      v-if="menuOpen"
+      class="absolute right-0 mt-12 w-48 bg-white border border-gray-200 rounded shadow-md z-10"
+    >
+<button
+  class="w-full text-left px-4 py-2 hover:bg-gray-100 text-sm"
+  @click="goToBlankPMR"
+>
+  Open Full PMR
+</button>
+      
+      <button
+        class="w-full text-left px-4 py-2 hover:bg-gray-100 text-sm"
+        @click="goToCalendar"
+      >
+        View Calendar
+      </button>
 
-            <div v-if="!isEditingAppointment" class="flex items-center gap-4">
-              <div>
-                {{ selectedEvent.contactDay || '—' }} at {{ selectedEvent.contactTime || '—' }}
-              </div>
-              <button
-                @click="() => {
-                  isEditingAppointment = true
-                  editedContactDay = selectedEvent.contactDay
-                  editedContactTime = selectedEvent.contactTime
-                  editedContactDayObj = selectedEvent.contactDay ? new Date(selectedEvent.contactDay) : null
-                }"
-                class="text-blue-600 hover:underline text-sm"
-              >
-                Edit Appointment
-              </button>
-            </div>
+      <button
+        class="w-full text-left px-4 py-2 hover:bg-gray-100 text-sm"
+        @click="goToAnalytics"
+        >
+        View Analytics
+      </button>
+      
+      <button
+        class="w-full text-left px-4 py-2 hover:bg-gray-100 text-sm text-red-600"
+        @click="logout"
+      >
+        Logout
+      </button>
+    </div>
+  </div>
+</div>
 
-            <div v-else class="flex flex-col sm:flex-row gap-3">
-              <Datepicker
-                v-model="editedContactDayObj"
-                :disabled-dates="disableWeekends"
-                :min-date="new Date()"
-                input-class="border rounded px-3 py-2 text-sm w-full"
-                :clearable="false"
-                :inline="false"
-                :enable-time-picker="false"
-              />
 
-              <select v-model="editedContactTime" class="border rounded px-3 py-2 text-sm w-full">
-                <option disabled value="">Select time</option>
-                <option v-for="time in availableTimes" :key="time" :value="time">
-                  {{ time }}
-                </option>
-              </select>
 
-              <div class="flex gap-2">
-                <button
-                  @click="updateAppointment"
-                  class="bg-green-600 text-white px-3 py-2 rounded hover:bg-green-700 text-sm"
-                >
-                  Update
-                </button>
-                <button
-                  @click="() => (isEditingAppointment = false)"
-                  class="bg-gray-200 text-gray-800 px-3 py-2 rounded hover:bg-gray-300 text-sm"
-                >
-                  Cancel
-                </button>
-              </div>
-            </div>
-          </div>
 
-          <div>
-            <label class="block text-sm font-semibold text-gray-700 mb-1">Submission Status</label>
-            <select
-              v-model="selectedEvent.status"
-              @change="updateStatus"
-              :class="[
-                'mt-1 border rounded px-3 py-2 text-sm shadow-sm transition-colors',
-                selectedEvent.status === 'Pending'
-                  ? 'bg-yellow-100 text-yellow-800 border-yellow-400'
-                  : selectedEvent.status === 'Complete'
-                  ? 'bg-green-100 text-green-800 border-green-400'
-                  : selectedEvent.status === 'Rejected'
-                  ? 'bg-red-100 text-red-800 border-red-400'
-                  : ''
-              ]"
-            >
-              <option value="Pending">Pending</option>
-              <option value="Complete">Complete</option>
-              <option value="Rejected">Rejected</option>
-            </select>
-          </div>
-        </div>
-      </div>
+
+
+
+    
+
+    <input
+      v-model="searchQuery"
+      type="text"
+      placeholder="Search by name, DOB, or ID..."
+      class="w-full mb-4 p-2 border border-gray-300 rounded"
+    />
+
+    <div v-if="paginatedSubmissions.length === 0" class="text-gray-500">
+      No submissions found.
     </div>
 
-    <!-- Pill-Style Legend -->
-    <div class="mt-4 flex gap-3 text-sm">
-      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-yellow-100 text-yellow-800">
-        <span class="w-2 h-2 rounded-full bg-yellow-500"></span> Pending
+    <table v-else class="w-full bg-white shadow rounded text-sm">
+      <thead>
+        <tr class="bg-gray-100">
+          <th class="p-2 border-b text-left">Name</th>
+          <th class="p-2 border-b text-left">DOB</th>
+          <th class="p-2 border-b text-left">Email</th>
+          <th class="p-2 border-b text-left">Response ID</th>
+          <th class="p-2 border-b text-left">Submitted</th>
+          <th class="p-2 border-b text-left">Status</th>
+          <th class="p-2 border-b text-left">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+<tr
+  v-for="(submission, index) in paginatedSubmissions"
+  :key="submission.responseId + '-' + index"
+  :class="{ 'bg-blue-50': selectedSubmission?.responseId === submission.responseId }"
+  class="hover:bg-gray-50"
+>
+          <td class="p-2">{{ submission.firstName }} {{ submission.lastName }}</td>
+          <td class="p-2">{{ submission.dob }}</td>
+          <td class="p-2">{{ submission.email }}</td>
+          <td class="p-2">{{ submission.responseId }}</td>
+          <td class="p-2">{{ formatDateTime(submission.created_at) }}</td>
+
+
+
+          
+          <td class="p-2">
+  <span
+    class="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium"
+    :class="{
+      'bg-yellow-100 text-yellow-800': submission.status === 'Pending',
+      'bg-green-100 text-green-800': submission.status === 'Complete',
+      'bg-red-100 text-red-800': submission.status === 'Rejected'
+    }"
+  >
+    <span
+      class="h-2 w-2 rounded-full"
+      :class="{
+        'bg-yellow-500': submission.status === 'Pending',
+        'bg-green-500': submission.status === 'Complete',
+        'bg-red-500': submission.status === 'Rejected'
+      }"
+    ></span>
+    {{ submission.status }}
+  </span>
+</td>
+
+          
+          
+          
+          
+          <td class="p-2">
+            <button @click="viewSubmission(submission)" class="text-blue-600 hover:underline">View</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+<!-- Pagination Controls -->
+<div class="flex justify-between items-center mt-4 text-sm">
+  <!-- Page navigation stays always visible -->
+  <div class="space-x-2">
+    <button
+      @click="changePage(currentPage - 1)"
+      :disabled="currentPage === 1"
+      class="px-3 py-1 border rounded disabled:opacity-50"
+    >Prev</button>
+
+  <button
+  v-for="page in getSmartPages"
+  :key="page"
+  @click="typeof page === 'number' && changePage(page)"
+  class="px-3 py-1 border rounded"
+  :class="{
+    'bg-blue-100': currentPage === page,
+    'cursor-default text-gray-400': page === '...'
+  }"
+  :disabled="page === '...'"
+>
+  {{ page }}
+</button>
+
+    <button
+      @click="changePage(currentPage + 1)"
+      :disabled="currentPage === totalPages"
+      class="px-3 py-1 border rounded disabled:opacity-50"
+    >Next</button>
+  </div>
+
+  <!-- Dropdown always shown, on right -->
+  <div>
+    Show
+    <select v-model.number="itemsPerPage" class="ml-1 border rounded p-1">
+      <option :value="10">10</option>
+      <option :value="25">25</option>
+      <option :value="50">50</option>
+    </select>
+    per page
+  </div>
+</div>
+
+    <!-- Inline Submission View -->
+    <div v-if="selectedSubmission" class="mt-8 bg-white p-4 rounded shadow">
+
+      
+      <div class="flex justify-between items-center mb-2">
+        <h3 class="text-lg font-semibold">Submission Details</h3>
+        <button
+          v-if="selectedSubmission"
+          @click="goToPatientPMR(selectedSubmission.email, selectedSubmission.responseId)"
+          class="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium py-1.5 px-4 rounded"
+        >
+          Open Full PMR
+        </button>
       </div>
-      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-green-100 text-green-800">
-        <span class="w-2 h-2 rounded-full bg-green-500"></span> Complete
+      
+      
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm text-gray-800">
+        <div><strong>Name:</strong> {{ selectedSubmission.firstName }} {{ selectedSubmission.lastName }}</div>
+        <div><strong>DOB:</strong> {{ selectedSubmission.dob }}</div>
+        <div><strong>Email:</strong> {{ selectedSubmission.email }}</div>
+        <div><strong>Phone:</strong> {{ selectedSubmission.phone }}</div>
+        <div><strong>Address:</strong> {{ selectedSubmission.address1 }} {{ selectedSubmission.address2 }}, {{ selectedSubmission.city }}, {{ selectedSubmission.postcode }}</div>
+        <div><strong>Sex:</strong> {{ selectedSubmission.sex }}</div>
+        <div><strong>Submitted:</strong> {{ formatDateTime(selectedSubmission.created_at) }}</div>
+        <div><strong>Response ID:</strong> {{ selectedSubmission.responseId }}</div>
+        
+        <div class="col-span-2">
+  <label class="block text-sm font-semibold text-gray-700 mb-1">Preferred Appointment</label>
+
+  <div v-if="!isEditingAppointment" class="flex items-center gap-4">
+    <div>
+      {{ selectedSubmission.contactDay || '—' }} at {{ selectedSubmission.contactTime || '—' }}
+    </div>
+    <button
+  @click="() => {
+    isEditingAppointment = true
+    editedContactDayObj = selectedSubmission.contactDay ? new Date(selectedSubmission.contactDay) : null
+    editedContactTime = selectedSubmission.contactTime || ''
+  }"
+  class="text-blue-600 hover:underline text-sm"
+>
+  Edit Appointment
+</button>
+  </div>
+
+  <div v-else class="flex flex-col sm:flex-row gap-3 mt-2">
+    <Datepicker
+      v-model="editedContactDayObj"
+      :disabled-dates="disableWeekends"
+      :min-date="new Date()"
+      input-class="border rounded px-3 py-2 text-sm w-full"
+      :clearable="false"
+      :inline="false"
+      :enable-time-picker="false"
+    />
+    <select
+      v-model="editedContactTime"
+      class="border rounded px-3 py-2 text-sm w-full"
+    >
+      <option disabled value="">Select time</option>
+      <option v-for="time in availableTimes" :key="time" :value="time">
+        {{ time }}
+      </option>
+    </select>
+
+    <div class="flex gap-2">
+      <button
+        @click="updateAppointmentDashboard"
+        class="bg-green-600 text-white px-3 py-2 rounded hover:bg-green-700 text-sm"
+      >
+        Update
+      </button>
+      <button
+        @click="isEditingAppointment = false"
+        class="bg-gray-200 text-gray-800 px-3 py-2 rounded hover:bg-gray-300 text-sm"
+      >
+        Cancel
+      </button>
+    </div>
+  </div>
+</div>
+
+        
+        <div>
+  <label class="block text-sm font-semibold text-gray-700 mb-1">Submission Status</label>
+  <select
+    v-model="selectedSubmission.status"
+    @change="updateStatus(selectedSubmission)"
+    :class="[
+      'border rounded px-3 py-2 shadow-sm transition-colors',
+      selectedSubmission.status === 'Pending' ? 'bg-yellow-100 text-yellow-800 border-yellow-400' :
+      selectedSubmission.status === 'Complete' ? 'bg-green-100 text-green-800 border-green-400' :
+      selectedSubmission.status === 'Rejected' ? 'bg-red-100 text-red-800 border-red-400' : ''
+    ]"
+  >
+    <option>Pending</option>
+    <option>Complete</option>
+    <option>Rejected</option>
+  </select>
+</div>
+        
+
       </div>
-      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-100 text-red-800">
-        <span class="w-2 h-2 rounded-full bg-red-500"></span> Rejected
-      </div>
+      
     </div>
   </div>
 </template>
 
-<script>
-import Datepicker from '@vuepic/vue-datepicker'
-import '@vuepic/vue-datepicker/dist/main.css'
-
-import { ref, onMounted, computed } from 'vue'
-import FullCalendar from '@fullcalendar/vue3'
-import dayGridPlugin from '@fullcalendar/daygrid'
-import timeGridPlugin from '@fullcalendar/timegrid'
-import interactionPlugin from '@fullcalendar/interaction'
-import { useRouter, useRoute } from 'vue-router'
+<script setup>
+import { ref, computed, onMounted, watch, onBeforeUnmount } from 'vue'
+import { useRouter } from 'vue-router'
 import { supabase } from '../supabase'
 import sha256 from 'crypto-js/sha256'
 import { DateTime } from 'luxon'
-import HeaderMenu from '../components/HeaderMenu.vue'
 
-export default {
-  components: {
-    FullCalendar,
-    Datepicker,
-    HeaderMenu
-  },
-  setup() {
-    const isEditingAppointment = ref(false)
-    const editedContactDay = ref('')
-    const editedContactTime = ref('')
+const router = useRouter()
 
-    const calendarRef = ref(null)
-    const router = useRouter()
-    const route = useRoute()
+const submissions = ref([])
+const selectedSubmission = ref(null)
+const searchQuery = ref('')
+const currentPage = ref(1)
+const itemsPerPage = ref(10)
 
-    const selectedEvent = ref(null)
-    const showModal = ref(false)
-    const showBackButton = ref(false)
+const showBackButton = ref(false)
 
-    const closeModal = () => {
-      selectedEvent.value = null
-      showModal.value = false
-    }
+onMounted(() => {
+  // Only show if the browser has meaningful history (not direct page load)
+  showBackButton.value = window.history.length > 1
+})
 
-    onMounted(() => {
-      showBackButton.value = window.history.length > 1
-    })
-
-    // Header menu items
-    const menuItems = computed(() => ([
-      { label: 'Dashboard', to: '/admin/dashboard', current: route.path === '/admin/dashboard' },
-      { label: 'Calendar',  to: '/admin/calendar',  current: route.path === '/admin/calendar' },
-      { label: 'Analytics', to: '/admin/analytics', current: route.path === '/admin/analytics' },
-      { label: 'Open Full PMR', to: '/admin/patient', current: route.path.startsWith('/admin/patient') },
-    ]))
-    function onNavigate(item) {
-      router.push(item.to)
-    }
-
-    const goToPMR = () => {
-      if (!selectedEvent.value?.email) return
-      const email = selectedEvent.value.email.trim().toLowerCase()
-      const hash = sha256(email).toString()
-      router.push(`/admin/patient/${hash}?open=${selectedEvent.value.responseId}`)
-    }
-
-    const calendarOptions = ref({
-      plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
-      initialView: 'timeGridWeek',
-      slotMinTime: '09:00:00',
-      slotMaxTime: '21:00:00',
-      slotDuration: '00:15:00',
-      slotLabelInterval: '01:00',
-      slotLabelFormat: { hour: 'numeric', minute: '2-digit', hour12: true },
-      allDaySlot: false,
-      height: 'auto',
-      nowIndicator: true,
-      eventTimeFormat: { hour: '2-digit', minute: '2-digit', hour12: false },
-      eventClassNames: ['rounded-md', 'px-2', 'py-1', 'text-sm', 'shadow-sm', 'hover:shadow-md', 'transition'],
-      eventDisplay: 'block',
-      eventTextColor: '#fff',
-      eventContent: (arg) => ({
-        html: `<div class="px-1 text-xs truncate cursor-pointer">${arg.timeText} – ${arg.event.title}</div>`
-      }),
-      events: [], // populated on mount
-      eventClick: (info) => {
-        selectedEvent.value = info.event.extendedProps.submission
-        showModal.value = true
-      }
-    })
-
-    const fetchEvents = async () => {
-      const { data, error } = await supabase
-        .from('submissions')
-        .select(`
-          firstName,
-          lastName,
-          email,
-          phone,
-          dob,
-          sex,
-          address1,
-          address2,
-          city,
-          postcode,
-          created_at,
-          contactDay,
-          contactTime,
-          responseId,
-          status
-        `)
-
-      if (error) {
-        console.error('Error fetching bookings:', error)
-        return
-      }
-
-      const bookings = data
-        .filter(sub => sub.contactDay && sub.contactTime)
-        .map(sub => {
-          const start = `${sub.contactDay}T${sub.contactTime}`
-          const statusClass =
-            sub.status === 'Complete'
-              ? 'event-complete'
-              : sub.status === 'Rejected'
-              ? 'event-rejected'
-              : 'event-pending'
-
-          return {
-            title: `${sub.firstName} ${sub.lastName}`,
-            start,
-            end: new Date(new Date(start).getTime() + 15 * 60000).toISOString(),
-            classNames: [statusClass],
-            submission: sub
-          }
-        })
-
-      calendarOptions.value.events = bookings
-    }
-
-    const logout = () => {
-      // Keep your existing logout behaviour; change to supabase.auth.signOut() if needed
-      localStorage.removeItem('accessToken')
-      router.push('/admin/login')
-    }
-
-    const formatDateTime = (isoString) => {
-      if (!isoString) return ''
-      return DateTime.fromISO(isoString, { zone: 'utc' })
-        .setZone('Europe/London')
-        .toFormat('dd LLL yyyy, HH:mm')
-    }
-
-    const updateStatus = async () => {
-      const newStatus = selectedEvent.value.status
-      const { error } = await supabase
-        .from('submissions')
-        .update({ status: newStatus })
-        .eq('responseId', selectedEvent.value.responseId)
-
-      if (error) {
-        console.error('Error updating status:', error.message)
-        return
-      }
-
-      await fetchEvents() // refresh to update colors/status
-    }
-
-    onMounted(fetchEvents)
-
-    const editedContactDayObj = ref(null)
-
-    const availableTimes = Array.from({ length: 13 * 4 }, (_, i) => {
-      const h = 9 + Math.floor(i / 4) // 09:00 → 20:45
-      const m = (i % 4) * 15
-      return h === 21 ? null : `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`
-    }).filter(Boolean)
-
-    const disableWeekends = (date) => {
-      const day = date.getDay()
-      return day === 0 || day === 6
-    }
-
-    const updateAppointment = async () => {
-      const contactDayString = editedContactDayObj.value
-        ? editedContactDayObj.value.toISOString().split('T')[0]
-        : ''
-
-      const { error } = await supabase
-        .from('submissions')
-        .update({
-          contactDay: contactDayString,
-          contactTime: editedContactTime.value
-        })
-        .eq('responseId', selectedEvent.value.responseId)
-
-      if (error) {
-        console.error('Failed to update appointment time:', error.message)
-        return
-      }
-
-      selectedEvent.value.contactDay = contactDayString
-      selectedEvent.value.contactTime = editedContactTime.value
-      isEditingAppointment.value = false
-
-      await fetchEvents()
-    }
-
-    return {
-      // components / ui
-      calendarRef,
-      calendarOptions,
-      showBackButton,
-      HeaderMenu,
-      menuItems,
-      onNavigate,
-
-      // modal & selection
-      selectedEvent,
-      showModal,
-      closeModal,
-      goToPMR,
-
-      // status & formatting
-      formatDateTime,
-      updateStatus,
-
-      // appointment editing
-      isEditingAppointment,
-      editedContactDay,
-      editedContactTime,
-      editedContactDayObj,
-      availableTimes,
-      disableWeekends,
-      updateAppointment,
-
-      // auth
-      logout,
-    }
+// Menu logic
+const menuOpen = ref(false)
+const menuRef = ref(null)
+const toggleMenu = () => {
+  menuOpen.value = !menuOpen.value
+}
+const handleClickOutside = (event) => {
+  if (menuRef.value && !menuRef.value.contains(event.target)) {
+    menuOpen.value = false
   }
 }
+onMounted(() => {
+  document.addEventListener('click', handleClickOutside)
+})
+onBeforeUnmount(() => {
+  document.removeEventListener('click', handleClickOutside)
+})
+
+onMounted(async () => {
+  const { data: { session } } = await supabase.auth.getSession()
+  if (!session) {
+    router.push('/admin/login')
+  }
+})
+
+const logout = async () => {
+  await supabase.auth.signOut()
+  router.replace('/admin/login')
+  location.reload()
+}
+
+const formatDateTime = (isoString) => {
+  if (!isoString) return ''
+  return DateTime.fromISO(isoString, { zone: 'utc' }).setZone('Europe/London').toFormat('dd LLL yyyy, HH:mm')
+}
+
+const fetchSubmissions = async () => {
+  const { data, error } = await supabase
+    .from('submissions')
+    .select('*')
+    .order('created_at', { ascending: false })
+  if (error) {
+    console.error('Error loading submissions:', error.message)
+  } else {
+    submissions.value = data
+  }
+}
+onMounted(fetchSubmissions)
+
+const filteredSubmissions = computed(() => {
+  const q = searchQuery.value.toLowerCase()
+  return submissions.value.filter(entry =>
+    (entry.firstName + ' ' + entry.lastName).toLowerCase().includes(q) ||
+    (entry.dob || '').toLowerCase().includes(q) ||
+    (entry.responseId || '').toLowerCase().includes(q)
+  )
+})
+
+const totalPages = computed(() => Math.ceil(filteredSubmissions.value.length / itemsPerPage.value) || 1)
+const paginatedSubmissions = computed(() => {
+  const start = (currentPage.value - 1) * itemsPerPage.value
+  return filteredSubmissions.value.slice(start, start + itemsPerPage.value)
+})
+
+const changePage = (newPage) => {
+  if (newPage < 1 || newPage > totalPages.value) return
+  currentPage.value = newPage
+}
+
+watch([filteredSubmissions, itemsPerPage], () => {
+  const maxPage = totalPages.value
+  if (currentPage.value > maxPage) currentPage.value = maxPage
+})
+watch(currentPage, () => {
+  selectedSubmission.value = null
+})
+
+const viewSubmission = (entry) => {
+  selectedSubmission.value = { ...entry }
+}
+
+const updateStatus = async (entry) => {
+  const { error } = await supabase
+    .from('submissions')
+    .update({ status: entry.status })
+    .eq('responseId', entry.responseId)
+  if (error) {
+    console.error('Error updating status:', error.message)
+  } else {
+    await fetchSubmissions()
+  }
+}
+
+const goToPatientPMR = (email, responseId) => {
+  const hashed = sha256(email.trim().toLowerCase()).toString()
+  router.push(`/admin/patient/${hashed}?open=${responseId}`)
+}
+
+  const goToPMRWithoutOpen = (email) => {
+  const hashed = sha256(email.trim().toLowerCase()).toString()
+  router.push(`/admin/patient/${hashed}`) // No ?open= query param
+}
+
+  const goToBlankPMR = () => {
+  router.push('/admin/patient') // No patientId at all
+  menuOpen.value = false
+}
+
+
+const getSmartPages = computed(() => {
+  const pages = []
+  const total = totalPages.value
+  const current = currentPage.value
+  if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1)
+  pages.push(1)
+  if (current > 4) pages.push('...')
+  for (let i = Math.max(2, current - 2); i <= Math.min(total - 1, current + 2); i++) {
+    pages.push(i)
+  }
+  if (current + 2 < total - 1) pages.push('...')
+  pages.push(total)
+  return pages
+})
+
+
+const goToCalendar = () => {
+  router.push('/admin/calendar')
+}
+
+  const goToAnalytics = () => {
+  router.push('/admin/analytics')
+}
+
+  import Datepicker from '@vuepic/vue-datepicker'
+import '@vuepic/vue-datepicker/dist/main.css'
+
+const editedContactDayObj = ref(null)
+const editedContactTime = ref('')
+const isEditingAppointment = ref(false)
+
+const availableTimes = Array.from({ length: 13 * 4 }, (_, i) => {
+  const h = 9 + Math.floor(i / 4)   // 09 → 20:45
+  const m = (i % 4) * 15
+  return h === 21 ? null : `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`
+}).filter(Boolean)
+
+const disableWeekends = (date) => {
+  const day = date.getDay()
+  return day === 0 || day === 6
+}
+
+  const updateAppointmentDashboard = async () => {
+  const contactDayString = editedContactDayObj.value
+    ? editedContactDayObj.value.toISOString().split('T')[0]
+    : ''
+
+  const { error } = await supabase
+    .from('submissions')
+    .update({
+      contactDay: contactDayString,
+      contactTime: editedContactTime.value
+    })
+    .eq('responseId', selectedSubmission.value.responseId)
+
+  if (error) {
+    console.error('Failed to update appointment time:', error.message)
+    return
+  }
+
+  isEditingAppointment.value = false
+  await fetchSubmissions()
+
+  const updated = submissions.value.find(s => s.responseId === selectedSubmission.value.responseId)
+  selectedSubmission.value = { ...updated }
+}
 </script>
-
-<style scoped>
-.fc {
-  font-family: 'Inter', sans-serif;
-  font-size: 0.875rem; /* Tailwind text-sm */
-}
-
-/* Tighter rows */
-.fc-timegrid-slot {
-  min-height: 24px !important;
-}
-
-/* Compact event title display */
-.fc-event-title {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-/* Optional: Soften the background grid lines */
-.fc-timegrid-slot, .fc-scrollgrid {
-  border-color: #e5e7eb !important; /* Tailwind gray-200 */
-}
-
-.fc-event {
-  cursor: pointer;
-}
-</style>
-
-<style>
-/* Calendar event status colors */
-.event-complete {
-  background-color: #22c55e !important; /* green-500 */
-  border-color: #22c55e !important;
-  color: white !important;
-}
-
-.event-rejected {
-  background-color: #ef4444 !important; /* red-500 */
-  border-color: #ef4444 !important;
-  color: white !important;
-}
-
-.event-pending {
-  background-color: #facc15 !important; /* yellow-400 */
-  border-color: #facc15 !important;
-  color: black !important;
-}
-</style>
