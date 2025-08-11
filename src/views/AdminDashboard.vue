@@ -337,8 +337,14 @@ const viewSubmission = (entry) => {
 const updateStatus = async (entry) => {
   const { error } = await supabase
     .from('submissions')
-    .update({ status: entry.status })
+    .update({ 
+      status: entry.status,
+      statusUpdatedAt: new Date().toISOString(),
+      // Uncomment if you track admin login email
+      statusUpdatedBy: currentAdminEmail
+    })
     .eq('responseId', entry.responseId)
+
   if (error) {
     console.error('Error updating status:', error.message)
   } else {
