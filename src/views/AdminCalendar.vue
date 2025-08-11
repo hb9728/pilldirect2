@@ -2,10 +2,8 @@
   <div class="min-h-screen bg-gray-50 p-4">
     <!-- Top Bar: Title + Back/Menu -->
     <div class="flex items-center justify-between mb-3">
-      <!-- Title on the left -->
       <h1 class="text-2xl font-semibold">Calendar</h1>
 
-      <!-- Back + Menu on the right -->
       <div class="flex items-center gap-2">
         <button class="px-3 py-2 rounded border hover:bg-gray-100" @click="$router.back()">← Back</button>
         <HeaderMenu :items="menuItems" @navigate="onNavigate" @logout="onLogout" />
@@ -17,15 +15,13 @@
       <FullCalendar ref="calendarRef" :options="calendarOptions" />
     </div>
 
-    <!-- Outer overlay -->
+    <!-- Modal -->
     <div
       v-if="showModal"
-      class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50"
+      class="fixed inset-0 bg-black/40 flex items-center justify-center z-50"
       @click.self="closeModal"
     >
-      <!-- Inner content (modal) -->
       <div class="bg-white p-6 rounded shadow-md w-full max-w-2xl relative">
-        <!-- Modal header -->
         <div class="flex justify-between items-start mb-4">
           <h2 class="text-lg font-bold">Submission Details</h2>
           <div class="flex gap-2">
@@ -45,7 +41,6 @@
           </div>
         </div>
 
-        <!-- Modal body -->
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm text-gray-800">
           <div><strong>Name:</strong> {{ selectedEvent.firstName }} {{ selectedEvent.lastName }}</div>
           <div><strong>DOB:</strong> {{ selectedEvent.dob || '—' }}</div>
@@ -137,7 +132,7 @@
       </div>
     </div>
 
-    <!-- Pill-Style Legend -->
+    <!-- Legend -->
     <div class="mt-4 flex gap-3 text-sm">
       <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-yellow-100 text-yellow-800">
         <span class="w-2 h-2 rounded-full bg-yellow-500"></span> Pending
@@ -156,7 +151,7 @@
 import Datepicker from '@vuepic/vue-datepicker'
 import '@vuepic/vue-datepicker/dist/main.css'
 
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, computed, onBeforeUnmount } from 'vue'
 import FullCalendar from '@fullcalendar/vue3'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
@@ -205,6 +200,10 @@ export default {
     function onNavigate(item) {
       router.push(item.to)
     }
+    function onLogout() {
+      localStorage.removeItem('accessToken')
+      router.push('/admin/login')
+    }
 
     const goToPMR = () => {
       if (!selectedEvent.value?.email) return
@@ -215,27 +214,71 @@ export default {
 
     const calendarOptions = ref({
       plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
+
+      // Views + toolbar
       initialView: 'timeGridWeek',
+      headerToolbar: {
+        left: 'prev,next today',
+        center: 'title',
+        right: 'timeGridDay,timeGridWeek,dayGridMonth'
+      },
+      buttonText: {
+        today: 'Today',
+        dayGridMonth: 'Month',
+        timeGridWeek: 'Week',
+        timeGridDay: 'Day'
+      },
+
+      // Layout & UX
+      height: 'auto',
+      expandRows: true,
+      stickyHeaderDates: true,
+      navLinks: true,
+      nowIndicator: true,
+      dayMaxEventRows: 3,
+      aspectRatio: 1.8,
+
+      // Working hours
+      businessHours: { daysOfWeek: [1,2,3,4,5], startTime: '09:00', endTime: '17:00' },
       slotMinTime: '09:00:00',
       slotMaxTime: '21:00:00',
+      scrollTime: '09:00:00',
       slotDuration: '00:15:00',
       slotLabelInterval: '01:00',
       slotLabelFormat: { hour: 'numeric', minute: '2-digit', hour12: true },
       allDaySlot: false,
-      height: 'auto',
-      nowIndicator: true,
+
+      // Events
       eventTimeFormat: { hour: '2-digit', minute: '2-digit', hour12: false },
-      eventClassNames: ['rounded-md', 'px-2', 'py-1', 'text-sm', 'shadow-sm', 'hover:shadow-md', 'transition'],
-      eventDisplay: 'block',
-      eventTextColor: '#fff',
-      eventContent: (arg) => ({
-        html: `<div class="px-1 text-xs truncate cursor-pointer">${arg.timeText} – ${arg.event.title}</div>`
-      }),
-      events: [], // populated on mount
+      events: [], // populated by fetchEvents
       eventClick: (info) => {
         selectedEvent.value = info.event.extendedProps.submission
         showModal.value = true
+      },
+      eventClassNames: ['rounded-md', 'px-2', 'py-1', 'text-sm', 'shadow-sm', 'hover:shadow-md', 'transition'],
+      eventContent: (arg) => ({
+        html: `<div class="px-1 text-xs truncate cursor-pointer">${arg.timeText} – ${arg.event.title}</div>`
+      }),
+    })
+
+    // Auto switch to Day view on small screens; switch back on resize
+    const applyResponsiveView = () => {
+      const api = calendarRef.value?.getApi()
+      if (!api) return
+      if (window.matchMedia('(max-width: 640px)').matches) {
+        api.changeView('timeGridDay')
+      } else if (api.view.type === 'timeGridDay') {
+        api.changeView('timeGridWeek')
       }
+    }
+    let resizeListener
+    onMounted(() => {
+      applyResponsiveView()
+      resizeListener = () => applyResponsiveView()
+      window.addEventListener('resize', resizeListener)
+    })
+    onBeforeUnmount(() => {
+      if (resizeListener) window.removeEventListener('resize', resizeListener)
     })
 
     const fetchEvents = async () => {
@@ -264,7 +307,7 @@ export default {
         return
       }
 
-      const bookings = data
+      const bookings = (data || [])
         .filter(sub => sub.contactDay && sub.contactTime)
         .map(sub => {
           const start = `${sub.contactDay}T${sub.contactTime}`
@@ -287,12 +330,6 @@ export default {
       calendarOptions.value.events = bookings
     }
 
-    const logout = () => {
-      // Keep your existing logout behaviour; change to supabase.auth.signOut() if needed
-      localStorage.removeItem('accessToken')
-      router.push('/admin/login')
-    }
-
     const formatDateTime = (isoString) => {
       if (!isoString) return ''
       return DateTime.fromISO(isoString, { zone: 'utc' })
@@ -300,29 +337,26 @@ export default {
         .toFormat('dd LLL yyyy, HH:mm')
     }
 
-const updateStatus = async () => {
-  const newStatus = selectedEvent.value.status
+    const updateStatus = async () => {
+      const newStatus = selectedEvent.value.status
+      const { data: { user } } = await supabase.auth.getUser()
+      const adminEmail = user?.email || 'unknown'
 
-  // Grab the logged-in admin's email
-  const { data: { user } } = await supabase.auth.getUser()
-  const adminEmail = user?.email || 'unknown'
+      const { error } = await supabase
+        .from('submissions')
+        .update({
+          status: newStatus,
+          statusUpdatedAt: new Date().toISOString(),
+          statusUpdatedBy: adminEmail
+        })
+        .eq('responseId', selectedEvent.value.responseId)
 
-  const { error } = await supabase
-    .from('submissions')
-    .update({
-      status: newStatus,
-      statusUpdatedAt: new Date().toISOString(),
-      statusUpdatedBy: adminEmail
-    })
-    .eq('responseId', selectedEvent.value.responseId)
-
-  if (error) {
-    console.error('Error updating status:', error.message)
-    return
-  }
-
-  await fetchEvents() // refresh to update colors/status
-}
+      if (error) {
+        console.error('Error updating status:', error.message)
+        return
+      }
+      await fetchEvents()
+    }
 
     onMounted(fetchEvents)
 
@@ -372,6 +406,7 @@ const updateStatus = async () => {
       HeaderMenu,
       menuItems,
       onNavigate,
+      onLogout,
 
       // modal & selection
       selectedEvent,
@@ -391,56 +426,75 @@ const updateStatus = async () => {
       availableTimes,
       disableWeekends,
       updateAppointment,
-
-      // auth
-      logout,
     }
   }
 }
 </script>
 
 <style scoped>
-.fc {
+/* Base calendar font and size */
+:deep(.fc) {
   font-family: 'Inter', sans-serif;
-  font-size: 0.875rem; /* Tailwind text-sm */
+  font-size: 0.875rem; /* text-sm */
 }
 
-/* Tighter rows */
-.fc-timegrid-slot {
-  min-height: 24px !important;
+/* Toolbar polish */
+:deep(.fc .fc-toolbar) {
+  margin-bottom: 0.75rem;
+}
+:deep(.fc .fc-toolbar-title) {
+  font-weight: 600;
+  font-size: 1.125rem; /* text-lg */
+}
+:deep(.fc .fc-button) {
+  border-radius: 0.5rem;        /* rounded-lg */
+  border: 1px solid #e5e7eb;    /* gray-200 */
+  background: #fff;
+  color: #111827;               /* gray-900 */
+  padding: 0.375rem 0.75rem;
+}
+:deep(.fc .fc-button:hover) {
+  background: #f3f4f6;          /* gray-100 */
+}
+:deep(.fc .fc-button-primary:not(:disabled).fc-button-active),
+:deep(.fc .fc-button-primary:not(:disabled):active) {
+  background: #111827;          /* gray-900 */
+  color: #fff;
+  border-color: #111827;
 }
 
-/* Compact event title display */
-.fc-event-title {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+/* Grid & slots */
+:deep(.fc-timegrid-slot) { min-height: 24px !important; }
+:deep(.fc-timegrid-slot), :deep(.fc-scrollgrid) { border-color: #e5e7eb !important; }
+:deep(.fc-col-header-cell-cushion) { padding: 0.5rem 0; }
+
+/* Month view density + highlight today */
+:deep(.fc-daygrid-day-number) {
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.375rem;
+}
+:deep(.fc-day-today .fc-daygrid-day-number) {
+  background: #eef2ff;          /* indigo-50 */
+  color: #3730a3;               /* indigo-800 */
 }
 
-/* Optional: Soften the background grid lines */
-.fc-timegrid-slot, .fc-scrollgrid {
-  border-color: #e5e7eb !important; /* Tailwind gray-200 */
-}
-
-.fc-event {
-  cursor: pointer;
-}
+/* Events */
+:deep(.fc-event) { cursor: pointer; border: none; }
+:deep(.fc .fc-daygrid-event) { margin: 2px 4px; } /* tidier month chips */
 </style>
 
 <style>
-/* Calendar event status colors */
+/* Status colours */
 .event-complete {
   background-color: #22c55e !important; /* green-500 */
   border-color: #22c55e !important;
   color: white !important;
 }
-
 .event-rejected {
   background-color: #ef4444 !important; /* red-500 */
   border-color: #ef4444 !important;
   color: white !important;
 }
-
 .event-pending {
   background-color: #facc15 !important; /* yellow-400 */
   border-color: #facc15 !important;
