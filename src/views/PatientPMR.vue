@@ -3,7 +3,7 @@
     <!-- Top Bar: Title + Back/Menu -->
     <div class="flex items-center justify-between mb-3">
       <!-- Title on the left -->
-      <h1 class="text-2xl font-semibold">PillDirect.co.uk Patient Records</h1>
+      <h1 class="text-2xl font-semibold">Patient Records</h1>
 
       <!-- Back + Menu on the right -->
       <div class="flex items-center gap-2">
