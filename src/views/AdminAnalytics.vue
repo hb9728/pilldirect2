@@ -1,34 +1,34 @@
 <template>
   <div class="min-h-screen bg-gray-50 p-4">
-    <!-- Top Row: Back + Menu -->
-    <div class="flex items-center justify-between mb-4">
+    <!-- Row 1: Back + Menu -->
+    <div class="flex items-center justify-end gap-2 mb-3">
       <button class="px-3 py-2 rounded border hover:bg-gray-100" @click="$router.back()">← Back</button>
       <HeaderMenu :items="menuItems" @navigate="onNavigate" @logout="onLogout" />
     </div>
 
-    <!-- Second Row: Filters + Refresh -->
-    <div class="flex items-center gap-2 mb-4">
-      <select v-model="selectedRange" @change="fetchAnalytics" class="border p-2 rounded">
-        <option value="today">Today</option>
-        <option value="past_week">Past Week</option>
-        <option value="past_month">Past Month</option>
-        <option value="month_to_date">Month to Date</option>
-        <option value="year_to_date">Year to Date</option>
-        <option value="past_year">Past Year</option>
-      </select>
-
-      <button class="px-3 py-2 rounded border hover:bg-gray-100" @click="fetchAnalytics" :disabled="loading">
-        {{ loading ? 'Refreshing…' : 'Refresh' }}
-      </button>
+    <!-- Row 2: Title + Controls -->
+    <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
+      <h1 class="text-2xl font-semibold">Analytics</h1>
+      <div class="flex items-center gap-2">
+        <select v-model="selectedRange" @change="fetchAnalytics" class="border p-2 rounded">
+          <option value="today">Today</option>
+          <option value="past_week">Past Week</option>
+          <option value="past_month">Past Month</option>
+          <option value="month_to_date">Month to Date</option>
+          <option value="year_to_date">Year to Date</option>
+          <option value="past_year">Past Year</option>
+        </select>
+        <button class="px-3 py-2 rounded border hover:bg-gray-100" @click="fetchAnalytics" :disabled="loading">
+          {{ loading ? 'Refreshing…' : 'Refresh' }}
+        </button>
+      </div>
     </div>
 
-    <!-- Meta info -->
+    <!-- Meta / errors -->
     <div class="text-sm text-gray-500 mb-3" v-if="lastRefreshed">
       Showing: <span class="font-medium">{{ activeRangeLabel }}</span>
       <span class="mx-2">•</span> Last refreshed: {{ lastRefreshed }}
     </div>
-
-    <!-- Error -->
     <div v-if="errMsg" class="mb-3 p-3 bg-red-50 text-red-700 border border-red-200 rounded">
       {{ errMsg }}
     </div>
@@ -78,26 +78,15 @@ const menuItems = computed(() => ([
   { label: 'Calendar',  to: '/admin/calendar',  current: route.path === '/admin/calendar' },
   { label: 'Analytics', to: '/admin/analytics', current: route.path === '/admin/analytics' },
 ]))
-function onNavigate(item) {
-  router.push(item.to)
-}
-async function onLogout() {
-  try { await supabase.auth.signOut() } catch {}
-  router.push('/admin/login')
-}
+function onNavigate(item) { router.push(item.to) }
+async function onLogout() { try { await supabase.auth.signOut() } catch {} router.push('/admin/login') }
 
-// Analytics
+// Analytics state
 const loading = ref(false)
 const errMsg = ref('')
 const lastRefreshed = ref('')
 const selectedRange = ref('today')
-
-const analytics = ref({
-  total: 0,
-  pending: 0,
-  completed: 0,
-  rejected: 0,
-})
+const analytics = ref({ total: 0, pending: 0, completed: 0, rejected: 0 })
 
 const activeRangeLabel = computed(() => ({
   today: 'Today',
@@ -128,13 +117,11 @@ async function fetchAnalytics() {
   errMsg.value = ''
   try {
     const { startDate, endDate } = getRangeDates(selectedRange.value)
-
     const { data, error } = await supabase
       .from('submissions')
       .select('status, created_at')
       .gte('created_at', startDate.toISOString())
       .lte('created_at', endDate.toISOString())
-
     if (error) throw error
 
     const pending   = data.filter(s => s.status === 'Pending').length
@@ -144,7 +131,6 @@ async function fetchAnalytics() {
     analytics.value = { total: data.length, pending, completed, rejected }
     lastRefreshed.value = new Date().toLocaleString()
   } catch (e) {
-    console.error(e)
     errMsg.value = `Failed to load analytics: ${e.message || e}`
     analytics.value = { total: 0, pending: 0, completed: 0, rejected: 0 }
   } finally {
