@@ -1,14 +1,19 @@
 <template>
   <div class="min-h-screen bg-gray-50 p-4">
-    <!-- Row 1: Back + Menu -->
-    <div class="flex items-center justify-end gap-2 mb-3">
-      <button class="px-3 py-2 rounded border hover:bg-gray-100" @click="$router.back()">← Back</button>
-      <HeaderMenu :items="menuItems" @navigate="onNavigate" @logout="onLogout" />
+    <!-- Top Bar: Title + Back/Menu -->
+    <div class="flex items-center justify-between mb-3">
+      <!-- Title on the left -->
+      <h1 class="text-2xl font-semibold">Analytics</h1>
+
+      <!-- Back + Menu on the right -->
+      <div class="flex items-center gap-2">
+        <button class="px-3 py-2 rounded border hover:bg-gray-100" @click="$router.back()">← Back</button>
+        <HeaderMenu :items="menuItems" @navigate="onNavigate" @logout="onLogout" />
+      </div>
     </div>
 
-    <!-- Row 2: Title + Controls -->
+    <!-- Controls row: Date filter + Refresh -->
     <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
-      <h1 class="text-2xl font-semibold">Analytics</h1>
       <div class="flex items-center gap-2">
         <select v-model="selectedRange" @change="fetchAnalytics" class="border p-2 rounded">
           <option value="today">Today</option>
