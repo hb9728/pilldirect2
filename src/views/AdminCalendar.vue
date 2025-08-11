@@ -300,20 +300,29 @@ export default {
         .toFormat('dd LLL yyyy, HH:mm')
     }
 
-    const updateStatus = async () => {
-      const newStatus = selectedEvent.value.status
-      const { error } = await supabase
-        .from('submissions')
-        .update({ status: newStatus })
-        .eq('responseId', selectedEvent.value.responseId)
+const updateStatus = async () => {
+  const newStatus = selectedEvent.value.status
 
-      if (error) {
-        console.error('Error updating status:', error.message)
-        return
-      }
+  // Grab the logged-in admin's email
+  const { data: { user } } = await supabase.auth.getUser()
+  const adminEmail = user?.email || 'unknown'
 
-      await fetchEvents() // refresh to update colors/status
-    }
+  const { error } = await supabase
+    .from('submissions')
+    .update({
+      status: newStatus,
+      statusUpdatedAt: new Date().toISOString(),
+      statusUpdatedBy: adminEmail
+    })
+    .eq('responseId', selectedEvent.value.responseId)
+
+  if (error) {
+    console.error('Error updating status:', error.message)
+    return
+  }
+
+  await fetchEvents() // refresh to update colors/status
+}
 
     onMounted(fetchEvents)
 
