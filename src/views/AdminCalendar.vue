@@ -10,7 +10,7 @@
         <button
           v-if="showBackButton"
           @click="$router.back()"
-          class="px-3 py-1 rounded border bg-gray-100 hover:bg-gray-200 text-sm text-gray-800"
+          class="px-3 py-2 rounded border bg-gray-100 hover:bg-gray-100 text-sm text-gray-800"
         >
           ← Back
         </button>
