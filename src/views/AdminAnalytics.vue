@@ -82,6 +82,7 @@ const menuItems = computed(() => ([
   { label: 'Dashboard', to: '/admin/dashboard', current: route.path === '/admin/dashboard' },
   { label: 'Calendar',  to: '/admin/calendar',  current: route.path === '/admin/calendar' },
   { label: 'Analytics', to: '/admin/analytics', current: route.path === '/admin/analytics' },
+  { label: 'Open Full PMR', to: '/admin/patient', current: route.path.startsWith('/admin/patient') },
 ]))
 function onNavigate(item) { router.push(item.to) }
 async function onLogout() { try { await supabase.auth.signOut() } catch {} router.push('/admin/login') }
