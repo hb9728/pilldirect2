@@ -69,7 +69,7 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import HeaderMenu from '@/components/HeaderMenu.vue' // or '../components/HeaderMenu.vue' if you don’t have @ alias
+import HeaderMenu from '../components/HeaderMenu.vue' // or '../components/HeaderMenu.vue' if you don’t have @ alias
 import { supabase } from '../supabase'                // adjust path if needed
 
 const router = useRouter()
