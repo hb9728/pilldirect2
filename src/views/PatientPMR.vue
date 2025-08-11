@@ -589,11 +589,27 @@ watch(() => route.query.open, async (newId) => {
 
 /* Status + notes + AI note */
 const updateStatus = async (entry) => {
+  // Get the currently logged-in admin
+  const { data: { user } } = await supabase.auth.getUser()
+  const adminEmail = user?.email || 'unknown'
+
   const { error } = await supabase
     .from('submissions')
-    .update({ status: entry.status })
+    .update({
+      status: entry.status,
+      statusUpdatedAt: new Date().toISOString(),
+      statusUpdatedBy: adminEmail
+    })
     .eq('responseId', entry.responseId)
-  if (error) console.error('Status update failed:', error.message)
+
+  if (error) {
+    console.error('Error updating status:', error.message)
+  } else {
+    // Refresh view if this page uses a table/list
+    if (typeof fetchSubmissions === 'function') {
+      await fetchSubmissions()
+    }
+  }
 }
 
 const saveNotes = async (entry) => {
