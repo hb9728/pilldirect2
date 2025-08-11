@@ -335,13 +335,16 @@ const viewSubmission = (entry) => {
 }
 
 const updateStatus = async (entry) => {
+  // Pull the logged-in admin from Supabase
+  const { data: { user } } = await supabase.auth.getUser()
+  const adminEmail = user?.email || 'unknown'
+
   const { error } = await supabase
     .from('submissions')
-    .update({ 
+    .update({
       status: entry.status,
       statusUpdatedAt: new Date().toISOString(),
-      // Uncomment if you track admin login email
-      statusUpdatedBy: currentAdminEmail
+      statusUpdatedBy: adminEmail
     })
     .eq('responseId', entry.responseId)
 
