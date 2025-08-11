@@ -1,16 +1,76 @@
-<template>
-  <div class="min-h-screen bg-gray-50 p-4">
-    <!-- Top Bar: Title + Back/Menu -->
-    <div class="flex items-center justify-between mb-3">
-      <!-- Title on the left -->
-      <h1 class="text-2xl font-semibold">Dashboard</h1>
-
-      <!-- Back + Menu on the right -->
-      <div class="flex items-center gap-2">
-        <button class="px-3 py-2 rounded border hover:bg-gray-100" @click="$router.back()">← Back</button>
-        <HeaderMenu :items="menuItems" @navigate="onNavigate" @logout="onLogout" />
-      </div>
+<!--
+  
+    <div class="flex justify-between items-center mb-6">
+      <h2 class="text-2xl font-semibold">PillDirect.co.uk Submissions Dashboard</h2>
+      <button @click="logout" class="text-red-600 hover:underline">Logout</button>
     </div>
+-->
+
+
+
+    <template>
+<div class="min-h-screen bg-gray-50 p-6">
+  
+<div class="flex justify-between items-center mb-6">
+  <!-- LEFT: Title only -->
+  <h2 class="text-2xl font-semibold">PillDirect.co.uk Submissions Dashboard</h2>
+
+  <!-- RIGHT: Back button + Menu -->
+  <div class="flex items-center gap-4 relative" ref="menuRef">
+    <button
+      v-if="showBackButton"
+      @click="$router.back()"
+      class="text-blue-600 hover:underline text-sm"
+    >
+      ← Back
+    </button>
+
+    <button
+      @click="toggleMenu"
+      class="bg-gray-100 hover:bg-gray-200 text-gray-800 px-4 py-2 rounded text-sm border"
+    >
+      Menu ▾
+    </button>
+
+    <div
+      v-if="menuOpen"
+      class="absolute right-0 mt-12 w-48 bg-white border border-gray-200 rounded shadow-md z-10"
+    >
+<button
+  class="w-full text-left px-4 py-2 hover:bg-gray-100 text-sm"
+  @click="goToBlankPMR"
+>
+  Open Full PMR
+</button>
+      
+      <button
+        class="w-full text-left px-4 py-2 hover:bg-gray-100 text-sm"
+        @click="goToCalendar"
+      >
+        View Calendar
+      </button>
+
+      <button
+        class="w-full text-left px-4 py-2 hover:bg-gray-100 text-sm"
+        @click="goToAnalytics"
+        >
+        View Analytics
+      </button>
+      
+      <button
+        class="w-full text-left px-4 py-2 hover:bg-gray-100 text-sm text-red-600"
+        @click="logout"
+      >
+        Logout
+      </button>
+    </div>
+  </div>
+</div>
+
+
+
+
+
 
 
     
@@ -243,13 +303,6 @@ import { useRouter } from 'vue-router'
 import { supabase } from '../supabase'
 import sha256 from 'crypto-js/sha256'
 import { DateTime } from 'luxon'
-import HeaderMenu from '../components/HeaderMenu.vue'
-
-export default {
-  components: {
-    HeaderMenu
-  }
-}
 
 const router = useRouter()
 
@@ -290,17 +343,6 @@ onMounted(async () => {
     router.push('/admin/login')
   }
 })
-
-// Header menu items
-const menuItems = computed(() => ([
-  { label: 'Dashboard', to: '/admin/dashboard', current: route.path === '/admin/dashboard' },
-  { label: 'Calendar',  to: '/admin/calendar',  current: route.path === '/admin/calendar' },
-  { label: 'Analytics', to: '/admin/analytics', current: route.path === '/admin/analytics' },
-  { label: 'Open Full PMR', to: '/admin/patient', current: route.path.startsWith('/admin/patient') },
-]))
-function onNavigate(item) {
-  router.push(item.to)
-}
 
 const logout = async () => {
   await supabase.auth.signOut()
