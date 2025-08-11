@@ -9,7 +9,7 @@
       <div class="flex items-center gap-2">
         <button
           v-if="showBackButton"
-          class="px-3 py-2 rounded border hover:bg-gray-100 text-sm"
+          class="px-3 py-2 rounded border hover:bg-gray-100"
           @click="$router.back()"
         >
           ← Back
