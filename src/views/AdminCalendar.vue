@@ -195,11 +195,14 @@ import { useRouter } from 'vue-router'
 import { supabase } from '../supabase'
 import sha256 from 'crypto-js/sha256'
 import { DateTime } from 'luxon'
+import HeaderMenu from '../components/HeaderMenu.vue'
+
 
 export default {
   components: {
     FullCalendar,
-    Datepicker
+    Datepicker,
+    HeaderMenu
   },
   setup() {
 
