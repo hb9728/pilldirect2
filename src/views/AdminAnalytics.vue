@@ -41,7 +41,9 @@
     <!-- Loading / Empty -->
     <div v-if="loading" class="text-gray-500">Loading analytics…</div>
     <div v-else>
-      <div v-if="analytics.total === 0" class="text-gray-500">No submissions in this period.</div>
+      <div v-if="analytics.total === 0 && analytics.completed === 0" class="text-gray-500">
+        No submissions in this period.
+      </div>
 
       <!-- Metric tiles -->
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -54,12 +56,13 @@
           <p class="text-3xl text-yellow-600">{{ analytics.pending }}</p>
         </div>
         <div class="bg-white p-4 shadow rounded">
-          <h2 class="text-lg font-bold mb-2">Completed</h2>
-          <p class="text-3xl text-green-600">{{ analytics.completed }}</p>
-        </div>
-        <div class="bg-white p-4 shadow rounded">
           <h2 class="text-lg font-bold mb-2">Rejected</h2>
           <p class="text-3xl text-red-600">{{ analytics.rejected }}</p>
+        </div>
+        <div class="bg-white p-4 shadow rounded">
+          <h2 class="text-lg font-bold mb-1">Completed</h2>
+          <p class="text-xs text-gray-500 mb-2">Counted by <span class="font-medium">statusUpdatedAt</span> within range</p>
+          <p class="text-3xl text-green-600">{{ analytics.completed }}</p>
         </div>
       </div>
 
@@ -92,7 +95,10 @@ const loading = ref(false)
 const errMsg = ref('')
 const lastRefreshed = ref('')
 const selectedRange = ref('today')
-const analytics = ref({ total: 0, pending: 0, completed: 0, rejected: 0 })
+
+// IMPORTANT: completed now counted by statusUpdatedAt in range.
+// The others (total/pending/rejected) still counted by created_at in range.
+const analytics = ref({ total: 0, pending: 0, rejected: 0, completed: 0 })
 
 const activeRangeLabel = computed(() => ({
   today: 'Today',
@@ -123,22 +129,35 @@ async function fetchAnalytics() {
   errMsg.value = ''
   try {
     const { startDate, endDate } = getRangeDates(selectedRange.value)
-    const { data, error } = await supabase
+
+    // A) Created-in-range snapshot for total/pending/rejected
+    const { data: createdWindow, error: createdErr } = await supabase
       .from('submissions')
       .select('status, created_at')
       .gte('created_at', startDate.toISOString())
       .lte('created_at', endDate.toISOString())
-    if (error) throw error
+    if (createdErr) throw createdErr
 
-    const pending   = data.filter(s => s.status === 'Pending').length
-    const completed = data.filter(s => s.status === 'Complete' || s.status === 'Completed').length
-    const rejected  = data.filter(s => s.status === 'Rejected').length
+    const total = createdWindow.length
+    const pending = createdWindow.filter(s => s.status === 'Pending').length
+    const rejected = createdWindow.filter(s => s.status === 'Rejected').length
 
-    analytics.value = { total: data.length, pending, completed, rejected }
+    // B) Completed-in-range by *completion time* (statusUpdatedAt)
+    const { data: completedWindow, error: completedErr } = await supabase
+      .from('submissions')
+      .select('status, statusUpdatedAt')
+      .or('status.eq.Complete,status.eq.Completed') // handle either spelling
+      .gte('statusUpdatedAt', startDate.toISOString())
+      .lte('statusUpdatedAt', endDate.toISOString())
+    if (completedErr) throw completedErr
+
+    const completed = completedWindow.filter(s => !!s.statusUpdatedAt).length
+
+    analytics.value = { total, pending, rejected, completed }
     lastRefreshed.value = new Date().toLocaleString()
   } catch (e) {
     errMsg.value = `Failed to load analytics: ${e.message || e}`
-    analytics.value = { total: 0, pending: 0, completed: 0, rejected: 0 }
+    analytics.value = { total: 0, pending: 0, rejected: 0, completed: 0 }
   } finally {
     loading.value = false
   }
