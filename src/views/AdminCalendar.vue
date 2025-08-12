@@ -239,7 +239,7 @@ export default {
       aspectRatio: 1.8,
 
       // Working hours
-      businessHours: { daysOfWeek: [1,2,3,4,5], startTime: '09:00', endTime: '17:00' },
+      businessHours: { daysOfWeek: [1,2,3,4,5], startTime: '09:00', endTime: '21:00' },
       slotMinTime: '09:00:00',
       slotMaxTime: '21:00:00',
       scrollTime: '09:00:00',
