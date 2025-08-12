@@ -479,9 +479,14 @@ export default {
   padding: 0.25rem 0.5rem;
   border-radius: 0.375rem;
 }
+:deep(.fc-day-today) {
+  background-color: #eff6ff !important; /* Tailwind blue-50 */
+}
+
 :deep(.fc-day-today .fc-daygrid-day-number) {
-  background: #eef2ff;          /* indigo-50 */
-  color: #3730a3;               /* indigo-800 */
+  background: #dbeafe;  /* Tailwind blue-100 */
+  color: #1e3a8a;       /* Tailwind blue-900 */
+  border-radius: 0.375rem;
 }
 
 /* Events */
