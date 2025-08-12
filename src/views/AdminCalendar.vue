@@ -238,7 +238,11 @@ export default {
       navLinks: true,
       nowIndicator: true,
       dayMaxEventRows: 3,
+      moreLinkContent: function(args) {
+        return `+${args.num} more entries`;
+      },
       aspectRatio: 1.8,
+      weekNumbers: true,
 
       // Working hours
       businessHours: { daysOfWeek: [1,2,3,4,5], startTime: '09:00', endTime: '21:00' },
