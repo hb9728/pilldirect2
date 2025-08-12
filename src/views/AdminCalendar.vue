@@ -161,6 +161,7 @@ import { supabase } from '../supabase'
 import sha256 from 'crypto-js/sha256'
 import { DateTime } from 'luxon'
 import HeaderMenu from '../components/HeaderMenu.vue'
+import enGbLocale from '@fullcalendar/core/locales/en-gb'
 
 export default {
   components: {
@@ -213,6 +214,7 @@ export default {
     }
 
     const calendarOptions = ref({
+      locale: enGbLocale,
       plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
 
       // Views + toolbar
