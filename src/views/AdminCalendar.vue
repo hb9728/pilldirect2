@@ -241,7 +241,7 @@ export default {
       moreLinkContent: function(args) {
         return `+${args.num} more entries`;
       },
-      aspectRatio: 1.8,
+      aspectRatio: 1.3,
       weekNumbers: true,
 
       // Working hours
