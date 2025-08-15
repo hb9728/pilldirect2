@@ -7,6 +7,11 @@ import { supabase } from '../supabase'
 import AdminCalendar from '../views/AdminCalendar.vue'
 import ResetPassword from '../views/ResetPassword.vue'
 import AdminAnalytics from '../views/AdminAnalytics.vue'
+import Login from '../views/Login.vue'
+import Account from '../views/Account.vue'
+import MySubmissions from '../views/MySubmissions.vue'
+import RequestNext from '../views/RequestNext.vue'
+
 
 const routes = [
   { path: '/', component: FormView },
@@ -16,7 +21,12 @@ const routes = [
   { path: '/admin/patient/:patientId', component: PatientPMR, props: true, meta: { requiresAuth: true } },
   { path: '/admin/calendar', name: 'AdminCalendar', component: AdminCalendar, meta: { requiresAuth: true } },
   { path: '/reset-password', name: 'ResetPassword', component: ResetPassword },
-  { path: '/admin/analytics', name: 'AdminAnalytics', component: AdminAnalytics, meta: { requiresAuth: true } }
+  { path: '/admin/analytics', name: 'AdminAnalytics', component: AdminAnalytics, meta: { requiresAuth: true } },
+  { path: '/login', component: Login },
+  { path: '/account', component: Account, meta: { requiresAuth: true } },
+  { path: '/me/submissions', component: MySubmissions, meta: { requiresAuth: true } },
+  { path: '/request-next', component: RequestNext, meta: { requiresAuth: true } },
+
 ]
 
 const router = createRouter({
