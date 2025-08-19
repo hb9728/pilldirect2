@@ -9,7 +9,7 @@
     </div>
 
     <!-- GP-registered address -->
-    <h3 class="text-lg font-medium mb-2">GP-registered address</h3>
+    <h3 class="text-lg font-medium mb-2">Your address with your current GP surgery</h3>
     <div class="space-y-3 mb-6">
       <input v-model="formData.gpAddress1" placeholder="Address Line 1" class="input" />
       <input v-model="formData.gpAddress2" placeholder="Address Line 2 (optional)" class="input" />
