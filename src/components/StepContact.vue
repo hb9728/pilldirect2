@@ -11,10 +11,10 @@
     <!-- GP-registered address -->
     <h3 class="text-lg font-medium mb-2">Your address with your current GP surgery</h3>
     <div class="space-y-3 mb-6">
-      <input v-model="formData.gpAddress1" placeholder="Address Line 1" class="input" />
-      <input v-model="formData.gpAddress2" placeholder="Address Line 2 (optional)" class="input" />
-      <input v-model="formData.gpCity" placeholder="City" class="input" />
-      <input v-model="formData.gpPostcode" placeholder="Postcode" class="input" />
+      <input v-model="formData.gp_address1" placeholder="Address Line 1" class="input" />
+      <input v-model="formData.gp_address2" placeholder="Address Line 2 (optional)" class="input" />
+      <input v-model="formData.gp_city" placeholder="City" class="input" />
+      <input v-model="formData.gp_postcode" placeholder="Postcode" class="input" />
     </div>
 
     <!-- Same-as checkbox -->
@@ -51,10 +51,10 @@ const sameAsGp = ref(false)
 // When user ticks the box, mirror GP address into delivery address
 watch(sameAsGp, (checked) => {
   if (checked) {
-    props.formData.address1   = props.formData.gpAddress1
-    props.formData.address2   = props.formData.gpAddress2
-    props.formData.city       = props.formData.gpCity
-    props.formData.postcode   = props.formData.gpPostcode
+    props.formData.address1   = props.formData.gp_address1
+    props.formData.address2   = props.formData.gp_address2
+    props.formData.city       = props.formData.gp_city
+    props.formData.postcode   = props.formData.gp_postcode
   }
 })
 </script>
